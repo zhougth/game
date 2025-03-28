@@ -1,7 +1,7 @@
 #include"game.h"
 #include<string>
 #include<iostream>
-char N[21][3] = { "0","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20" };
+#include<cstdio>
 COLORREF& button::getColor() {
 	return color;
 }
@@ -33,7 +33,20 @@ void button::drawGameButtom() {
 	settextcolor(BLACK);
 	setbkmode(TRANSPARENT);
 	fillrectangle(this->x, this->y, this->x + this->width, this->y + this->heigth);
-	if(num!=0)outtextxy(this->x + 20, this->y + 10, N[num]);
+	char buffer[20];
+	snprintf(buffer, sizeof(buffer), "%d", num);
+	if(num!=0)outtextxy(this->x + 20, this->y + 10, buffer);
+}
+void button::drawOverButtom() {
+	setfillcolor(this->color);
+	settextstyle(40, 0, "楷体");
+	setlinecolor(BLACK);
+	settextcolor(BLACK);
+	setbkmode(TRANSPARENT);
+	fillrectangle(this->x, this->y, this->x + this->width, this->y + this->heigth);
+	outtextxy(this->x + 75, this->y + 60, this->pText.c_str());
+	settextstyle(30, 0, "楷体");
+	outtextxy(this->x + 20, this->y + 110, "（请按此按钮返回）");
 }
 int button::mouseInButtom(MOUSEMSG m) {
 	if (this->x <= m.x && this->x + this->width >= m.x && this->y <= m.y && this->y + this->heigth >= m.y) {
@@ -77,8 +90,20 @@ bool mouseMsg(ExMessage* msg, button block[][3], int& n, int ans[][2], int realB
 	block[i][j].getNum() = n;
 	block[i][j].drawGameButtom();
 	n++;
+	
 	if (check(ans, realB, 3)) {
 		return true;
+	}
+	else if (n >= 4) {
+		button* End = new button;
+		End->creatButtom(400, 200, 304, 204, YELLOW, "游戏失败");
+		End->drawOverButtom();
+		
+		while (1) {
+			MOUSEMSG m = GetMouseMsg();
+			if (End->clickButtom(m))return true;
+		}
+		
 	}
 	else return false;
 }
@@ -91,34 +116,32 @@ void game() {
 	int realB[3][2] = { 0,2,1,2,1,1 };
 	int ans[3][2];
 	button block[3][3];
-	button topicA[3][3];
-	button topicB[3][3];
 	int a = 0, b = 0;
 	for (int i = 0; i < 3; i++) {
 		for (int j = 0; j < 3; j++) {
-			topicA[i][j].creatButtom(400 + j * 102, 100 + 102 * i, 100, 100, BLUE);
-
-			topicA[i][j].drawGameButtom();
-
+			/*topicA[i][j].creatButtom(400 + j * 102, 100 + 102 * i, 100, 100, BLUE);
+			topicA[i][j].drawGameButtom();*/
+			setfillcolor(BLUE);
+			bar(400 + j * 102, 100 + 102 * i, 400 + j * 102+ 100, 100 + 102 * i+ 100);
+			bar(300 + 450 + j * 102, 100 + 102 * i, 100 + 300 + 450 + j * 102, 100 + 100 + 102 * i);
 		}
 	}
 	for (int i = 0; i < 3; i++) {
-		topicA[A[i][0]][A[i][1]].getNum() = a + 1;
+		/*topicA[A[i][0]][A[i][1]].getNum() = a + 1;
 		topicA[A[i][0]][A[i][1]].getColor() = RED;
-		topicA[A[i][0]][A[i][1]].drawGameButtom();
+		topicA[A[i][0]][A[i][1]].drawGameButtom();*/
+		char buffera[20];
+		char bufferb[20];
+		snprintf(buffera, sizeof(buffera), "%d", a+1);
+		snprintf(bufferb, sizeof(bufferb), "%d", b + 1);
+		setfillcolor(RED);
+		bar(400 + A[i][1] * 102, 100 + 102 * A[i][0], 400 + A[i][1] * 102 + 98, 100 + 102 * A[i][0] + 98);
+		bar(300 + 450 + relativeB[i][1] * 102, 100 + 102 * relativeB[i][0], 98 + 300 + 450 + relativeB[i][1] * 102, 98 + 100 + 102 * relativeB[i][0]);
+		outtextxy(400 + A[i][1] * 102+30, 100 + 102 * A[i][0]+30, buffera);
+		outtextxy(300 + 450 + relativeB[i][1] * 102 + 30, 100 + 102 * relativeB[i][0] + 30, bufferb);
 		a++;
-	}
-	for (int i = 0; i < 3; i++) {
-		for (int j = 0; j < 3; j++) {
-			topicB[i][j].creatButtom(300 + 450 + j * 102, 100 + 102 * i, 100, 100, BLUE);
-			topicB[i][j].drawGameButtom();
-		}
-	}
-	for (int i = 0; i < 3; i++) {
-		topicB[relativeB[b][0]][relativeB[b][1]].getNum() = b + 1;
-		topicB[relativeB[b][0]][relativeB[b][1]].getColor() = RED;
-		topicB[relativeB[b][0]][relativeB[b][1]].drawGameButtom();
 		b++;
+
 	}
 	for (int i = 0; i < 3; i++) {
 		for (int j = 0; j < 3; j++) {
@@ -140,6 +163,25 @@ void game() {
 			}
 		}
 	}
+}
+void Random(int*** a,int n) {//n指的是步数
+	IMAGE mPlay;
+	loadimage(&mPlay, _T("bk.jpg"), 1024, 684);
+	putimage(0, 0, &mPlay);
+	button** answer = new button*[20];
+	for (int i = 0; i < 20; i++) {
+		answer[i] = new button[20];
+	}
+	for (int i = 0; i < 20; i++) {
+		for (int j = 0; j < 20; j++) {
+			answer[i][j].creatButtom(30 + j * 32, 30 + i * 32, 30, 30, BLUE);
+			answer[i][j].drawButtom();
+		}
+	}
+	for (int i = 0; i < 20; i++) {
+		delete[] answer[i];
+	}
+	delete[]answer;
 }
 void menu() {
 	initgraph(1100, 600);
@@ -165,16 +207,25 @@ void menu() {
 			button* solidMode = new button;
 			button* randomMode = new button;
 			solidMode->creatButtom(440, 340, 180, 50, YELLOW, "关卡模式");
-			randomMode->creatButtom(440, 395, 180, 50, YELLOW, "随机模式");			
+			randomMode->creatButtom(440, 395, 180, 50, YELLOW, "随机模式");	
+			button* Return = new button;
+			Return->creatButtom(440, 450, 180, 50, YELLOW, "返回");
 			while(1){
 				IMAGE mPlay;
 				loadimage(&mPlay, _T("bk.jpg"), 1024, 684);
 				putimage(0, 0, &mPlay);
 				solidMode->drawButtom();
 				randomMode->drawButtom();
+				Return->drawButtom();
 				MOUSEMSG m1 = GetMouseMsg();
 				if (solidMode->clickButtom(m1)) {
 					game();
+				}
+				if (randomMode->clickButtom(m1)) {
+					Random(random(2),10);
+				}
+				if (Return->clickButtom(m1)) {
+					break;
 				}
 			}
 		}

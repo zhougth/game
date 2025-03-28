@@ -1,6 +1,7 @@
 #pragma once
 #include<graphics.h>
 #include<string>
+#include<stdlib.h>
 using namespace std;
 class button {
 public:
@@ -12,6 +13,7 @@ public:
 	void gameButton(MOUSEMSG m, string str);
 	int clickButtom(MOUSEMSG m);
 	void drawGameButtom();
+	void drawOverButtom();
 	friend bool mouseMsg(ExMessage* msg, button block[][3], int& n, int ans[][2], int realB[][2]);
 private:
 	int x;
@@ -27,3 +29,4 @@ bool mouseMsg(ExMessage* msg, button block[][3], int& n, int ans[][2], int realB
 void game();
 void menu();
 int*** random(int n);
+void Random(int*** a, int n);
