@@ -28,5 +28,6 @@ bool check(int a[][2], int b[][2], int n);
 bool mouseMsg(ExMessage* msg, button block[][3], int& n, int ans[][2], int realB[][2]);
 void game();
 void menu();
-int*** random(int n);
-void Random(int*** a, int n);
+int*** random(int n, int** A, int** realB, int** relativeB, int*** total);
+void Random( int n);
+void freeMemory(int n, int** A, int** realB, int** relativeB, int*** total);

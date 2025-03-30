@@ -2,6 +2,7 @@
 #include<string>
 #include<iostream>
 #include<cstdio>
+using namespace std;
 COLORREF& button::getColor() {
 	return color;
 }
@@ -109,7 +110,7 @@ bool mouseMsg(ExMessage* msg, button block[][3], int& n, int ans[][2], int realB
 }
 void game() {
 	IMAGE mPlay;
-	loadimage(&mPlay, _T("bk.jpg"), 1024, 684);
+	loadimage(&mPlay, _T("bk.jpg"), 1920, 1000);
 	putimage(0, 0, &mPlay);
 	int A[3][2] = { 2,0,1,0,1,1 };
 	int relativeB[3][2] = { 0,2,2,2,2,0 };
@@ -119,17 +120,12 @@ void game() {
 	int a = 0, b = 0;
 	for (int i = 0; i < 3; i++) {
 		for (int j = 0; j < 3; j++) {
-			/*topicA[i][j].creatButtom(400 + j * 102, 100 + 102 * i, 100, 100, BLUE);
-			topicA[i][j].drawGameButtom();*/
 			setfillcolor(BLUE);
 			bar(400 + j * 102, 100 + 102 * i, 400 + j * 102+ 100, 100 + 102 * i+ 100);
 			bar(300 + 450 + j * 102, 100 + 102 * i, 100 + 300 + 450 + j * 102, 100 + 100 + 102 * i);
 		}
 	}
 	for (int i = 0; i < 3; i++) {
-		/*topicA[A[i][0]][A[i][1]].getNum() = a + 1;
-		topicA[A[i][0]][A[i][1]].getColor() = RED;
-		topicA[A[i][0]][A[i][1]].drawGameButtom();*/
 		char buffera[20];
 		char bufferb[20];
 		snprintf(buffera, sizeof(buffera), "%d", a+1);
@@ -164,56 +160,73 @@ void game() {
 		}
 	}
 }
-void Random(int*** a,int n) {//n指的是步数
+void Random(int n) {//n指的是步数
 	IMAGE mPlay;
-	loadimage(&mPlay, _T("bk.jpg"), 1024, 684);
+	loadimage(&mPlay, _T("test.jpg"), 1920, 1000);
 	putimage(0, 0, &mPlay);
-	button** answer = new button*[20];
-	for (int i = 0; i < 20; i++) {
-		answer[i] = new button[20];
+	int** A = new int* [n * 5];
+	int** realB = new int* [n * 5];
+	int** relativeB = new int* [n * 5];
+	int*** total = new int** [3];
+	total=random(n / 5, A, realB, relativeB, total);
+	for (int i = 0; i <  n; i++) {
+		cout << total[0][i][0] << "  " << total[0][i][1] << endl;
 	}
-	for (int i = 0; i < 20; i++) {
-		for (int j = 0; j < 20; j++) {
-			answer[i][j].creatButtom(30 + j * 32, 30 + i * 32, 30, 30, BLUE);
-			answer[i][j].drawButtom();
+	//上面是获取题目以及答案
+	for (int i = 0; i < 15; i++) {
+		for (int j = 0; j < 15; j++) {
+			setfillcolor(BLUE);
+			bar(40 + j * 28, 90 + 28 * i, 40 + j * 28 + 25, 90 + 28 * i + 25);
+			bar(520 + j * 28, 90 + 28 * i, 520  + j * 28+25, 90 +28 * i+25);
+			bar(60+940 + j * 28, 90 + 28 * i, 940+60 + j * 28 + 25, 90 + 28 * i + 25);
 		}
 	}
-	for (int i = 0; i < 20; i++) {
-		delete[] answer[i];
+	int a = 1, b = 1;
+	for (int i = 0; i < n; i++) {
+		setfillcolor(RED);
+		bar(520 + total[0][i][1] * 28, 90 + 28 * total[0][i][0], 520 + total[0][i][1] * 28 + 25, 90 + 28 * total[0][i][0] + 25);
+		settextstyle(20, 0, "楷体");
+		char buffer[20];
+		snprintf(buffer, sizeof(buffer), "%d", i + 1);
+		outtextxy(520 + total[0][i][1] * 28, 90 + 28 * total[0][i][0], buffer);
+		bar(60 + 940 + total[2][i][1] * 28, 90 + 28 * total[2][i][0], 60 + 940 + total[2][i][1] * 28 + 25, 90 + 28 * total[2][i][0] + 25);
+		outtextxy(60 + 940 + total[2][i][1] * 28, 90 + 28 * total[2][i][0], buffer);
 	}
-	delete[]answer;
+
+	freeMemory(n / 5, A, realB, relativeB, total);
+	while (1);
 }
 void menu() {
-	initgraph(1100, 600);
+	initgraph(1920, 1000);
 	IMAGE mm;
-	loadimage(&mm, _T("bk.jpg"), 1024, 684);
+	loadimage(&mm, _T("bk.jpg"), 1920, 1000);
 	putimage(0, 0, &mm);
 	//加载背景
 	button* play = new button;
 	button* rule = new button;
 	button* quit = new button;
+	button* solidMode = new button;
+	button* randomMode = new button;
+	button* Return = new button;
 	play->creatButtom(440, 340, 180, 50, YELLOW, "开始游戏");
 	rule->creatButtom(440, 395, 180, 50, YELLOW, "游戏规则");
 	quit->creatButtom(440, 450, 180, 50, YELLOW, "退出游戏");
+	solidMode->creatButtom(440, 340, 180, 50, YELLOW, "关卡模式");
+	randomMode->creatButtom(440, 395, 180, 50, YELLOW, "随机模式");
+	Return->creatButtom(440, 450, 180, 50, YELLOW, "返回");
+	IMAGE mPlay;
+	loadimage(&mPlay, _T("bk.jpg"), 1920, 1000);
+	IMAGE mPlay2;
+	loadimage(&mPlay2, _T("bk.jpg"), 1920, 1000);
 	while (1) {
 		play->drawButtom();
 		rule->drawButtom();
 		quit->drawButtom();
-		MOUSEMSG m = GetMouseMsg();
-		if (play->clickButtom(m)) {
-			IMAGE mPlay;
-			loadimage(&mPlay, _T("bk.jpg"), 1024, 684);
-			putimage(0, 0, &mPlay);
-			button* solidMode = new button;
-			button* randomMode = new button;
-			solidMode->creatButtom(440, 340, 180, 50, YELLOW, "关卡模式");
-			randomMode->creatButtom(440, 395, 180, 50, YELLOW, "随机模式");	
-			button* Return = new button;
-			Return->creatButtom(440, 450, 180, 50, YELLOW, "返回");
-			while(1){
-				IMAGE mPlay;
-				loadimage(&mPlay, _T("bk.jpg"), 1024, 684);
-				putimage(0, 0, &mPlay);
+		MOUSEMSG m = GetMouseMsg();	
+		if (play->clickButtom(m)) {			
+			putimage(0, 0, &mPlay);			
+			while(1){				
+				putimage(0, 0, &mPlay2);
 				solidMode->drawButtom();
 				randomMode->drawButtom();
 				Return->drawButtom();
@@ -222,47 +235,53 @@ void menu() {
 					game();
 				}
 				if (randomMode->clickButtom(m1)) {
-					Random(random(2),10);
+					Random(10);
 				}
 				if (Return->clickButtom(m1)) {
 					break;
 				}
+
 			}
 		}
 		if (rule->clickButtom(m)) {
 
 		}
 		if (quit->clickButtom(m)) {
+			delete play;
+			delete rule;
+			delete quit;
+			delete solidMode;
+			delete randomMode;
+			delete Return;
 			return;
 		}
 	}
+	delete play;
+	delete rule;
+	delete quit;
+	
 	closegraph();
 }
 bool judgeIn(int x, int y, int i, int j) {//x和y是题目表格大小，i和j是坐标
-	if (i <= x && i >= 0 && j <= y && y >= 0) {
+	if (i <= x && i >= 0 && j <= y && j >= 0) {
 		return true;
 	}
 	else return false;
 }
-int*** random(int n) {//5的n倍步
+int*** random(int n,int **A,int**realB,int**relativeB,int***total) {//5的n倍步
 	int directionx[4] = { -1,0,1,0 };
 	int directiony[4] = { 0,1,0,-1 };
-	int* ans = new int[n * 5 * 2];
-	int** A = new int* [n * 5];
-	int** realB = new int* [n * 5];
-	int** relativeB = new int* [n * 5];
-	int** total[3];
 	for (int i = 0; i < n * 5; i++) {
 		A[i] = new int[2];
 		realB[i] = new int[2];
 		relativeB[i] = new int[2];
 	}//创建航迹
-	int startx = (rand() % 10);
-	int starty = (rand() % 10);
-	A[n * 5 - 1][0] = startx + 10;
-	realB[n * 5 - 1][0] = startx + 10;
-	A[n * 5 - 1][1] = starty + 10;
-	realB[n * 5 - 1][1] = starty + 10;
+	int startx = (rand() % 5);
+	int starty = (rand() % 5);
+	A[n * 5 - 1][0] = startx + 5;
+	realB[n * 5 - 1][0] = startx + 5;
+	A[n * 5 - 1][1] = starty + 5;
+	realB[n * 5 - 1][1] = starty + 5;
 	int* Adir = new int[n * 5];
 	int* Bdir = new int[n * 5];
 
@@ -296,20 +315,18 @@ int*** random(int n) {//5的n倍步
 	total[0] = A;
 	total[1] = relativeB;
 	total[2] = realB;
-	for (int i = 0; i < n * 5; i++) {
-		delete[]A[i];
-	}
-	delete[]A;
-	for (int i = 0; i < n * 5; i++) {
-		delete[]realB[i];
-	}
-	delete[]realB;
-	for (int i = 0; i < n * 5; i++) {
-		delete[]relativeB[i];
-	}
-
-	delete[]relativeB;
 	delete[]Adir;
 	delete[]Bdir;
 	return total;
+}
+void freeMemory(int n,int** A, int** realB, int** relativeB, int*** total) {
+	for (int i = 0; i < n * 5; i++) {
+		delete[]A[i];
+		delete[]realB[i];
+		delete[]relativeB[i];
+	}
+	delete[]A;
+	delete[]realB;
+	delete[]relativeB;
+	delete[]total;
 }
