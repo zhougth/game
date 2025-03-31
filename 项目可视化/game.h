@@ -8,13 +8,13 @@ public:
 	COLORREF& getColor();
 	int& getNum();
 	void creatButtom(int x, int y, int width, int heigth, COLORREF color, string pText,int num);
-	void drawButtom();
+	void drawButtom(int);
 	int mouseInButtom(MOUSEMSG m);
 	void gameButton(MOUSEMSG m, string str);
 	int clickButtom(MOUSEMSG m);
-	void drawGameButtom();
+	void drawGameButtom(int size);
 	void drawOverButtom();
-	friend bool mouseMsg(ExMessage* msg, button block[][3], int& n, int ans[][2], int realB[][2]);
+	friend bool mouseMsg(ExMessage* msg, button **block, int& n, int **ans, int realB[][2],int size, int stepNum);
 private:
 	int x;
 	int y;
@@ -24,10 +24,10 @@ private:
 	string pText;
 	int num = 0;
 };
-bool check(int a[][2], int b[][2], int n);
-bool mouseMsg(ExMessage* msg, button block[][3], int& n, int ans[][2], int realB[][2]);
-void game();
+bool check(int **a, int b[][2], int n);
+void game(int stepNum, int size);
 void menu();
 int*** random(int n, int** A, int** realB, int** relativeB, int*** total);
 void Random( int n);
 void freeMemory(int n, int** A, int** realB, int** relativeB, int*** total);
+void SolidMode();
