@@ -5,8 +5,8 @@
 using namespace std;
 class button {
 public:
-	COLORREF& getColor();
-	int& getNum();
+	void setColor(COLORREF);
+	void setNum(int);
 	void creatButtom(int x, int y, int width, int heigth, COLORREF color, string pText,int num);
 	void drawButtom(int);
 	int mouseInButtom(MOUSEMSG m);
@@ -31,3 +31,4 @@ int*** random(int n, int** A, int** realB, int** relativeB, int*** total);
 void Random( int n);
 void freeMemory(int n, int** A, int** realB, int** relativeB, int*** total);
 void SolidMode();
+bool isDeadEnd(int x, int y, int** visited, int directionx[4], int directiony[4]);

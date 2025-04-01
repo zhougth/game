@@ -2,12 +2,15 @@
 #include<string>
 #include<iostream>
 #include<cstdio>
+#include<stdlib.h>
+#include<ctime>
 using namespace std;
-COLORREF& button::getColor() {
-	return color;
+
+void button::setColor(COLORREF colorr) {
+	color = colorr;
 }
-int& button::getNum() {
-	return num;
+void button::setNum(int numm) {
+	num = numm;
 }
 void button::creatButtom(int x, int y, int width, int heigth, COLORREF color, string pText="", int num = 0) {
 	this->x = x;
@@ -87,8 +90,8 @@ bool mouseMsg(ExMessage* msg, button** block, int& n, int **ans, int realB[][2],
 	int i = (msg->y - 100) / 100;//行
 	ans[n - 1][0] = i;
 	ans[n - 1][1] = j;
-	block[i][j].getColor() = RED;
-	block[i][j].getNum() = n;
+	block[i][j].setColor(RED) ;
+	block[i][j].setNum(n) ;
 	block[i][j].drawGameButtom();
 	n++;
 	
@@ -176,28 +179,42 @@ void Random(int n) {//n指的是步数
 	int** relativeB = new int* [n * 5];
 	int*** total = new int** [3];
 	total=random(n / 5, A, realB, relativeB, total);
+	cout << "A" << endl;
 	for (int i = 0; i <  n; i++) {
-		cout << total[0][i][0] << "  " << total[0][i][1] << endl;
+		cout << total[0][i][0]+1 << "  " << total[0][i][1]+1 << endl;
+	}
+	cout << "relativeB" << endl;
+	for (int i = 0; i < n; i++) {
+		cout << total[1][i][0]+1 << "  " << total[1][i][1]+1 << endl;
+	}
+	cout << "realB" << endl;
+	for (int i = 0; i < n; i++) {
+		cout << total[2][i][0]+1 << "  " << total[2][i][1]+1 << endl;
 	}
 	//上面是获取题目以及答案
-	for (int i = 0; i < 15; i++) {
-		for (int j = 0; j < 15; j++) {
+	for (int i = 0; i < 10; i++) {
+		for (int j = 0; j < 10; j++) {
 			setfillcolor(BLUE);
-			bar(40 + j * 28, 90 + 28 * i, 40 + j * 28 + 25, 90 + 28 * i + 25);
-			bar(520 + j * 28, 90 + 28 * i, 520  + j * 28+25, 90 +28 * i+25);
-			bar(60+940 + j * 28, 90 + 28 * i, 940+60 + j * 28 + 25, 90 + 28 * i + 25);
+			bar(40 + j * 43, 90 + 43 * i, 40 + j * 43 + 40, 90 + 43 * i + 40);
+			bar(520 + j * 43, 90 + 43 * i, 520  + j * 43+40, 90 +43 * i+40);
+			bar(60+940 + j * 43, 90 + 43 * i, 940+60 + j * 43 + 40, 90 + 43 * i + 40);
 		}
 	}
 	int a = 1, b = 1;
 	for (int i = 0; i < n; i++) {
 		setfillcolor(RED);
-		bar(520 + total[0][i][1] * 28, 90 + 28 * total[0][i][0], 520 + total[0][i][1] * 28 + 25, 90 + 28 * total[0][i][0] + 25);
+		bar(520 + total[0][i][1] * 43, 90 + 43 * total[0][i][0], 520 + total[0][i][1] * 43 +40, 90 + 43 * total[0][i][0] + 40);
 		settextstyle(20, 0, "楷体");
 		char buffer[20];
 		snprintf(buffer, sizeof(buffer), "%d", i + 1);
-		outtextxy(520 + total[0][i][1] * 28, 90 + 28 * total[0][i][0], buffer);
-		bar(60 + 940 + total[2][i][1] * 28, 90 + 28 * total[2][i][0], 60 + 940 + total[2][i][1] * 28 + 25, 90 + 28 * total[2][i][0] + 25);
-		outtextxy(60 + 940 + total[2][i][1] * 28, 90 + 28 * total[2][i][0], buffer);
+		outtextxy(520 + total[0][i][1] * 43, 90 + 43 * total[0][i][0], buffer);
+		if (i >0) {
+			if (total[1][i][0] == total[1][i - 1][0] && total[1][i][1] == total[1][i - 1][1]) {
+				setfillcolor(YELLOW);
+			}
+		}
+		bar(60 + 940 + total[1][i][1] * 43, 90 + 43 * total[1][i][0], 60 + 940 + total[1][i][1] * 43 + 40, 90 + 43 * total[1][i][0] + 40);
+		outtextxy(60 + 940 + total[1][i][1] * 43, 90 + 43 * total[1][i][0], buffer);
 	}
 
 	freeMemory(n / 5, A, realB, relativeB, total);
@@ -242,7 +259,7 @@ void menu() {
 					SolidMode();
 				}
 				if (randomMode->clickButtom(m1)) {
-					Random(10);
+					Random(5);
 				}
 				if (Return->clickButtom(m1)) {
 					break;
@@ -275,7 +292,19 @@ bool judgeIn(int x, int y, int i, int j) {//x和y是题目表格大小，i和j是坐标
 	}
 	else return false;
 }
+bool isDeadEnd(int x, int y, int** visited, int directionx[4], int directiony[4]) {
+	int count = 0;
+	for (int i = 0; i < 4; i++) {
+		int nextX = x + directionx[i];
+		int nextY = y + directiony[i];
+		if (!judgeIn(10, 10, nextX, nextY) || visited[nextX][nextY]) {
+			count++;
+		}
+	}
+	return count == 4; // 如果四个方向都被堵死，则是死胡同
+}
 int*** random(int n,int **A,int**realB,int**relativeB,int***total) {//5的n倍步
+	srand((unsigned int)time(NULL));
 	int directionx[4] = { -1,0,1,0 };
 	int directiony[4] = { 0,1,0,-1 };
 	for (int i = 0; i < n * 5; i++) {
@@ -283,19 +312,84 @@ int*** random(int n,int **A,int**realB,int**relativeB,int***total) {//5的n倍步
 		realB[i] = new int[2];
 		relativeB[i] = new int[2];
 	}//创建航迹
+	int** visitA = new int* [10];
+	int** visitB = new int* [10];
+	for (int i = 0; i < 10; i++) {
+		visitA[i] = new int[10];
+		visitB[i] = new int[10];
+	}
+	for (int i = 0; i < 10; i++) {
+		for (int j = 0;j < 10; j++) {
+			visitA[i][j] = 0;
+			visitB[i][j] = 0;
+		}
+	}
 	int startx = (rand() % 5);
 	int starty = (rand() % 5);
-	A[n * 5 - 1][0] = startx + 5;
-	realB[n * 5 - 1][0] = startx + 5;
-	A[n * 5 - 1][1] = starty + 5;
-	realB[n * 5 - 1][1] = starty + 5;
+	A[n * 5 - 1][0] = startx ;
+	realB[n * 5 - 1][0] = startx ;
+	A[n * 5 - 1][1] = starty ;
+	realB[n * 5 - 1][1] = starty ;
 	int* Adir = new int[n * 5];
 	int* Bdir = new int[n * 5];
-
+	visitA[startx][starty] = 1;
 	for (int i = n * 5 - 2; i >= 0; i--) {
+		int prevAdir = (i == n * 5 - 2) ? -1 : Adir[i + 1]; // 上一次的方向
+		int prevBdir = (i == n * 5 - 2) ? -1 : Bdir[i + 1]; // 上一次的方向
+
+		bool foundValidPath = false;
+		while (!foundValidPath) {
+			// 生成 A 的方向，排除与上一次相反的方向
+			do {
+				Adir[i] = rand() % 4;
+			} while (prevAdir != -1 && (Adir[i] + 2) % 4 == prevAdir);
+
+			// 生成 realB 的方向，排除与上一次相反的方向
+			do {
+				Bdir[i] = rand() % 4;
+			} while (prevBdir != -1 && (Bdir[i] + 2) % 4 == prevBdir);
+
+			// 更新 A 的位置
+			int nextAx = A[i + 1][0] + directionx[Adir[i]];
+			int nextAy = A[i + 1][1] + directiony[Adir[i]];
+			if (judgeIn(10, 10, nextAx, nextAy) && !visitA[nextAx][nextAy]) {
+				A[i][0] = nextAx;
+				A[i][1] = nextAy;
+				visitA[nextAx][nextAy] = 1;
+
+				// 检查是否会走进死胡同
+				if (!isDeadEnd(nextAx, nextAy, visitA, directionx, directiony)) {
+					foundValidPath = true;
+				}
+				else {
+					// 如果是死胡同，回溯
+					visitA[nextAx][nextAy] = 0;
+				}
+			}
+
+			// 更新 realB 的位置
+			int nextBx = realB[i + 1][0] + directionx[Bdir[i]];
+			int nextBy = realB[i + 1][1] + directiony[Bdir[i]];
+			if (judgeIn(10, 10, nextBx, nextBy) && !visitB[nextBx][nextBy]) {
+				realB[i][0] = nextBx;
+				realB[i][1] = nextBy;
+				visitB[nextBx][nextBy] = 1;
+
+				// 检查是否会走进死胡同
+				if (!isDeadEnd(nextBx, nextBy, visitB, directionx, directiony)) {
+					foundValidPath = true;
+				}
+				else {
+					// 如果是死胡同，回溯
+					visitB[nextBx][nextBy] = 0;
+				}
+			}
+		}
+	}
+	/*for (int i = n * 5 - 2; i >= 0; i--) {
 		Adir[i] = rand() % 4;
 		Bdir[i] = rand() % 4;
-		if (judgeIn(40, 40, A[i + 1][0] + directionx[Adir[i]], A[i + 1][1] + directiony[Adir[i]])) {
+		if (judgeIn(10, 10, A[i + 1][0] + directionx[Adir[i]], A[i + 1][1] + directiony[Adir[i]])) {
 			A[i][0] = A[i + 1][0] + directionx[Adir[i]];
 			A[i][1] = A[i + 1][1] + directiony[Adir[i]];
 		}
@@ -303,7 +397,7 @@ int*** random(int n,int **A,int**realB,int**relativeB,int***total) {//5的n倍步
 			i++;
 			continue;
 		}
-		if (judgeIn(40, 40, realB[i + 1][0] + directionx[Bdir[i]], realB[i + 1][1] + directiony[Bdir[i]])) {
+		if (judgeIn(10, 10, realB[i + 1][0] + directionx[Bdir[i]], realB[i + 1][1] + directiony[Bdir[i]])) {
 			realB[i][0] = realB[i + 1][0] + directionx[Bdir[i]];
 			realB[i][1] = realB[i + 1][1] + directiony[Bdir[i]];
 		}
@@ -312,7 +406,7 @@ int*** random(int n,int **A,int**realB,int**relativeB,int***total) {//5的n倍步
 			continue;
 		}
 
-	}
+	}*/
 	relativeB[0][0] = realB[0][0];
 	relativeB[0][1] = realB[0][1];
 	for (int i = 1; i < n * 5; i++) {
@@ -324,6 +418,12 @@ int*** random(int n,int **A,int**realB,int**relativeB,int***total) {//5的n倍步
 	total[2] = realB;
 	delete[]Adir;
 	delete[]Bdir;
+	for (int i = 0; i < 10; i++) {
+		delete visitA[i];
+		delete visitB[i];
+	}
+	delete visitA;
+	delete visitB;
 	return total;
 }
 void freeMemory(int n,int** A, int** realB, int** relativeB, int*** total) {
