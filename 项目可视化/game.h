@@ -14,7 +14,7 @@ public:
 	int clickButtom(MOUSEMSG m);
 	void drawGameButtom(int size);
 	void drawOverButtom();
-	friend bool mouseMsg(ExMessage* msg, button **block, int& n, int **ans, int realB[][2],int size, int stepNum);
+	friend bool mouseMsg(ExMessage* msg, button **block, int& n, int **ans, int **realB,int size, int stepNum);
 private:
 	int x;
 	int y;
@@ -24,7 +24,7 @@ private:
 	string pText;
 	int num = 0;
 };
-bool check(int **a, int b[][2], int n);
+bool check(int **a, int **b, int n);
 void game(int stepNum, int size);
 void menu();
 int*** random(int n, int** A, int** realB, int** relativeB, int*** total);
@@ -32,3 +32,4 @@ void Random( int n);
 void freeMemory(int n, int** A, int** realB, int** relativeB, int*** total);
 void SolidMode();
 bool isDeadEnd(int x, int y, int** visited, int directionx[4], int directiony[4]);
+bool randomMsg(ExMessage* msg, int** ans, int **realB, int& n, int stepNum);

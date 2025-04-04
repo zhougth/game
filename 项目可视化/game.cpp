@@ -5,7 +5,6 @@
 #include<stdlib.h>
 #include<ctime>
 using namespace std;
-
 void button::setColor(COLORREF colorr) {
 	color = colorr;
 }
@@ -73,7 +72,7 @@ int button::clickButtom(MOUSEMSG m) {
     }
 	return 0;
 }
-bool check(int **a, int b[][2], int n) {
+bool check(int **a, int **b, int n) {
 	for (int i = 0; i < n; i++) {
 		if (a[i][0] == b[i][0] && a[i][1] == b[i][1]) {
 			continue;
@@ -82,7 +81,7 @@ bool check(int **a, int b[][2], int n) {
 	}
 	return true;
 }
-bool mouseMsg(ExMessage* msg, button** block, int& n, int **ans, int realB[][2],int size=3,int stepNum=3) {
+bool mouseMsg(ExMessage* msg, button** block, int& n, int **ans, int **realB,int size=3,int stepNum=3) {
 	if ((msg->x) > (block[0][size-1].x + block[0][size-1].width) || (msg->y) > (block[size-1][0].y + block[size-1][0].heigth)) {
 		return false;
 	}
@@ -119,7 +118,16 @@ void game(int stepNum,int size) {
 	putimage(0, 0, &mPlay);
 	int A[3][2] = { 2,0,1,0,1,1 };
 	int relativeB[3][2] = { 0,2,2,2,2,0 };
-	int realB[3][2] = { 0,2,1,2,1,1 };
+	int** realB = new int* [stepNum];
+	for (int i = 0; i < stepNum; i++) {
+		realB[i] = new int[2];
+	}
+	realB[0][0] = 0;
+	realB[0][1] = 2;
+	realB[1][0] = 1;
+	realB[1][1] = 2;
+	realB[2][0] = 1;
+	realB[2][1] = 1;
 	int **ans=new int *[stepNum];
 	for (int i = 0; i < stepNum; i++) {
 		ans[i] = new int[2];
@@ -162,6 +170,10 @@ void game(int stepNum,int size) {
 			switch (msg.message) {
 			case WM_LBUTTONDOWN: {
 				if (mouseMsg(&msg, block, num, ans, realB)) {
+					for (int i = 0; i < stepNum; i++) {
+						delete realB[i];
+					}
+					delete[] realB;
 					return;
 				}
 				break;
@@ -178,6 +190,9 @@ void Random(int n) {//n指的是步数
 	int** realB = new int* [n * 5];
 	int** relativeB = new int* [n * 5];
 	int*** total = new int** [3];
+	for (int i = 0; i < 3; i++) {
+		total[i] = nullptr;
+	}
 	total=random(n / 5, A, realB, relativeB, total);
 	cout << "A" << endl;
 	for (int i = 0; i <  n; i++) {
@@ -216,9 +231,61 @@ void Random(int n) {//n指的是步数
 		bar(60 + 940 + total[1][i][1] * 43, 90 + 43 * total[1][i][0], 60 + 940 + total[1][i][1] * 43 + 40, 90 + 43 * total[1][i][0] + 40);
 		outtextxy(60 + 940 + total[1][i][1] * 43, 90 + 43 * total[1][i][0], buffer);
 	}
-
+	int** ans = new int* [n];
+	for (int i = 0; i < n; i++) {
+		ans[i] = new int[2];
+	}
+	int num = 1;
+	while (1) {
+		ExMessage msg;
+		while (peekmessage(&msg, EM_MOUSE)) {
+			switch (msg.message) {
+			case WM_LBUTTONDOWN: {
+				if (randomMsg(&msg,ans,realB,num,n)) {
+					return;
+				}
+				break;
+			}
+			}
+		}
+	}
 	freeMemory(n / 5, A, realB, relativeB, total);
 	while (1);
+}
+bool randomMsg(ExMessage *msg,int **ans,int **realB, int& n, int stepNum ) {
+	if ((msg->x) > (40 + 9 * 43+40) || (msg->y) > (90 + 43 * 9+40)) {
+		return false;
+	}
+	cout << msg->x << "  " << msg->y << endl;
+	int j = (msg->x - 40) / 43;//列
+	int i = (msg->y - 90) / 43;//行
+	cout << "i=" << i << "  " << "j=" << j << endl;
+	ans[n - 1][0] = i;
+	ans[n - 1][1] = j;
+	setfillcolor(RED);
+	bar(40 + j * 43, 90 + 43 * i, 40 + j * 43 + 40, 90 + 43 * i + 40);
+	settextstyle(20, 0, "楷体");
+	char buffer[20];
+	snprintf(buffer, sizeof(buffer), "%d", n);
+	outtextxy(40 + j * 43, 90 + 43 * i, buffer);
+	n++;
+	if (check(ans, realB, stepNum)) {
+		return true;
+	}
+	else if (n > stepNum) {
+		button* End = new button;
+		End->creatButtom(400, 200, 304, 204, YELLOW, "游戏失败");
+		End->drawOverButtom();
+		while (1) {
+			MOUSEMSG m = GetMouseMsg();
+			if (End->clickButtom(m)) {
+				delete End;
+				return true;
+			}
+		}
+
+	}
+	else return false;
 }
 void menu() {
 	initgraph(1920, 900);
@@ -336,27 +403,28 @@ int*** random(int n,int **A,int**realB,int**relativeB,int***total) {//5的n倍步
 	for (int i = n * 5 - 2; i >= 0; i--) {
 		int prevAdir = (i == n * 5 - 2) ? -1 : Adir[i + 1]; // 上一次的方向
 		int prevBdir = (i == n * 5 - 2) ? -1 : Bdir[i + 1]; // 上一次的方向
-
 		bool foundValidPath = false;
+		int nextAx, nextAy, nextBx, nextBy;
 		while (!foundValidPath) {
 			// 生成 A 的方向，排除与上一次相反的方向
 			do {
 				Adir[i] = rand() % 4;
-			} while (prevAdir != -1 && (Adir[i] + 2) % 4 == prevAdir);
-
+				nextAx = A[i + 1][0] + directionx[Adir[i]];
+				nextAy = A[i + 1][1] + directiony[Adir[i]];
+			} while(!judgeIn(10, 10, nextAx, nextAy) || (prevAdir != -1 && (Adir[i] + 2) % 4 == prevAdir));
 			// 生成 realB 的方向，排除与上一次相反的方向
 			do {
 				Bdir[i] = rand() % 4;
-			} while (prevBdir != -1 && (Bdir[i] + 2) % 4 == prevBdir);
-
+				nextBx = realB[i + 1][0] + directionx[Bdir[i]];
+				nextBy = realB[i + 1][1] + directiony[Bdir[i]];
+			} while (!judgeIn(10, 10, nextBx, nextBy) ||(prevBdir != -1 && (Bdir[i] + 2) % 4 == prevBdir));
 			// 更新 A 的位置
-			int nextAx = A[i + 1][0] + directionx[Adir[i]];
-			int nextAy = A[i + 1][1] + directiony[Adir[i]];
+			nextAx = A[i + 1][0] + directionx[Adir[i]];
+			nextAy = A[i + 1][1] + directiony[Adir[i]];
 			if (judgeIn(10, 10, nextAx, nextAy) && !visitA[nextAx][nextAy]) {
 				A[i][0] = nextAx;
 				A[i][1] = nextAy;
 				visitA[nextAx][nextAy] = 1;
-
 				// 检查是否会走进死胡同
 				if (!isDeadEnd(nextAx, nextAy, visitA, directionx, directiony)) {
 					foundValidPath = true;
@@ -366,7 +434,6 @@ int*** random(int n,int **A,int**realB,int**relativeB,int***total) {//5的n倍步
 					visitA[nextAx][nextAy] = 0;
 				}
 			}
-
 			// 更新 realB 的位置
 			int nextBx = realB[i + 1][0] + directionx[Bdir[i]];
 			int nextBy = realB[i + 1][1] + directiony[Bdir[i]];
@@ -374,7 +441,6 @@ int*** random(int n,int **A,int**realB,int**relativeB,int***total) {//5的n倍步
 				realB[i][0] = nextBx;
 				realB[i][1] = nextBy;
 				visitB[nextBx][nextBy] = 1;
-
 				// 检查是否会走进死胡同
 				if (!isDeadEnd(nextBx, nextBy, visitB, directionx, directiony)) {
 					foundValidPath = true;
@@ -382,31 +448,12 @@ int*** random(int n,int **A,int**realB,int**relativeB,int***total) {//5的n倍步
 				else {
 					// 如果是死胡同，回溯
 					visitB[nextBx][nextBy] = 0;
+					continue;
 				}
 			}
+			else continue;
 		}
 	}
-	/*for (int i = n * 5 - 2; i >= 0; i--) {
-		Adir[i] = rand() % 4;
-		Bdir[i] = rand() % 4;
-		if (judgeIn(10, 10, A[i + 1][0] + directionx[Adir[i]], A[i + 1][1] + directiony[Adir[i]])) {
-			A[i][0] = A[i + 1][0] + directionx[Adir[i]];
-			A[i][1] = A[i + 1][1] + directiony[Adir[i]];
-		}
-		else {
-			i++;
-			continue;
-		}
-		if (judgeIn(10, 10, realB[i + 1][0] + directionx[Bdir[i]], realB[i + 1][1] + directiony[Bdir[i]])) {
-			realB[i][0] = realB[i + 1][0] + directionx[Bdir[i]];
-			realB[i][1] = realB[i + 1][1] + directiony[Bdir[i]];
-		}
-		else {
-			i++;
-			continue;
-		}
-
-	}*/
 	relativeB[0][0] = realB[0][0];
 	relativeB[0][1] = realB[0][1];
 	for (int i = 1; i < n * 5; i++) {
@@ -422,8 +469,8 @@ int*** random(int n,int **A,int**realB,int**relativeB,int***total) {//5的n倍步
 		delete visitA[i];
 		delete visitB[i];
 	}
-	delete visitA;
-	delete visitB;
+	delete[] visitA;
+	delete[] visitB;
 	return total;
 }
 void freeMemory(int n,int** A, int** realB, int** relativeB, int*** total) {
