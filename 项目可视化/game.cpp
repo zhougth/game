@@ -81,26 +81,31 @@ bool check(int **a, int **b, int n) {
 	}
 	return true;
 }
-bool mouseMsg(ExMessage* msg, button** block, int& n, int **ans, int **realB,int size=3,int stepNum=3) {
-	if ((msg->x) > (block[0][size-1].x + block[0][size-1].width) || (msg->y) > (block[size-1][0].y + block[size-1][0].heigth)) {
+bool mouseMsg(ExMessage* msg, int& n, int** ans, int** realB, int size , int stepNum ,int x1,int y1,int x2,int y2) {
+	if ((msg->x) > (x2) || (msg->y) > (y2)||(msg->x)<x1||(msg->y)<y1) {
 		return false;
 	}
-	int j = (msg->x - 50) / 100;//列
-	int i = (msg->y - 100) / 100;//行
+	cout << "x=" << msg->x << "  " << "y=" << msg->y << endl;
+	int j = (msg->x - x1) / ((x2-x1)/(size));//列
+	int i = (msg->y - y1) / ((x2 - x1) / (size));//行
+	cout << "i=" << i << "  " << "j=" << j << endl;
 	ans[n - 1][0] = i;
 	ans[n - 1][1] = j;
-	block[i][j].setColor(RED) ;
-	block[i][j].setNum(n) ;
-	block[i][j].drawGameButtom();
+	IMAGE ON;
+	loadimage(&ON, _T("on.jpg"), ((x2 - x1) / (size)), ((x2 - x1) / (size)));
+	putimage(x1 + j * ((x2 - x1) / (size)), y1 + ((x2 - x1) / (size)) * i, &ON);
+	char buffer[20];
+	snprintf(buffer, sizeof(buffer), "%d", n);
+	outtextxy(x1 + j * ((x2 - x1) / (size)) + ((x2 - x1) / (size)) / 2 - 18,y1 + ((x2 - x1) / (size)) * i + ((x2 - x1) / (size)) / 2 - 18, buffer);
 	n++;
-	
+
 	if (check(ans, realB, stepNum)) {
 		return true;
 	}
-	else if (n >stepNum) {
+	else if (n > stepNum) {
 		button* End = new button;
-		End->creatButtom(400, 200, 304, 204, YELLOW, "游戏失败");
-		End->drawOverButtom();		
+		End->creatButtom(180+400, 100+200, 300, 200, YELLOW, "游戏失败");
+		End->drawOverButtom();
 		while (1) {
 			MOUSEMSG m = GetMouseMsg();
 			if (End->clickButtom(m)) {
@@ -108,7 +113,7 @@ bool mouseMsg(ExMessage* msg, button** block, int& n, int **ans, int **realB,int
 				return true;
 			}
 		}
-		
+
 	}
 	else return false;
 }
@@ -137,11 +142,17 @@ void game(int stepNum,int size) {
 		block[i] = new button[size];
 	}
 	int a = 0, b = 0;
+	IMAGE OFF;
+	IMAGE ON;
+	loadimage(&ON, _T("on.jpg"), 100, 100);
+	loadimage(&OFF, _T("off.jpg"),100,100);
 	for (int i = 0; i < 3; i++) {
 		for (int j = 0; j < 3; j++) {
-			setfillcolor(BLUE);
+			/*setfillcolor(BLUE);
 			bar(400 + j * 102, 100 + 102 * i, 400 + j * 102+ 100, 100 + 102 * i+ 100);
-			bar(300 + 450 + j * 102, 100 + 102 * i, 100 + 300 + 450 + j * 102, 100 + 100 + 102 * i);
+			bar(300 + 450 + j * 102, 100 + 102 * i, 100 + 300 + 450 + j * 102, 100 + 100 + 102 * i);*/
+			putimage(180+400 + j * 100, 100 + 100 * i, &OFF);
+			putimage(180+300 + 450 + j * 100, 100 + 100 * i, &OFF);
 		}
 	}
 	for (int i = 0; i < 3; i++) {
@@ -149,18 +160,21 @@ void game(int stepNum,int size) {
 		char bufferb[20];
 		snprintf(buffera, sizeof(buffera), "%d", a+1);
 		snprintf(bufferb, sizeof(bufferb), "%d", b + 1);
-		setfillcolor(RED);
+		/*setfillcolor(RED);
 		bar(400 + A[i][1] * 102, 100 + 102 * A[i][0], 400 + A[i][1] * 102 + 98, 100 + 102 * A[i][0] + 98);
-		bar(300 + 450 + relativeB[i][1] * 102, 100 + 102 * relativeB[i][0], 98 + 300 + 450 + relativeB[i][1] * 102, 98 + 100 + 102 * relativeB[i][0]);
-		outtextxy(400 + A[i][1] * 102+30, 100 + 102 * A[i][0]+30, buffera);
-		outtextxy(300 + 450 + relativeB[i][1] * 102 + 30, 100 + 102 * relativeB[i][0] + 30, bufferb);
+		bar(300 + 450 + relativeB[i][1] * 102, 100 + 102 * relativeB[i][0], 98 + 300 + 450 + relativeB[i][1] * 102, 98 + 100 + 102 * relativeB[i][0]);*/
+		putimage(180+400 + A[i][1] * 100, 100 + 100 * A[i][0], &ON);
+		putimage(180+300 + 450 + relativeB[i][1] * 100, 100 + 100 * relativeB[i][0], &ON);
+		outtextxy(180+400 + A[i][1] * 100+30, 100 + 100 * A[i][0]+30, buffera);
+		outtextxy(180+300 + 450 + relativeB[i][1] * 100 + 30, 100 + 100 * relativeB[i][0] + 30, bufferb);
 		a++;
 		b++;
 	}
 	for (int i = 0; i < size; i++) {
 		for (int j = 0; j < size; j++) {
-			block[i][j].creatButtom(50 + j * 102, 100 + 102 * i, 100, 100, BLUE);
-			block[i][j].drawGameButtom();
+			/*block[i][j].creatButtom(50 + j * 102, 100 + 102 * i, 100, 100, BLUE);
+			block[i][j].drawGameButtom();*/
+			putimage(180+50 + j * 100, 100 + 100 * i, &OFF);
 		}
 	}
 	int num = 1;
@@ -169,7 +183,7 @@ void game(int stepNum,int size) {
 		while (peekmessage(&msg, EM_MOUSE)) {
 			switch (msg.message) {
 			case WM_LBUTTONDOWN: {
-				if (mouseMsg(&msg, block, num, ans, realB)) {
+				if (mouseMsg(&msg,  num, ans, realB,3,3,50+180,100,180+350,400)) {
 					for (int i = 0; i < stepNum; i++) {
 						delete realB[i];
 					}
@@ -193,7 +207,16 @@ void Random(int n) {//n指的是步数
 	for (int i = 0; i < 3; i++) {
 		total[i] = nullptr;
 	}
-	total=random(n / 5, A, realB, relativeB, total);
+	bool ck = false;
+	do{
+		total = random(n / 5, A, realB, relativeB, total);	
+		ck = false;
+		for (int i = 0; i < n; i++) {
+			if (!(judgeIn(10, 10, total[1][i][0], total[1][i][1]))) {
+				ck = true;
+			}
+		}
+	} while (ck);
 	cout << "A" << endl;
 	for (int i = 0; i <  n; i++) {
 		cout << total[0][i][0]+1 << "  " << total[0][i][1]+1 << endl;
@@ -207,29 +230,39 @@ void Random(int n) {//n指的是步数
 		cout << total[2][i][0]+1 << "  " << total[2][i][1]+1 << endl;
 	}
 	//上面是获取题目以及答案
+	IMAGE ON, OFF;
+	loadimage(&ON, _T("on.jpg"), 40, 40);
+	loadimage(&OFF, _T("off.jpg"), 40, 40);
 	for (int i = 0; i < 10; i++) {
 		for (int j = 0; j < 10; j++) {
-			setfillcolor(BLUE);
+			/*setfillcolor(BLUE);
 			bar(40 + j * 43, 90 + 43 * i, 40 + j * 43 + 40, 90 + 43 * i + 40);
 			bar(520 + j * 43, 90 + 43 * i, 520  + j * 43+40, 90 +43 * i+40);
-			bar(60+940 + j * 43, 90 + 43 * i, 940+60 + j * 43 + 40, 90 + 43 * i + 40);
+			bar(60+940 + j * 43, 90 + 43 * i, 940+60 + j * 43 + 40, 90 + 43 * i + 40);*/
+			putimage(40 + j * 40, 90 + 40 * i, &OFF);
+			putimage(520 + j * 40, 90 + 40 * i, &OFF);
+			putimage(60 + 940 + j * 40, 90 + 40 * i, &OFF);
 		}
 	}
 	int a = 1, b = 1;
 	for (int i = 0; i < n; i++) {
-		setfillcolor(RED);
+		/*setfillcolor(RED);
 		bar(520 + total[0][i][1] * 43, 90 + 43 * total[0][i][0], 520 + total[0][i][1] * 43 +40, 90 + 43 * total[0][i][0] + 40);
+		*/
+		
+		putimage(520 + total[0][i][1] * 40, 90 + 40 * total[0][i][0], &ON);
 		settextstyle(20, 0, "楷体");
 		char buffer[20];
 		snprintf(buffer, sizeof(buffer), "%d", i + 1);
-		outtextxy(520 + total[0][i][1] * 43, 90 + 43 * total[0][i][0], buffer);
+		outtextxy(520 + total[0][i][1] * 40+10, 90 + 40 * total[0][i][0]+10, buffer);//A的实际轨迹
 		if (i >0) {
 			if (total[1][i][0] == total[1][i - 1][0] && total[1][i][1] == total[1][i - 1][1]) {
-				setfillcolor(YELLOW);
+				settextcolor(RED);
 			}
 		}
-		bar(60 + 940 + total[1][i][1] * 43, 90 + 43 * total[1][i][0], 60 + 940 + total[1][i][1] * 43 + 40, 90 + 43 * total[1][i][0] + 40);
-		outtextxy(60 + 940 + total[1][i][1] * 43, 90 + 43 * total[1][i][0], buffer);
+		putimage(60 + 940 + total[1][i][1] * 40, 90 + 40 * total[1][i][0], &ON);
+		outtextxy(60 + 940 + total[1][i][1] * 40+10, 90 + 40 * total[1][i][0]+10, buffer);
+		settextcolor(BLACK);
 	}
 	int** ans = new int* [n];
 	for (int i = 0; i < n; i++) {
@@ -253,28 +286,31 @@ void Random(int n) {//n指的是步数
 	while (1);
 }
 bool randomMsg(ExMessage *msg,int **ans,int **realB, int& n, int stepNum ) {
-	if ((msg->x) > (40 + 9 * 43+40) || (msg->y) > (90 + 43 * 9+40)) {
+	if ((msg->x) > (40 + 9 * 40+40) || (msg->y) > (90 + 40 * 9+40)) {
 		return false;
 	}
 	cout << msg->x << "  " << msg->y << endl;
-	int j = (msg->x - 40) / 43;//列
-	int i = (msg->y - 90) / 43;//行
+	int j = (msg->x - 40) / 40;//列
+	int i = (msg->y - 90) / 40;//行
 	cout << "i=" << i << "  " << "j=" << j << endl;
 	ans[n - 1][0] = i;
 	ans[n - 1][1] = j;
-	setfillcolor(RED);
-	bar(40 + j * 43, 90 + 43 * i, 40 + j * 43 + 40, 90 + 43 * i + 40);
+	/*setfillcolor(RED);
+	bar(40 + j * 43, 90 + 43 * i, 40 + j * 43 + 40, 90 + 43 * i + 40);*/
+	IMAGE ON;
+	loadimage(&ON, _T("on.jpg"), 40, 40);
+	putimage(40 + j * 40, 90 + 40 * i, &ON);
 	settextstyle(20, 0, "楷体");
 	char buffer[20];
 	snprintf(buffer, sizeof(buffer), "%d", n);
-	outtextxy(40 + j * 43, 90 + 43 * i, buffer);
+	outtextxy(40 + j * 40+10, 90 + 40 * i+10, buffer);
 	n++;
 	if (check(ans, realB, stepNum)) {
 		return true;
 	}
 	else if (n > stepNum) {
 		button* End = new button;
-		End->creatButtom(400, 200, 304, 204, YELLOW, "游戏失败");
+		End->creatButtom(400+200, 200+100, 304, 204, YELLOW, "游戏失败");
 		End->drawOverButtom();
 		while (1) {
 			MOUSEMSG m = GetMouseMsg();
