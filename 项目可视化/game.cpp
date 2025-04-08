@@ -5,6 +5,105 @@
 #include<stdlib.h>
 #include<ctime>
 using namespace std;
+class solidTopic {
+private:
+	int*** total;
+	int A1[3][2] = { 2,0,1,0,1,1 };
+	int relativeB1[3][2] = { 0,2,2,2,2,0 };
+	int realB1[3][2] = { 0,2,1,2,1,1 };
+	int A2[5][2] = { 3,1,3,2,4,2,4,3,3,3 };
+	int relativeB2[5][2] = { 4,0,4,0,2,0,2,0,3,1 };
+	int realB2[5][2] = { 4,0,4,1,3,1,3,2,3,3 };
+
+
+public:
+	int*** getTopic(int num) {
+		switch (num) {
+		case 1: {
+			int*** total = new int** [3]; 
+			for (int i = 0; i < 3; i++) {
+				total[i] = new int* [3]; 
+				for (int j = 0; j < 3; j++) {
+					total[i][j] = new int[2];
+				}
+			}
+			for (int i = 0; i < 3; i++) {
+				for (int j = 0; j < 2; j++) {
+					total[0][i][j] = A1[i][j];
+				}
+			}
+			for (int i = 0; i < 3; i++) {
+				for (int j = 0; j < 2; j++) {
+					total[1][i][j] = relativeB1[i][j];
+				}
+			}
+			for (int i = 0; i < 3; i++) {
+				for (int j = 0; j < 2; j++) {
+					total[2][i][j] = realB1[i][j];
+				}
+			}
+			return total;
+		}
+		case 2: {
+			int*** total = new int** [3];
+			for (int i = 0; i < 3; i++) {
+				total[i] = new int* [5];
+				for (int j = 0; j < 5; j++) {
+					total[i][j] = new int[2];
+				}
+			}
+			for (int i = 0; i < 5; i++) {
+				for (int j = 0; j < 2; j++) {
+					total[0][i][j] = A2[i][j];
+				}
+			}
+			for (int i = 0; i < 5; i++) {
+				for (int j = 0; j < 2; j++) {
+					total[1][i][j] = relativeB2[i][j];
+				}
+			}
+			for (int i = 0; i < 5; i++) {
+				for (int j = 0; j < 2; j++) {
+					total[2][i][j] = realB2[i][j];
+				}
+			}
+			return total;
+		}
+		case 3: {
+
+		}
+		}
+	}
+	void freeMemory(int n) {
+		// ÊÍ·ÅÄÚ´æ
+		int num = 0;
+		switch (n) {
+		case 1: {
+			num = 3;
+			break;
+		}
+		case 2: {
+			num = 5;
+			break;
+		}
+		case 3: {
+			num = 5;
+			break;
+		}
+		default: {
+			num = 10;
+			break;
+		}
+		}
+		for (int i = 0; i < num; i++) {
+			for (int j = 0; j < num; j++) {
+				delete[] total[i][j];
+			}
+			delete[] total[i];
+		}
+		delete[] total;
+	}
+};
 void button::setColor(COLORREF colorr) {
 	color = colorr;
 }
@@ -117,10 +216,12 @@ bool mouseMsg(ExMessage* msg, int& n, int** ans, int** realB, int size , int ste
 	}
 	else return false;
 }
-void game(int stepNum,int size) {
+void game(int stepNum,int size,int ***total) {
 	IMAGE mPlay;
 	loadimage(&mPlay, _T("bk.jpg"), 1920, 900);
 	putimage(0, 0, &mPlay);
+	solidTopic solidtopic;
+	int*** total = solidtopic.getTopic(1);
 	int A[3][2] = { 2,0,1,0,1,1 };
 	int relativeB[3][2] = { 0,2,2,2,2,0 };
 	int** realB = new int* [stepNum];
@@ -137,10 +238,6 @@ void game(int stepNum,int size) {
 	for (int i = 0; i < stepNum; i++) {
 		ans[i] = new int[2];
 	}
-	button** block = new button * [size];
-	for (int i = 0; i < size; i++) {
-		block[i] = new button[size];
-	}
 	int a = 0, b = 0;
 	IMAGE OFF;
 	IMAGE ON;
@@ -148,14 +245,11 @@ void game(int stepNum,int size) {
 	loadimage(&OFF, _T("off.jpg"),100,100);
 	for (int i = 0; i < 3; i++) {
 		for (int j = 0; j < 3; j++) {
-			/*setfillcolor(BLUE);
-			bar(400 + j * 102, 100 + 102 * i, 400 + j * 102+ 100, 100 + 102 * i+ 100);
-			bar(300 + 450 + j * 102, 100 + 102 * i, 100 + 300 + 450 + j * 102, 100 + 100 + 102 * i);*/
 			putimage(180+400 + j * 100, 100 + 100 * i, &OFF);
 			putimage(180+300 + 450 + j * 100, 100 + 100 * i, &OFF);
 		}
 	}
-	for (int i = 0; i < 3; i++) {
+	for (int i = 0; i < size; i++) {
 		char buffera[20];
 		char bufferb[20];
 		snprintf(buffera, sizeof(buffera), "%d", a+1);
@@ -163,10 +257,10 @@ void game(int stepNum,int size) {
 		/*setfillcolor(RED);
 		bar(400 + A[i][1] * 102, 100 + 102 * A[i][0], 400 + A[i][1] * 102 + 98, 100 + 102 * A[i][0] + 98);
 		bar(300 + 450 + relativeB[i][1] * 102, 100 + 102 * relativeB[i][0], 98 + 300 + 450 + relativeB[i][1] * 102, 98 + 100 + 102 * relativeB[i][0]);*/
-		putimage(180+400 + A[i][1] * 100, 100 + 100 * A[i][0], &ON);
-		putimage(180+300 + 450 + relativeB[i][1] * 100, 100 + 100 * relativeB[i][0], &ON);
-		outtextxy(180+400 + A[i][1] * 100+30, 100 + 100 * A[i][0]+30, buffera);
-		outtextxy(180+300 + 450 + relativeB[i][1] * 100 + 30, 100 + 100 * relativeB[i][0] + 30, bufferb);
+		putimage(180+400 + total[0][i][1] * 100, 100 + 100 * total[0][i][0], &ON);
+		putimage(180+300 + 450 + total[1][i][1] * 100, 100 + 100 * total[1][i][0], &ON);
+		outtextxy(180+400 + total[0][i][1] * 100+30, 100 + 100 * total[0][i][0]+30, buffera);
+		outtextxy(180+300 + 450 + total[1][i][1] * 100 + 30, 100 + 100 * total[1][i][0] + 30, bufferb);
 		a++;
 		b++;
 	}
@@ -183,11 +277,8 @@ void game(int stepNum,int size) {
 		while (peekmessage(&msg, EM_MOUSE)) {
 			switch (msg.message) {
 			case WM_LBUTTONDOWN: {
-				if (mouseMsg(&msg,  num, ans, realB,3,3,50+180,100,180+350,400)) {
-					for (int i = 0; i < stepNum; i++) {
-						delete realB[i];
-					}
-					delete[] realB;
+				if (mouseMsg(&msg,  num, ans, total[2], 3, 3, 50 + 180, 100, 180 + 350, 400)) {
+					solidtopic.freeMemory(1);
 					return;
 				}
 				break;

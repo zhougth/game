@@ -3,6 +3,7 @@
 #include<string>
 #include<stdlib.h>
 using namespace std;
+struct solidTopic;
 class button {
 public:
 	void setColor(COLORREF);
