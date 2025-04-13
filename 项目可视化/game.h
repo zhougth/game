@@ -3,7 +3,6 @@
 #include<string>
 #include<stdlib.h>
 using namespace std;
-struct solidTopic;
 class button {
 public:
 	void setColor(COLORREF);
@@ -24,6 +23,19 @@ private:
 	COLORREF color;
 	string pText;
 	int num = 0;
+};
+class solidTopic {
+private:
+	int*** total;
+	int A1[3][2] = { 2,0,1,0,1,1 };
+	int relativeB1[3][2] = { 0,2,2,2,2,0 };
+	int realB1[3][2] = { 0,2,1,2,1,1 };
+	int A2[5][2] = { 3,1,3,2,4,2,4,3,3,3 };
+	int relativeB2[5][2] = { 4,0,4,0,2,0,2,0,3,1 };
+	int realB2[5][2] = { 4,0,4,1,3,1,3,2,3,3 };
+public:
+	int*** getTopic(int num);
+	void freeMemory(int n);
 };
 bool check(int **a, int **b, int n);
 void game(int stepNum, int size);

@@ -5,22 +5,10 @@
 #include<stdlib.h>
 #include<ctime>
 using namespace std;
-class solidTopic {
-private:
-	int*** total;
-	int A1[3][2] = { 2,0,1,0,1,1 };
-	int relativeB1[3][2] = { 0,2,2,2,2,0 };
-	int realB1[3][2] = { 0,2,1,2,1,1 };
-	int A2[5][2] = { 3,1,3,2,4,2,4,3,3,3 };
-	int relativeB2[5][2] = { 4,0,4,0,2,0,2,0,3,1 };
-	int realB2[5][2] = { 4,0,4,1,3,1,3,2,3,3 };
-
-
-public:
-	int*** getTopic(int num) {
+int*** solidTopic:: getTopic(int num) {
 		switch (num) {
 		case 1: {
-			int*** total = new int** [3]; 
+			total = new int** [3]; 
 			for (int i = 0; i < 3; i++) {
 				total[i] = new int* [3]; 
 				for (int j = 0; j < 3; j++) {
@@ -45,7 +33,7 @@ public:
 			return total;
 		}
 		case 2: {
-			int*** total = new int** [3];
+			total = new int** [3];
 			for (int i = 0; i < 3; i++) {
 				total[i] = new int* [5];
 				for (int j = 0; j < 5; j++) {
@@ -74,7 +62,7 @@ public:
 		}
 		}
 	}
-	void freeMemory(int n) {
+void solidTopic::freeMemory(int n) {
 		// 释放内存
 		int num = 0;
 		switch (n) {
@@ -95,15 +83,16 @@ public:
 			break;
 		}
 		}
-		for (int i = 0; i < num; i++) {
+		cout <<"num=="<< num << endl;
+		for (int i = 0; i < 3; i++) {
 			for (int j = 0; j < num; j++) {
 				delete[] total[i][j];
 			}
 			delete[] total[i];
 		}
 		delete[] total;
+		total = NULL;
 	}
-};
 void button::setColor(COLORREF colorr) {
 	color = colorr;
 }
@@ -191,7 +180,11 @@ bool mouseMsg(ExMessage* msg, int& n, int** ans, int** realB, int size , int ste
 	ans[n - 1][0] = i;
 	ans[n - 1][1] = j;
 	IMAGE ON;
+	IMAGE win, lose;
+	loadimage(&win, _T("win.png"), 350, 200);
+	loadimage(&lose, _T("lose.png"), 350, 200);
 	loadimage(&ON, _T("on.jpg"), ((x2 - x1) / (size)), ((x2 - x1) / (size)));
+	cout << "(x2 - x1) / (size)==" << (x2 - x1) / (size) << endl;
 	putimage(x1 + j * ((x2 - x1) / (size)), y1 + ((x2 - x1) / (size)) * i, &ON);
 	char buffer[20];
 	snprintf(buffer, sizeof(buffer), "%d", n);
@@ -199,93 +192,128 @@ bool mouseMsg(ExMessage* msg, int& n, int** ans, int** realB, int size , int ste
 	n++;
 
 	if (check(ans, realB, stepNum)) {
-		return true;
-	}
-	else if (n > stepNum) {
-		button* End = new button;
-		End->creatButtom(180+400, 100+200, 300, 200, YELLOW, "游戏失败");
-		End->drawOverButtom();
+		putimage(180 + 400, 100 + 200, &win);
 		while (1) {
 			MOUSEMSG m = GetMouseMsg();
-			if (End->clickButtom(m)) {
-				delete End;
+			if (m.uMsg == WM_LBUTTONDOWN && m.x >= 580 && m.x <= 880+50 && m.y >= 300 && m.y <= 500) {
 				return true;
 			}
 		}
-
+	}
+	else if (n > stepNum) {
+		putimage(180 + 400, 100 + 200, &lose);
+		while (1) {
+			MOUSEMSG m = GetMouseMsg();
+			if (m.uMsg == WM_LBUTTONDOWN && m.x >= 580 && m.x <= 880+50 && m.y >= 300 && m.y <= 500) {
+				return true;
+			}
+		}
 	}
 	else return false;
 }
-void game(int stepNum,int size,int ***total) {
+void game(int stepNum,int size) {
 	IMAGE mPlay;
 	loadimage(&mPlay, _T("bk.jpg"), 1920, 900);
 	putimage(0, 0, &mPlay);
 	solidTopic solidtopic;
-	int*** total = solidtopic.getTopic(1);
-	int A[3][2] = { 2,0,1,0,1,1 };
-	int relativeB[3][2] = { 0,2,2,2,2,0 };
-	int** realB = new int* [stepNum];
-	for (int i = 0; i < stepNum; i++) {
-		realB[i] = new int[2];
-	}
-	realB[0][0] = 0;
-	realB[0][1] = 2;
-	realB[1][0] = 1;
-	realB[1][1] = 2;
-	realB[2][0] = 1;
-	realB[2][1] = 1;
 	int **ans=new int *[stepNum];
 	for (int i = 0; i < stepNum; i++) {
 		ans[i] = new int[2];
 	}
 	int a = 0, b = 0;
 	IMAGE OFF;
-	IMAGE ON;
-	loadimage(&ON, _T("on.jpg"), 100, 100);
-	loadimage(&OFF, _T("off.jpg"),100,100);
-	for (int i = 0; i < 3; i++) {
-		for (int j = 0; j < 3; j++) {
-			putimage(180+400 + j * 100, 100 + 100 * i, &OFF);
-			putimage(180+300 + 450 + j * 100, 100 + 100 * i, &OFF);
+	IMAGE ON;	
+	switch (size) {
+	case 3: {
+		loadimage(&ON, _T("on.jpg"), 100, 100);
+		loadimage(&OFF, _T("off.jpg"), 100, 100);
+		int*** total = solidtopic.getTopic(1);
+		for (int i = 0; i < 3; i++) {
+			for (int j = 0; j < 3; j++) {
+				putimage(180 + 400 + j * 100, 100 + 100 * i, &OFF);
+				putimage(180 + 300 + 450 + j * 100, 100 + 100 * i, &OFF);
+			}
 		}
-	}
-	for (int i = 0; i < size; i++) {
-		char buffera[20];
-		char bufferb[20];
-		snprintf(buffera, sizeof(buffera), "%d", a+1);
-		snprintf(bufferb, sizeof(bufferb), "%d", b + 1);
-		/*setfillcolor(RED);
-		bar(400 + A[i][1] * 102, 100 + 102 * A[i][0], 400 + A[i][1] * 102 + 98, 100 + 102 * A[i][0] + 98);
-		bar(300 + 450 + relativeB[i][1] * 102, 100 + 102 * relativeB[i][0], 98 + 300 + 450 + relativeB[i][1] * 102, 98 + 100 + 102 * relativeB[i][0]);*/
-		putimage(180+400 + total[0][i][1] * 100, 100 + 100 * total[0][i][0], &ON);
-		putimage(180+300 + 450 + total[1][i][1] * 100, 100 + 100 * total[1][i][0], &ON);
-		outtextxy(180+400 + total[0][i][1] * 100+30, 100 + 100 * total[0][i][0]+30, buffera);
-		outtextxy(180+300 + 450 + total[1][i][1] * 100 + 30, 100 + 100 * total[1][i][0] + 30, bufferb);
-		a++;
-		b++;
-	}
-	for (int i = 0; i < size; i++) {
-		for (int j = 0; j < size; j++) {
-			/*block[i][j].creatButtom(50 + j * 102, 100 + 102 * i, 100, 100, BLUE);
-			block[i][j].drawGameButtom();*/
-			putimage(180+50 + j * 100, 100 + 100 * i, &OFF);
+		for (int i = 0; i < size; i++) {
+			char buffera[20];
+			char bufferb[20];
+			snprintf(buffera, sizeof(buffera), "%d", a + 1);
+			snprintf(bufferb, sizeof(bufferb), "%d", b + 1);
+			putimage(180 + 400 + total[0][i][1] * 100, 100 + 100 * total[0][i][0], &ON);
+			putimage(180 + 300 + 450 + total[1][i][1] * 100, 100 + 100 * total[1][i][0], &ON);
+			outtextxy(180 + 400 + total[0][i][1] * 100 + 30, 100 + 100 * total[0][i][0] + 30, buffera);
+			outtextxy(180 + 300 + 450 + total[1][i][1] * 100 + 30, 100 + 100 * total[1][i][0] + 30, bufferb);
+			a++;
+			b++;
 		}
-	}
-	int num = 1;
-	while (1) {
-		ExMessage msg;
-		while (peekmessage(&msg, EM_MOUSE)) {
-			switch (msg.message) {
-			case WM_LBUTTONDOWN: {
-				if (mouseMsg(&msg,  num, ans, total[2], 3, 3, 50 + 180, 100, 180 + 350, 400)) {
-					solidtopic.freeMemory(1);
-					return;
+		for (int i = 0; i < size; i++) {
+			for (int j = 0; j < size; j++) {
+				putimage(180 + 50 + j * 100, 100 + 100 * i, &OFF);
+			}
+		}
+		int num = 1;
+		while (1) {
+			ExMessage msg;
+			while (peekmessage(&msg, EM_MOUSE)) {
+				switch (msg.message) {
+				case WM_LBUTTONDOWN: {
+					if (mouseMsg(&msg, num, ans, total[2], 3, 3, 50 + 180, 100, 180 + 350, 400)) {
+						solidtopic.freeMemory(1);
+						return;
+					}
+					break;
 				}
-				break;
-			}
+				}
 			}
 		}
+		break;
 	}
+	case 5: {
+		loadimage(&ON, _T("on.jpg"), 60, 60);
+		loadimage(&OFF, _T("off.jpg"), 60, 60);
+		int*** total = solidtopic.getTopic(2);
+		for (int i = 0; i < size; i++) {
+			for (int j = 0; j < size; j++) {
+				putimage(150 + 400 + j * 60, 100 + 60 * i, &OFF);
+				putimage(150 + 400 + 400 + j * 60, 100 + 60 * i, &OFF);
+			}
+		}
+		for (int i = 0; i < size; i++) {
+			char buffera[20];
+			char bufferb[20];
+			snprintf(buffera, sizeof(buffera), "%d", a + 1);
+			snprintf(bufferb, sizeof(bufferb), "%d", b + 1);
+			putimage(150 + 400 + total[0][i][1] * 60, 100 + 60 * total[0][i][0], &ON);
+			putimage(150 + 400 + 400 + total[1][i][1] * 60, 100 + 60 * total[1][i][0], &ON);
+			outtextxy(150 + 400 + total[0][i][1] * 60 + 10, 100 + 60 * total[0][i][0] + 10, buffera);
+			outtextxy(150 + 400 + 400 + total[1][i][1] * 60 + 10, 100 + 60 * total[1][i][0] + 10, bufferb);
+			a++;
+			b++;
+		}
+		for (int i = 0; i < size; i++) {
+			for (int j = 0; j < size; j++) {
+				putimage(150 + j * 60, 100 + 60 * i, &OFF);
+			}
+		}//答题区域
+		int num = 1;
+		while (1) {
+			ExMessage msg;
+			while (peekmessage(&msg, EM_MOUSE)) {
+				switch (msg.message) {
+				case WM_LBUTTONDOWN: {
+					if (mouseMsg(&msg, num, ans, total[2], 5, 5, 150, 100, 450, 400)) {
+						solidtopic.freeMemory(2);
+						return;
+					}
+					break;
+				}
+				}
+			}
+		}
+		break;
+	}
+	}
+	
 }
 void Random(int n) {//n指的是步数
 	IMAGE mPlay;
@@ -326,10 +354,6 @@ void Random(int n) {//n指的是步数
 	loadimage(&OFF, _T("off.jpg"), 40, 40);
 	for (int i = 0; i < 10; i++) {
 		for (int j = 0; j < 10; j++) {
-			/*setfillcolor(BLUE);
-			bar(40 + j * 43, 90 + 43 * i, 40 + j * 43 + 40, 90 + 43 * i + 40);
-			bar(520 + j * 43, 90 + 43 * i, 520  + j * 43+40, 90 +43 * i+40);
-			bar(60+940 + j * 43, 90 + 43 * i, 940+60 + j * 43 + 40, 90 + 43 * i + 40);*/
 			putimage(40 + j * 40, 90 + 40 * i, &OFF);
 			putimage(520 + j * 40, 90 + 40 * i, &OFF);
 			putimage(60 + 940 + j * 40, 90 + 40 * i, &OFF);
@@ -337,10 +361,6 @@ void Random(int n) {//n指的是步数
 	}
 	int a = 1, b = 1;
 	for (int i = 0; i < n; i++) {
-		/*setfillcolor(RED);
-		bar(520 + total[0][i][1] * 43, 90 + 43 * total[0][i][0], 520 + total[0][i][1] * 43 +40, 90 + 43 * total[0][i][0] + 40);
-		*/
-		
 		putimage(520 + total[0][i][1] * 40, 90 + 40 * total[0][i][0], &ON);
 		settextstyle(20, 0, "楷体");
 		char buffer[20];
@@ -366,6 +386,7 @@ void Random(int n) {//n指的是步数
 			switch (msg.message) {
 			case WM_LBUTTONDOWN: {
 				if (randomMsg(&msg,ans,realB,num,n)) {
+					freeMemory(n / 5, A, realB, relativeB, total);
 					return;
 				}
 				break;
@@ -373,7 +394,7 @@ void Random(int n) {//n指的是步数
 			}
 		}
 	}
-	freeMemory(n / 5, A, realB, relativeB, total);
+	
 	while (1);
 }
 bool randomMsg(ExMessage *msg,int **ans,int **realB, int& n, int stepNum ) {
@@ -633,6 +654,10 @@ void SolidMode() {
 		MOUSEMSG m = GetMouseMsg();
 		if (level[0]->clickButtom(m)) {
 			game(3,3);
+			break;
+		}
+		if (level[1]->clickButtom(m)) {
+			game(5, 5);
 			break;
 		}
 		if (Return->clickButtom(m)) {

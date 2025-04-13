@@ -1,5 +1,5 @@
 ﻿  game.cpp
   main.cpp
-D:\vs\project\项目可视化\项目可视化\game.cpp(8,7): warning C4099: “solidTopic”: 类型名称以前使用“struct”现在使用的是“class”
-D:\vs\project\项目可视化\项目可视化\game.cpp(224,9): error C2082: 形参“total”的重定义
   正在生成代码...
+D:\vs\project\项目可视化\项目可视化\game.cpp(64,1): warning C4715: “solidTopic::getTopic”: 不是所有的控件路径都返回值
+  项目可视化.vcxproj -> D:\vs\project\项目可视化\x64\Debug\项目可视化.exe
