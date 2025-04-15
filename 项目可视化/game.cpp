@@ -211,6 +211,15 @@ bool mouseMsg(ExMessage* msg, int& n, int** ans, int** realB, int size , int ste
 	}
 	else return false;
 }
+void retreat(int& n, int** ans, int** realB, int size, int stepNum, int x1, int y1, int x2, int y2) {
+	if (n >= 2) {
+		IMAGE off;
+		loadimage(&off, _T("off.jpg"), ((x2 - x1) / (size)), ((x2 - x1) / (size)));
+		putimage(x1 + ans[n - 2][1] * ((x2 - x1) / (size)), y1 + ((x2 - x1) / (size)) * ans[n - 2][0], &off);
+		n--;
+	}     
+	else return;
+}
 void game(int stepNum,int size) {
 	IMAGE mPlay;
 	loadimage(&mPlay, _T("bk.jpg"), 1920, 900);
@@ -252,14 +261,26 @@ void game(int stepNum,int size) {
 			}
 		}
 		int num = 1;
+		IMAGE back;
+		loadimage(&back, _T( "on.jpg"),300,100);
+		putimage(810, 600, &back);
+		settextstyle(40, 0, "楷体");
+		outtextxy(850, 650, "后退");
 		while (1) {
 			ExMessage msg;
+			int** step = new int* [stepNum];
+			for (int i = 0; i < stepNum; i++) {
+				step[i] = new int[2];
+			}
 			while (peekmessage(&msg, EM_MOUSE)) {
 				switch (msg.message) {
 				case WM_LBUTTONDOWN: {
 					if (mouseMsg(&msg, num, ans, total[2], 3, 3, 50 + 180, 100, 180 + 350, 400)) {
 						solidtopic.freeMemory(1);
 						return;
+					}
+					else if (msg.x >= 810 && msg.x <= 810 + 300 && msg.y >= 600 && msg.y <= 700) {
+						retreat(num, ans, total[2], 3, 3, 50 + 180, 100, 180 + 350, 400);
 					}
 					break;
 				}
@@ -296,6 +317,11 @@ void game(int stepNum,int size) {
 			}
 		}//答题区域
 		int num = 1;
+		IMAGE back;
+		loadimage(&back, _T("on.jpg"), 300, 100);
+		putimage(810, 600, &back);
+		settextstyle(40, 0, "楷体");
+		outtextxy(850, 650, "后退");
 		while (1) {
 			ExMessage msg;
 			while (peekmessage(&msg, EM_MOUSE)) {
@@ -304,6 +330,9 @@ void game(int stepNum,int size) {
 					if (mouseMsg(&msg, num, ans, total[2], 5, 5, 150, 100, 450, 400)) {
 						solidtopic.freeMemory(2);
 						return;
+					}
+					else if (msg.x >= 810 && msg.x <= 810 + 300 && msg.y >= 600 && msg.y <= 700) {
+						retreat(num, ans, total[2], 5, 5, 150, 100, 450, 400);
 					}
 					break;
 				}
@@ -464,7 +493,8 @@ void menu() {
 		MOUSEMSG m = GetMouseMsg();	
 		if (play->clickButtom(m)) {			
 			putimage(0, 0, &mPlay);			
-			while(1){				
+			while(1){	
+				
 				putimage(0, 0, &mPlay2);
 				solidMode->drawButtom();
 				randomMode->drawButtom();
@@ -479,7 +509,7 @@ void menu() {
 				if (Return->clickButtom(m1)) {
 					break;
 				}
-
+				
 			}
 		}
 		if (rule->clickButtom(m)) {
