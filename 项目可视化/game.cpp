@@ -196,6 +196,7 @@ bool mouseMsg(ExMessage* msg, int& n, int** ans, int** realB, int size , int ste
 		while (1) {
 			MOUSEMSG m = GetMouseMsg();
 			if (m.uMsg == WM_LBUTTONDOWN && m.x >= 580 && m.x <= 880+50 && m.y >= 300 && m.y <= 500) {
+
 				return true;
 			}
 		}
@@ -319,9 +320,9 @@ void game(int stepNum,int size) {
 		int num = 1;
 		IMAGE back;
 		loadimage(&back, _T("on.jpg"), 300, 100);
-		putimage(810, 600, &back);
+		putimage(1500, 700, &back);
 		settextstyle(40, 0, "楷体");
-		outtextxy(850, 650, "后退");
+		outtextxy(1650, 725, "后退");
 		while (1) {
 			ExMessage msg;
 			while (peekmessage(&msg, EM_MOUSE)) {
@@ -331,7 +332,7 @@ void game(int stepNum,int size) {
 						solidtopic.freeMemory(2);
 						return;
 					}
-					else if (msg.x >= 810 && msg.x <= 810 + 300 && msg.y >= 600 && msg.y <= 700) {
+					else if (msg.x >= 1500 && msg.x <= 1500 + 300 && msg.y >= 700 && msg.y <= 800) {
 						retreat(num, ans, total[2], 5, 5, 150, 100, 450, 400);
 					}
 					break;
@@ -409,6 +410,11 @@ void Random(int n) {//n指的是步数
 		ans[i] = new int[2];
 	}
 	int num = 1;
+	IMAGE back;
+	loadimage(&back, _T("on.jpg"), 300, 100);
+	putimage(1000, 700, &back);
+	settextstyle(40, 0, "楷体");
+	outtextxy(1100, 725, "后退");
 	while (1) {
 		ExMessage msg;
 		while (peekmessage(&msg, EM_MOUSE)) {
@@ -418,13 +424,14 @@ void Random(int n) {//n指的是步数
 					freeMemory(n / 5, A, realB, relativeB, total);
 					return;
 				}
+				else if (msg.x >= 1000 && msg.x <= 1000 + 300 && msg.y >= 700 && msg.y <= 800) {
+					retreat(num, ans, realB,10, n, 40, 90, 440, 490);
+				}
 				break;
 			}
 			}
 		}
 	}
-	
-	while (1);
 }
 bool randomMsg(ExMessage *msg,int **ans,int **realB, int& n, int stepNum ) {
 	if ((msg->x) > (40 + 9 * 40+40) || (msg->y) > (90 + 40 * 9+40)) {
@@ -446,21 +453,27 @@ bool randomMsg(ExMessage *msg,int **ans,int **realB, int& n, int stepNum ) {
 	snprintf(buffer, sizeof(buffer), "%d", n);
 	outtextxy(40 + j * 40+10, 90 + 40 * i+10, buffer);
 	n++;
+	IMAGE win, lose;
+	loadimage(&win, _T("win.png"), 350, 200);
+	loadimage(&lose, _T("lose.png"), 350, 200);
 	if (check(ans, realB, stepNum)) {
-		return true;
-	}
-	else if (n > stepNum) {
-		button* End = new button;
-		End->creatButtom(400+200, 200+100, 304, 204, YELLOW, "游戏失败");
-		End->drawOverButtom();
+		putimage(180 + 400, 100 + 200, &win);
 		while (1) {
 			MOUSEMSG m = GetMouseMsg();
-			if (End->clickButtom(m)) {
-				delete End;
+			if (m.uMsg == WM_LBUTTONDOWN && m.x >= 580 && m.x <= 880 + 50 && m.y >= 300 && m.y <= 500) {
+
 				return true;
 			}
 		}
-
+	}
+	else if (n > stepNum) {
+		putimage(180 + 400, 100 + 200, &lose);
+		while (1) {
+			MOUSEMSG m = GetMouseMsg();
+			if (m.uMsg == WM_LBUTTONDOWN && m.x >= 580 && m.x <= 880 + 50 && m.y >= 300 && m.y <= 500) {
+				return true;
+			}
+		}
 	}
 	else return false;
 }
