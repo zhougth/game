@@ -58,7 +58,29 @@ int*** solidTopic:: getTopic(int num) {
 			return total;
 		}
 		case 3: {
-
+			total = new int** [3];
+			for (int i = 0; i < 3; i++) {
+				total[i] = new int* [5];
+				for (int j = 0; j < 5; j++) {
+					total[i][j] = new int[2];
+				}
+			}
+			for (int i = 0; i < 5; i++) {
+				for (int j = 0; j < 2; j++) {
+					total[0][i][j] = A3[i][j];
+				}
+			}
+			for (int i = 0; i < 5; i++) {
+				for (int j = 0; j < 2; j++) {
+					total[1][i][j] = relativeB3[i][j];
+				}
+			}
+			for (int i = 0; i < 5; i++) {
+				for (int j = 0; j < 2; j++) {
+					total[2][i][j] = realB3[i][j];
+				}
+			}
+			return total;
 		}
 		}
 	}
@@ -221,7 +243,7 @@ void retreat(int& n, int** ans, int** realB, int size, int stepNum, int x1, int 
 	}     
 	else return;
 }
-void game(int stepNum,int size) {
+void game(int stepNum,int size,int level) {
 	IMAGE mPlay;
 	loadimage(&mPlay, _T("bk.jpg"), 1920, 900);
 	putimage(0, 0, &mPlay);
@@ -233,8 +255,9 @@ void game(int stepNum,int size) {
 	int a = 0, b = 0;
 	IMAGE OFF;
 	IMAGE ON;	
-	switch (size) {
-	case 3: {
+	switch (level) {
+
+	case 0: {
 		loadimage(&ON, _T("on.jpg"), 100, 100);
 		loadimage(&OFF, _T("off.jpg"), 100, 100);
 		int*** total = solidtopic.getTopic(1);
@@ -290,10 +313,13 @@ void game(int stepNum,int size) {
 		}
 		break;
 	}
-	case 5: {
+	case 1: 
+	case 2:{
 		loadimage(&ON, _T("on.jpg"), 60, 60);
 		loadimage(&OFF, _T("off.jpg"), 60, 60);
+
 		int*** total = solidtopic.getTopic(2);
+		if (level == 2)total = solidtopic.getTopic(3);
 		for (int i = 0; i < size; i++) {
 			for (int j = 0; j < size; j++) {
 				putimage(150 + 400 + j * 60, 100 + 60 * i, &OFF);
@@ -320,9 +346,9 @@ void game(int stepNum,int size) {
 		int num = 1;
 		IMAGE back;
 		loadimage(&back, _T("on.jpg"), 300, 100);
-		putimage(1500, 700, &back);
+		putimage(1000, 700, &back);
 		settextstyle(40, 0, "楷体");
-		outtextxy(1650, 725, "后退");
+		outtextxy(1100, 725, "后退");
 		while (1) {
 			ExMessage msg;
 			while (peekmessage(&msg, EM_MOUSE)) {
@@ -332,7 +358,7 @@ void game(int stepNum,int size) {
 						solidtopic.freeMemory(2);
 						return;
 					}
-					else if (msg.x >= 1500 && msg.x <= 1500 + 300 && msg.y >= 700 && msg.y <= 800) {
+					else if (msg.x >= 1000 && msg.x <= 1000 + 300 && msg.y >= 700 && msg.y <= 800) {
 						retreat(num, ans, total[2], 5, 5, 150, 100, 450, 400);
 					}
 					break;
@@ -342,6 +368,7 @@ void game(int stepNum,int size) {
 		}
 		break;
 	}
+
 	}
 	
 }
@@ -384,25 +411,25 @@ void Random(int n) {//n指的是步数
 	loadimage(&OFF, _T("off.jpg"), 40, 40);
 	for (int i = 0; i < 10; i++) {
 		for (int j = 0; j < 10; j++) {
-			putimage(40 + j * 40, 90 + 40 * i, &OFF);
-			putimage(520 + j * 40, 90 + 40 * i, &OFF);
-			putimage(60 + 940 + j * 40, 90 + 40 * i, &OFF);
+			putimage(40+40 + j * 40, 90 + 40 * i, &OFF);
+			putimage(40 + 520 + j * 40, 90 + 40 * i, &OFF);
+			putimage(40 + 60 + 940 + j * 40, 90 + 40 * i, &OFF);
 		}
 	}
 	int a = 1, b = 1;
 	for (int i = 0; i < n; i++) {
-		putimage(520 + total[0][i][1] * 40, 90 + 40 * total[0][i][0], &ON);
+		putimage(40 + 520 + total[0][i][1] * 40, 90 + 40 * total[0][i][0], &ON);
 		settextstyle(20, 0, "楷体");
 		char buffer[20];
 		snprintf(buffer, sizeof(buffer), "%d", i + 1);
-		outtextxy(520 + total[0][i][1] * 40+10, 90 + 40 * total[0][i][0]+10, buffer);//A的实际轨迹
+		outtextxy(40 + 520 + total[0][i][1] * 40+10, 90 + 40 * total[0][i][0]+10, buffer);//A的实际轨迹
 		if (i >0) {
 			if (total[1][i][0] == total[1][i - 1][0] && total[1][i][1] == total[1][i - 1][1]) {
 				settextcolor(RED);
 			}
 		}
-		putimage(60 + 940 + total[1][i][1] * 40, 90 + 40 * total[1][i][0], &ON);
-		outtextxy(60 + 940 + total[1][i][1] * 40+10, 90 + 40 * total[1][i][0]+10, buffer);
+		putimage(40 + 60 + 940 + total[1][i][1] * 40, 90 + 40 * total[1][i][0], &ON);
+		outtextxy(40 + 60 + 940 + total[1][i][1] * 40+10, 90 + 40 * total[1][i][0]+10, buffer);
 		settextcolor(BLACK);
 	}
 	int** ans = new int* [n];
@@ -434,24 +461,22 @@ void Random(int n) {//n指的是步数
 	}
 }
 bool randomMsg(ExMessage *msg,int **ans,int **realB, int& n, int stepNum ) {
-	if ((msg->x) > (40 + 9 * 40+40) || (msg->y) > (90 + 40 * 9+40)) {
+	if ((msg->x<80)||(msg->x) > (40 + 40 + 9 * 40+40) || (msg->y) > ( 90 + 40 * 9+40)||(msg->y<90)) {
 		return false;
 	}
 	cout << msg->x << "  " << msg->y << endl;
-	int j = (msg->x - 40) / 40;//列
+	int j = (msg->x - 80) / 40;//列
 	int i = (msg->y - 90) / 40;//行
 	cout << "i=" << i << "  " << "j=" << j << endl;
 	ans[n - 1][0] = i;
 	ans[n - 1][1] = j;
-	/*setfillcolor(RED);
-	bar(40 + j * 43, 90 + 43 * i, 40 + j * 43 + 40, 90 + 43 * i + 40);*/
 	IMAGE ON;
 	loadimage(&ON, _T("on.jpg"), 40, 40);
-	putimage(40 + j * 40, 90 + 40 * i, &ON);
+	putimage(40 + 40 + j * 40, 90 + 40 * i, &ON);
 	settextstyle(20, 0, "楷体");
 	char buffer[20];
 	snprintf(buffer, sizeof(buffer), "%d", n);
-	outtextxy(40 + j * 40+10, 90 + 40 * i+10, buffer);
+	outtextxy(40 + 40 + j * 40+10, 90 + 40 * i+10, buffer);
 	n++;
 	IMAGE win, lose;
 	loadimage(&win, _T("win.png"), 350, 200);
@@ -461,7 +486,6 @@ bool randomMsg(ExMessage *msg,int **ans,int **realB, int& n, int stepNum ) {
 		while (1) {
 			MOUSEMSG m = GetMouseMsg();
 			if (m.uMsg == WM_LBUTTONDOWN && m.x >= 580 && m.x <= 880 + 50 && m.y >= 300 && m.y <= 500) {
-
 				return true;
 			}
 		}
@@ -696,11 +720,15 @@ void SolidMode() {
 	while (1) {
 		MOUSEMSG m = GetMouseMsg();
 		if (level[0]->clickButtom(m)) {
-			game(3,3);
+			game(3,3,0);
 			break;
 		}
 		if (level[1]->clickButtom(m)) {
-			game(5, 5);
+			game(5, 5,1);
+			break;
+		}
+		if (level[2]->clickButtom(m)) {
+			game(5, 5,2);
 			break;
 		}
 		if (Return->clickButtom(m)) {
