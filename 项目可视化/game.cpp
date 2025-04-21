@@ -4,6 +4,7 @@
 #include<cstdio>
 #include<stdlib.h>
 #include<ctime>
+#include<stdlib.h>
 using namespace std;
 int*** solidTopic:: getTopic(int num) {
 		switch (num) {
@@ -182,6 +183,36 @@ int button::clickButtom(MOUSEMSG m) {
     }
 	return 0;
 }
+int timer1() {
+	int startTime = 0;
+	startTime = clock();
+	return startTime;
+}
+void timer2(int startTime) {
+	int durTime = clock() - startTime;
+	int min = durTime / 1000 / 60;
+	int sec = durTime / 1000 % 60;
+	char bufferm[20];
+	char buffers[20];
+	snprintf(bufferm, sizeof(bufferm), "%d", min);
+	snprintf(buffers, sizeof(buffers), "%d", sec);
+	IMAGE time;
+	loadimage(&time, _T("off.jpg"), 300, 100);
+	putimage(80, 550, &time);
+	if (min < 10) {
+		outtextxy(180, 570, "0");
+	}
+	outtextxy(100 + 100, 570, bufferm);
+	outtextxy(220, 570, ":");
+	if (sec < 10) {
+		outtextxy(250, 570, "0");
+		outtextxy(270, 570, buffers);
+	}
+	else {
+		outtextxy(250, 570, buffers);
+	}
+
+}
 bool check(int **a, int **b, int n) {
 	for (int i = 0; i < n; i++) {
 		if (a[i][0] == b[i][0] && a[i][1] == b[i][1]) {
@@ -290,13 +321,19 @@ void game(int stepNum,int size,int level) {
 		putimage(810, 600, &back);
 		settextstyle(40, 0, "楷体");
 		outtextxy(850, 650, "后退");
+		int start = timer1();
+		
 		while (1) {
+			BeginBatchDraw();
+			timer2(start);
 			ExMessage msg;
 			int** step = new int* [stepNum];
 			for (int i = 0; i < stepNum; i++) {
 				step[i] = new int[2];
 			}
+			EndBatchDraw();
 			while (peekmessage(&msg, EM_MOUSE)) {
+				
 				switch (msg.message) {
 				case WM_LBUTTONDOWN: {
 					if (mouseMsg(&msg, num, ans, total[2], 3, 3, 50 + 180, 100, 180 + 350, 400)) {
@@ -309,7 +346,9 @@ void game(int stepNum,int size,int level) {
 					break;
 				}
 				}
+				
 			}
+		
 		}
 		break;
 	}
@@ -349,7 +388,9 @@ void game(int stepNum,int size,int level) {
 		putimage(1000, 700, &back);
 		settextstyle(40, 0, "楷体");
 		outtextxy(1100, 725, "后退");
+		int start = timer1();
 		while (1) {
+			timer2(start);
 			ExMessage msg;
 			while (peekmessage(&msg, EM_MOUSE)) {
 				switch (msg.message) {
@@ -442,7 +483,10 @@ void Random(int n) {//n指的是步数
 	putimage(1000, 700, &back);
 	settextstyle(40, 0, "楷体");
 	outtextxy(1100, 725, "后退");
+	int start = timer1();
 	while (1) {
+		BeginBatchDraw();
+		timer2(start);
 		ExMessage msg;
 		while (peekmessage(&msg, EM_MOUSE)) {
 			switch (msg.message) {
@@ -458,6 +502,7 @@ void Random(int n) {//n指的是步数
 			}
 			}
 		}
+		EndBatchDraw();
 	}
 }
 bool randomMsg(ExMessage *msg,int **ans,int **realB, int& n, int stepNum ) {
@@ -502,9 +547,9 @@ bool randomMsg(ExMessage *msg,int **ans,int **realB, int& n, int stepNum ) {
 	else return false;
 }
 void menu() {
-	initgraph(1920, 900);
+	initgraph(1820, 800);
 	IMAGE mm;
-	loadimage(&mm, _T("bk.jpg"), 1920, 900);
+	loadimage(&mm, _T("bk.jpg"), 1820, 800);
 	putimage(0, 0, &mm);
 	//加载背景
 	button* play = new button;
@@ -520,22 +565,25 @@ void menu() {
 	randomMode->creatButtom(440, 395, 180, 50, YELLOW, "随机模式");
 	Return->creatButtom(440, 450, 180, 50, YELLOW, "返回");   
 	IMAGE mPlay;
-	loadimage(&mPlay, _T("bk.jpg"), 1920, 900);
+	loadimage(&mPlay, _T("bk.jpg"), 1820, 800);
 	IMAGE mPlay2;
-	loadimage(&mPlay2, _T("bk.jpg"), 1920, 900);
+	loadimage(&mPlay2, _T("bk.jpg"), 1820, 800);
 	while (1) {
+		BeginBatchDraw();
 		play->drawButtom();
 		rule->drawButtom();
 		quit->drawButtom();
+		EndBatchDraw();
 		MOUSEMSG m = GetMouseMsg();	
 		if (play->clickButtom(m)) {			
 			putimage(0, 0, &mPlay);			
 			while(1){	
-				
 				putimage(0, 0, &mPlay2);
+				BeginBatchDraw();
 				solidMode->drawButtom();
 				randomMode->drawButtom();
 				Return->drawButtom();
+				EndBatchDraw();
 				MOUSEMSG m1 = GetMouseMsg();
 				if (solidMode->clickButtom(m1)) {
 					SolidMode();
@@ -560,12 +608,11 @@ void menu() {
 			delete randomMode;
 			delete Return;
 			return;
-		}
+		}	
 	}
 	delete play;
 	delete rule;
 	delete quit;
-	
 	closegraph();
 }
 bool judgeIn(int x, int y, int i, int j) {//x和y是题目表格大小，i和j是坐标

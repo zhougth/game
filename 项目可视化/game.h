@@ -43,6 +43,8 @@ public:
 bool check(int **a, int **b, int n);
 void game(int stepNum, int size);
 void menu();
+int timer1();
+void timer2(int);
 int*** random(int n, int** A, int** realB, int** relativeB, int*** total);
 void Random( int n);
 void freeMemory(int n, int** A, int** realB, int** relativeB, int*** total);
