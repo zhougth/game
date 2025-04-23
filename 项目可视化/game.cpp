@@ -198,18 +198,18 @@ void timer2(int startTime) {
 	snprintf(buffers, sizeof(buffers), "%d", sec);
 	IMAGE time;
 	loadimage(&time, _T("off.jpg"), 300, 100);
-	putimage(80, 550, &time);
+	putimage(80, 550+50, &time);
 	if (min < 10) {
-		outtextxy(180, 570, "0");
+		outtextxy(180, 570+50, "0");
 	}
-	outtextxy(100 + 100, 570, bufferm);
-	outtextxy(220, 570, ":");
+	outtextxy(100 + 100, 570 + 50, bufferm);
+	outtextxy(220, 570 + 50, ":");
 	if (sec < 10) {
-		outtextxy(250, 570, "0");
-		outtextxy(270, 570, buffers);
+		outtextxy(250, 570 + 50, "0");
+		outtextxy(270, 570 + 50, buffers);
 	}
 	else {
-		outtextxy(250, 570, buffers);
+		outtextxy(250, 570 + 50, buffers);
 	}
 
 }
@@ -332,16 +332,33 @@ void game(int stepNum,int size,int level) {
 				step[i] = new int[2];
 			}
 			EndBatchDraw();
+			drawReturn();
 			while (peekmessage(&msg, EM_MOUSE)) {
 				
 				switch (msg.message) {
 				case WM_LBUTTONDOWN: {
 					if (mouseMsg(&msg, num, ans, total[2], 3, 3, 50 + 180, 100, 180 + 350, 400)) {
 						solidtopic.freeMemory(1);
+						drawNext();
+						drawReturn();
+						while (peekmessage(&msg, EM_MOUSE)) {
+							
+							if (inNext(msg)) {
+								game(5, 5, 1);
+								return;
+							}
+							else if (inReturn(msg)) {
+								return;
+							}
+						}
+						
 						return;
 					}
 					else if (msg.x >= 810 && msg.x <= 810 + 300 && msg.y >= 600 && msg.y <= 700) {
 						retreat(num, ans, total[2], 3, 3, 50 + 180, 100, 180 + 350, 400);
+					}
+					else if (inReturn(msg)) {
+						return;
 					}
 					break;
 				}
@@ -389,9 +406,12 @@ void game(int stepNum,int size,int level) {
 		settextstyle(40, 0, "楷体");
 		outtextxy(1100, 725, "后退");
 		int start = timer1();
+		drawReturn();
 		while (1) {
+			BeginBatchDraw();
 			timer2(start);
 			ExMessage msg;
+			EndBatchDraw();
 			while (peekmessage(&msg, EM_MOUSE)) {
 				switch (msg.message) {
 				case WM_LBUTTONDOWN: {
@@ -401,6 +421,9 @@ void game(int stepNum,int size,int level) {
 					}
 					else if (msg.x >= 1000 && msg.x <= 1000 + 300 && msg.y >= 700 && msg.y <= 800) {
 						retreat(num, ans, total[2], 5, 5, 150, 100, 450, 400);
+					}
+					else if (inReturn(msg)) {
+						return;
 					}
 					break;
 				}
@@ -487,7 +510,9 @@ void Random(int n) {//n指的是步数
 	while (1) {
 		BeginBatchDraw();
 		timer2(start);
-		ExMessage msg;
+		ExMessage msg;	
+		EndBatchDraw();
+		drawReturn();
 		while (peekmessage(&msg, EM_MOUSE)) {
 			switch (msg.message) {
 			case WM_LBUTTONDOWN: {
@@ -498,11 +523,14 @@ void Random(int n) {//n指的是步数
 				else if (msg.x >= 1000 && msg.x <= 1000 + 300 && msg.y >= 700 && msg.y <= 800) {
 					retreat(num, ans, realB,10, n, 40, 90, 440, 490);
 				}
+				else if (inReturn(msg)) {
+					return;
+				}
 				break;
 			}
 			}
 		}
-		EndBatchDraw();
+
 	}
 }
 bool randomMsg(ExMessage *msg,int **ans,int **realB, int& n, int stepNum ) {
@@ -788,4 +816,28 @@ void SolidMode() {
 		}
 	}
 	return;
+}
+void drawReturn() {
+	IMAGE Return;
+	loadimage(&Return, _T("on.jpg"), 300, 100);
+	putimage(80+400, 550 + 50, &Return);
+	outtextxy(500, 620, "退出");
+}
+bool inReturn(ExMessage m) {
+	if (m.x >= 480 && m.x <= 780 && m.y >= 600 && m.y <= 700) {
+		return true;
+	}
+	else return false;
+}
+void drawNext() {
+	IMAGE Return;
+	loadimage(&Return, _T("off.jpg"), 300, 100);
+	putimage(80 + 400+400, 550 + 50, &Return);
+	outtextxy(500+400, 620, "继续");
+}
+bool inNext(ExMessage m) {
+	if (m.x >= 480+400 && m.x <= 780+400 && m.y >= 600 && m.y <= 700) {
+		return true;
+	}
+	else return false;
 }

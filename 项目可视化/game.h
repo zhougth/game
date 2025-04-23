@@ -52,3 +52,7 @@ void SolidMode();
 bool isDeadEnd(int x, int y, int** visited, int directionx[4], int directiony[4]);
 bool randomMsg(ExMessage* msg, int** ans, int **realB, int& n, int stepNum);
 bool judgeIn(int x, int y, int i, int j);
+void drawReturn();
+bool inReturn(ExMessage m);
+void drawNext();
+bool inNext(ExMessage m);
