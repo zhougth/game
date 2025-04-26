@@ -211,7 +211,6 @@ void timer2(int startTime) {
 	else {
 		outtextxy(250, 570 + 50, buffers);
 	}
-
 }
 bool check(int **a, int **b, int n) {
 	for (int i = 0; i < n; i++) {
@@ -501,12 +500,8 @@ void Random(int n) {//n指的是步数
 		ans[i] = new int[2];
 	}
 	int num = 1;
-	IMAGE back;
-	loadimage(&back, _T("on.jpg"), 300, 100);
-	putimage(1000, 700, &back);
-	settextstyle(40, 0, "楷体");
-	outtextxy(1100, 725, "后退");
 	int start = timer1();
+	drawRetreat();
 	while (1) {
 		BeginBatchDraw();
 		timer2(start);
@@ -520,7 +515,7 @@ void Random(int n) {//n指的是步数
 					freeMemory(n / 5, A, realB, relativeB, total);
 					return;
 				}
-				else if (msg.x >= 1000 && msg.x <= 1000 + 300 && msg.y >= 700 && msg.y <= 800) {
+				else if (inRetreat(msg)) {
 					retreat(num, ans, realB,10, n, 40, 90, 440, 490);
 				}
 				else if (inReturn(msg)) {
@@ -556,9 +551,19 @@ bool randomMsg(ExMessage *msg,int **ans,int **realB, int& n, int stepNum ) {
 	loadimage(&lose, _T("lose.png"), 350, 200);
 	if (check(ans, realB, stepNum)) {
 		putimage(180 + 400, 100 + 200, &win);
+		settextstyle(40, 0, "楷体");
+		drawNext();
 		while (1) {
 			MOUSEMSG m = GetMouseMsg();
 			if (m.uMsg == WM_LBUTTONDOWN && m.x >= 580 && m.x <= 880 + 50 && m.y >= 300 && m.y <= 500) {
+				settextstyle(40, 0, "楷体");
+				return true;
+			}
+			else if (m.uMsg == WM_LBUTTONDOWN&&inNext(m)) {
+				Random(5);
+				return true;
+			}
+			else if (inReturn(m)) {
 				return true;
 			}
 		}
@@ -568,11 +573,16 @@ bool randomMsg(ExMessage *msg,int **ans,int **realB, int& n, int stepNum ) {
 		while (1) {
 			MOUSEMSG m = GetMouseMsg();
 			if (m.uMsg == WM_LBUTTONDOWN && m.x >= 580 && m.x <= 880 + 50 && m.y >= 300 && m.y <= 500) {
+				settextstyle(40, 0, "楷体");
 				return true;
 			}
 		}
 	}
-	else return false;
+	
+	else {
+		settextstyle(40, 0, "楷体");
+		return false;
+	}
 }
 void menu() {
 	initgraph(1820, 800);
@@ -821,9 +831,16 @@ void drawReturn() {
 	IMAGE Return;
 	loadimage(&Return, _T("on.jpg"), 300, 100);
 	putimage(80+400, 550 + 50, &Return);
-	outtextxy(500, 620, "退出");
+	settextstyle(40, 0, "楷体");
+	outtextxy(600, 620, "退出");
 }
 bool inReturn(ExMessage m) {
+	if (m.x >= 480 && m.x <= 780 && m.y >= 600 && m.y <= 700) {
+		return true;
+	}
+	else return false;
+}
+bool inReturn(MOUSEMSG m) {
 	if (m.x >= 480 && m.x <= 780 && m.y >= 600 && m.y <= 700) {
 		return true;
 	}
@@ -833,10 +850,36 @@ void drawNext() {
 	IMAGE Return;
 	loadimage(&Return, _T("off.jpg"), 300, 100);
 	putimage(80 + 400+400, 550 + 50, &Return);
+	settextstyle(40, 0, "楷体");
 	outtextxy(500+400, 620, "继续");
 }
 bool inNext(ExMessage m) {
 	if (m.x >= 480+400 && m.x <= 780+400 && m.y >= 600 && m.y <= 700) {
+		return true;
+	}
+	else return false;
+}
+bool inNext(MOUSEMSG m) {
+	if (m.x >= 480 + 400 && m.x <= 780 + 400 && m.y >= 600 && m.y <= 700) {
+		return true;
+	}
+	else return false;
+}
+void drawRetreat() {
+	IMAGE Retreat;
+	loadimage(&Retreat, _T("on.jpg"), 300, 100);
+	putimage(1280, 550 + 50, &Retreat);
+	settextstyle(40, 0, "楷体");
+	outtextxy(1400, 620, "后退");
+}
+bool inRetreat(MOUSEMSG m) {
+	if (m.x >= 1280 && m.x <= 1280 + 300 && m.y >= 600 && m.y <= 700) {
+		return true;
+	}
+	else return false;
+}
+bool inRetreat(ExMessage m) {
+	if (m.x >= 1280 && m.x <= 1280 + 300 && m.y >= 600 && m.y <= 700) {
 		return true;
 	}
 	else return false;
