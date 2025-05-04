@@ -1,5 +1,7 @@
 ﻿  game.cpp
   main.cpp
+  randomMode.cpp
+  solidMode.cpp
   正在生成代码...
-D:\vs\project\项目可视化\项目可视化\game.cpp(87,1): warning C4715: “solidTopic::getTopic”: 不是所有的控件路径都返回值
+D:\vs\project\项目可视化\项目可视化\solidMode.cpp(82,1): warning C4715: “solidTopic::getTopic”: 不是所有的控件路径都返回值
   项目可视化.vcxproj -> D:\vs\project\项目可视化\x64\Debug\项目可视化.exe
