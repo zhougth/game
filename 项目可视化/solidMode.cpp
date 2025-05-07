@@ -112,6 +112,10 @@ void solidTopic::freeMemory(int n) {
 	total = NULL;
 }
 void game(int stepNum, int size, int level) {
+	settextstyle(35, 0, "楷体"); 
+	setbkmode(TRANSPARENT);
+	setlinecolor(BLACK);
+	settextcolor(BLACK);
 	IMAGE mPlay;
 	loadimage(&mPlay, _T("bk.jpg"), 1920, 900);
 	putimage(0, 0, &mPlay);
@@ -300,42 +304,39 @@ bool mouseMsg(ExMessage* msg, int& n, int** ans, int** realB, int size, int step
 }
 void SolidMode() {
 	IMAGE mm;
-	loadimage(&mm, _T("test.jpg"), 1920, 900);
+	loadimage(&mm, _T("关卡模式背景.jpg"), 1500, 800);
 	putimage(0, 0, &mm);
-	button** level = new button * [6];
-	for (int i = 0; i < 6; i++) {
-		level[i] = new button;
-	}
-	for (int i = 0; i < 2; i++) {
-		for (int j = 0; j < 3; j++) {
-			level[i * 3 + j]->creatButtom(100 + j * 400, 100 + 400 * i, 250, 250, YELLOW, " ", i * 3 + j + 1);
-			level[i * 3 + j]->drawGameButtom(50);
-		}
-	}
-	button* Return = new button;
-	Return->creatButtom(1200, 600, 250, 150, RED);
-	Return->drawButtom(50);
-	outtextxy(1300, 650, "返回");
+	IMAGE one, two, three, four, five, six;
+	loadimage(&one, _T("1.png"), 200, 200);
+	loadimage(&two, _T("2.png"), 200, 200);
+	loadimage(&three, _T("3.png"), 200, 200);
+	loadimage(&four, _T("4.png"), 200, 200);
+	loadimage(&five, _T("5.png"), 200, 200);
+	loadimage(&six, _T("6.png"), 200, 200);
+	putimage(325, 250, &one);
+	putimage(625, 250, &two);
+	putimage(925, 250, &three);
+	putimage(325, 550, &four);
+	putimage(625, 550, &five);
+	putimage(925, 550, &six);
+	IMAGE bk;
+	loadimage(&bk, _T("返回.png"), 225, 100);
+	putimage(1200, 625, &bk);
 	while (1) {
 		MOUSEMSG m = GetMouseMsg();
-		if (level[0]->clickButtom(m)) {
+		if (checkIn(m,325,250,525,450)) {
 			game(3, 3, 0);
 			break;
 		}
-		if (level[1]->clickButtom(m)) {
+		if (checkIn(m, 625, 250, 825, 450)) {
 			game(5, 5, 1);
 			break;
 		}
-		if (level[2]->clickButtom(m)) {
+		if (checkIn(m, 925, 250, 1125, 450)) {
 			game(5, 5, 2);
 			break;
 		}
-		if (Return->clickButtom(m)) {
-			for (int i = 0; i < 6; i++) {
-				delete level[i];
-			}
-			delete[]level;
-			delete Return;
+		if (checkIn(m,1200,625,1425,725)) {
 			return;
 		}
 	}

@@ -104,6 +104,10 @@ int*** random(int n, int** A, int** realB, int** relativeB, int*** total) {//5的
 	return total;
 }
 void Random(int n) {//n指的是步数
+	settextstyle(35, 0, "楷体");
+	setbkmode(TRANSPARENT);
+	setlinecolor(BLACK);
+	settextcolor(BLACK);
 	IMAGE mPlay;
 	loadimage(&mPlay, _T("test.jpg"), 1920, 1000);
 	putimage(0, 0, &mPlay);

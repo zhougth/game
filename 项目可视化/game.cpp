@@ -116,73 +116,76 @@ void retreat(int& n, int** ans, int** realB, int size, int stepNum, int x1, int 
 	}     
 	else return;
 }
+bool checkIn(MOUSEMSG m,int x1,int y1,int x2,int y2) {
+	if (m.x >= x1 && m.x <= x2 && m.y >= y1 && m.y <= y2 && m.uMsg == WM_LBUTTONDOWN) {
+		return true;
+	}
+	return false;
+}
 void menu() {
-	initgraph(1820, 800);
+	initgraph(1500, 800);
 	IMAGE mm;
-	loadimage(&mm, _T("bk.jpg"), 1820, 800);
-	putimage(0, 0, &mm);
+	loadimage(&mm, _T("脑力航迹.jpg"), 1500, 800);
 	//加载背景
-	button* play = new button;
-	button* rule = new button;
-	button* quit = new button;
-	button* solidMode = new button;
-	button* randomMode = new button;
-	button* Return = new button;
-	play->creatButtom(440, 340, 180, 50, YELLOW, "开始游戏");
-	rule->creatButtom(440, 395, 180, 50, YELLOW, "游戏规则");
-	quit->creatButtom(440, 450, 180, 50, YELLOW, "退出游戏");
-	solidMode->creatButtom(440, 340, 180, 50, YELLOW, "关卡模式");
-	randomMode->creatButtom(440, 395, 180, 50, YELLOW, "随机模式");
-	Return->creatButtom(440, 450, 180, 50, YELLOW, "返回");   
+	IMAGE Start, Rule,Re;
+	loadimage(&Start, _T("开始游戏.png"), 200, 80);
+	loadimage(&Rule, _T("游戏规则.png"), 200, 80);
+	loadimage(&Re, _T("退出游戏.png"), 200, 80);
+	IMAGE Solid, Ra, Bk;
+	loadimage(&Solid, _T("关卡模式.png"), 200, 80);
+	loadimage(&Ra, _T("随机模式.png"), 200, 80);
+	loadimage(&Bk, _T("返回.png"), 200, 80);
 	IMAGE mPlay;
-	loadimage(&mPlay, _T("bk.jpg"), 1820, 800);
+	loadimage(&mPlay, _T("脑力航迹.jpg"), 1500, 800);
 	IMAGE mPlay2;
-	loadimage(&mPlay2, _T("bk.jpg"), 1820, 800);
+	loadimage(&mPlay2, _T("脑力航迹.jpg"), 1500, 800);
 	while (1) {
 		BeginBatchDraw();
-		play->drawButtom();
-		rule->drawButtom();
-		quit->drawButtom();
+		putimage(0, 0, &mm);
+		putimage(625, 400, &Start);
+		putimage(625, 500, &Rule);
+		putimage(625, 600, &Re);
 		EndBatchDraw();
 		MOUSEMSG m = GetMouseMsg();	
-		if (play->clickButtom(m)) {			
-			putimage(0, 0, &mPlay);			
-			while(1){	
+		if (checkIn(m,625,400,825,480)) {			
+			while(1){		
+				putimage(0, 0, &mPlay);
 				putimage(0, 0, &mPlay2);
 				BeginBatchDraw();
-				solidMode->drawButtom();
-				randomMode->drawButtom();
-				Return->drawButtom();
+				putimage(625, 400, &Solid);
+				putimage(625, 500, &Ra);
+				putimage(625, 600, &Bk);
 				EndBatchDraw();
 				MOUSEMSG m1 = GetMouseMsg();
-				if (solidMode->clickButtom(m1)) {
+				if (checkIn(m1, 625, 400, 825, 480)) {
 					SolidMode();
 				}
-				if (randomMode->clickButtom(m1)) {
+				if (checkIn(m1, 625, 500, 825, 580)) {
 					Random(5);
 				}
-				if (Return->clickButtom(m1)) {
+				if (checkIn(m1, 625, 600, 825, 680)) {
 					break;
 				}
-				
 			}
 		}
-		if (rule->clickButtom(m)) {
-
+		if (checkIn(m,625,500,825,580)) {//规则
+			IMAGE rule;
+			loadimage(&rule, _T("规则.png"), 1500, 800);
+			putimage(0, 0, &rule);
+			IMAGE bk;
+			loadimage(&bk,_T("返回.png"),180,80);
+			putimage(1300, 700, &bk);
+			while (1) {
+				MOUSEMSG m = GetMouseMsg();
+				if (checkIn(m, 1300, 700, 1480, 780)) {
+					break;
+				}
+			};
 		}
-		if (quit->clickButtom(m)) {
-			delete play;
-			delete rule;
-			delete quit;
-			delete solidMode;
-			delete randomMode;
-			delete Return;
+		if (checkIn(m,625,600,825,680)) {//退出游戏
 			return;
 		}	
 	}
-	delete play;
-	delete rule;
-	delete quit;
 	closegraph();
 }
 void drawReturn() {

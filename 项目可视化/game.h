@@ -34,6 +34,7 @@ void menu();
 int timer1();
 void timer2(int);
 void retreat(int& n, int** ans, int** realB, int size, int stepNum, int x1, int y1, int x2, int y2);
+bool checkIn(MOUSEMSG m, int x1, int y1, int x2, int y2);
 void drawReturn();
 bool inReturn(ExMessage m);
 bool inReturn(MOUSEMSG m);
