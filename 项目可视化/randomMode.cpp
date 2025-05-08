@@ -177,6 +177,8 @@ void Random(int n) {//n指的是步数
 	while (1) {
 		BeginBatchDraw();
 		timer2(start);
+		settextstyle(20, 0, "楷体");
+		settextcolor(BLACK);
 		ExMessage msg;
 		EndBatchDraw();
 		drawReturn();

@@ -117,7 +117,7 @@ void game(int stepNum, int size, int level) {
 	setlinecolor(BLACK);
 	settextcolor(BLACK);
 	IMAGE mPlay;
-	loadimage(&mPlay, _T("bk.jpg"), 1920, 900);
+	loadimage(&mPlay, _T("背景.jpg"), 1920, 900);
 	putimage(0, 0, &mPlay);
 	solidTopic solidtopic;
 	int** ans = new int* [stepNum];
@@ -128,7 +128,6 @@ void game(int stepNum, int size, int level) {
 	IMAGE OFF;
 	IMAGE ON;
 	switch (level) {
-
 	case 0: {
 		loadimage(&ON, _T("on.jpg"), 100, 100);
 		loadimage(&OFF, _T("off.jpg"), 100, 100);
@@ -157,15 +156,13 @@ void game(int stepNum, int size, int level) {
 			}
 		}
 		int num = 1;
-		IMAGE back;
-		loadimage(&back, _T("on.jpg"), 300, 100);
-		putimage(810, 600, &back);		
-		settextstyle(40, 0, "楷体");
-		outtextxy(915, 625, "后退");		
+		drawRetreat();
+		//撤回
 		int start = timer1();
 		while (1) {
 			BeginBatchDraw();
 			timer2(start);
+			settextcolor(BLACK);
 			ExMessage msg;
 			int** step = new int* [stepNum];
 			for (int i = 0; i < stepNum; i++) {
@@ -181,7 +178,7 @@ void game(int stepNum, int size, int level) {
 						solidtopic.freeMemory(1);
 						return;
 					}
-					else if (msg.x >= 810 && msg.x <= 810 + 300 && msg.y >= 600 && msg.y <= 700) {
+					else if (inRetreat(msg)) {
 						retreat(num, ans, total[2], 3, 3, 50 + 180, 100, 180 + 350, 400);
 					}
 					else if (inReturn(msg)) {
@@ -227,16 +224,13 @@ void game(int stepNum, int size, int level) {
 			}
 		}//答题区域
 		int num = 1;
-		IMAGE back;
-		loadimage(&back, _T("on.jpg"), 300, 100);
-		settextstyle(40, 0, "楷体");
-		putimage(810, 600, &back);
-		outtextxy(915, 625, "后退");
+		drawRetreat();
 		int start = timer1();
 		drawReturn();
 		while (1) {
 			BeginBatchDraw();
 			timer2(start);
+			settextcolor(BLACK);
 			ExMessage msg;
 			EndBatchDraw();
 			while (peekmessage(&msg, EM_MOUSE)) {
@@ -246,7 +240,7 @@ void game(int stepNum, int size, int level) {
 						solidtopic.freeMemory(2);
 						return;
 					}
-					else if (msg.x >= 1000 && msg.x <= 1000 + 300 && msg.y >= 700 && msg.y <= 800) {
+					else if (inRetreat(msg)) {
 						retreat(num, ans, total[2], 5, 5, 150, 100, 450, 400);
 					}
 					else if (inReturn(msg)) {

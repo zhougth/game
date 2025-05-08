@@ -75,6 +75,7 @@ int timer1() {
 	return startTime;
 }
 void timer2(int startTime) {
+	settextstyle(35, 0, "楷体");
 	int durTime = clock() - startTime;
 	int min = durTime / 1000 / 60;
 	int sec = durTime / 1000 % 60;
@@ -83,19 +84,20 @@ void timer2(int startTime) {
 	snprintf(bufferm, sizeof(bufferm), "%d", min);
 	snprintf(buffers, sizeof(buffers), "%d", sec);
 	IMAGE time;
-	loadimage(&time, _T("off.jpg"), 300, 100);
+	loadimage(&time, _T("用时.png"), 300, 100);
 	putimage(80, 550+50, &time);
+	settextcolor(RGB(136,126,101));
 	if (min < 10) {
-		outtextxy(180, 570+50, "0");
+		outtextxy(200 + 20, 570+60, "0");
 	}
-	outtextxy(100 + 100, 570 + 50, bufferm);
-	outtextxy(220, 570 + 50, ":");
+	outtextxy(100 + 100+20 + 20, 570 + 50+10, bufferm);
+	outtextxy(220+20 + 20, 570 + 50+10, ":");
 	if (sec < 10) {
-		outtextxy(250, 570 + 50, "0");
-		outtextxy(270, 570 + 50, buffers);
+		outtextxy(250 + 20 + 20, 570 + 50 + 10, "0");
+		outtextxy(270 + 20 + 20, 570 + 50 + 10, buffers);
 	}
 	else {
-		outtextxy(250, 570 + 50, buffers);
+		outtextxy(250 + 20 + 20, 570 + 50 + 10, buffers);
 	}
 }
 bool check(int **a, int **b, int n) {
@@ -190,19 +192,17 @@ void menu() {
 }
 void drawReturn() {
 	IMAGE Return;
-	loadimage(&Return, _T("on.jpg"), 300, 100);
-	putimage(80+400, 550 + 50, &Return);
-	settextstyle(40, 0, "楷体");
-	outtextxy(600, 620, "退出");
+	loadimage(&Return, _T("退出.png"), 300, 100);
+	putimage(40+400, 550 + 50, &Return);
 }
 bool inReturn(ExMessage m) {
-	if (m.x >= 480 && m.x <= 780 && m.y >= 600 && m.y <= 700) {
+	if (m.x >= 440 && m.x <= 740 && m.y >= 600 && m.y <= 700) {
 		return true;
 	}
 	else return false;
 }
 bool inReturn(MOUSEMSG m) {
-	if (m.x >= 480 && m.x <= 780 && m.y >= 600 && m.y <= 700) {
+	if (m.x >= 440 && m.x <= 740 && m.y >= 600 && m.y <= 700) {
 		return true;
 	}
 	else return false;
@@ -228,19 +228,17 @@ bool inNext(MOUSEMSG m) {
 }
 void drawRetreat() {
 	IMAGE Retreat;
-	loadimage(&Retreat, _T("on.jpg"), 300, 100);
-	putimage(1280, 550 + 50, &Retreat);
-	settextstyle(40, 0, "楷体");
-	outtextxy(1400, 620, "后退");
+	loadimage(&Retreat, _T("撤回.png"), 300, 100);
+	putimage(800, 550 + 50, &Retreat);
 }
 bool inRetreat(MOUSEMSG m) {
-	if (m.x >= 1280 && m.x <= 1280 + 300 && m.y >= 600 && m.y <= 700) {
+	if (m.x >= 800 && m.x <= 800 + 300 && m.y >= 600 && m.y <= 700) {
 		return true;
 	}
 	else return false;
 }
 bool inRetreat(ExMessage m) {
-	if (m.x >= 1280 && m.x <= 1280 + 300 && m.y >= 600 && m.y <= 700) {
+	if (m.x >= 800 && m.x <= 800 + 300 && m.y >= 600 && m.y <= 700) {
 		return true;
 	}
 	else return false;
