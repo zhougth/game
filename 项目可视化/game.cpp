@@ -208,20 +208,18 @@ bool inReturn(MOUSEMSG m) {
 	else return false;
 }
 void drawNext() {
-	IMAGE Return;
-	loadimage(&Return, _T("off.jpg"), 300, 100);
-	putimage(80 + 400+400, 550 + 50, &Return);
-	settextstyle(40, 0, "楷体");
-	outtextxy(500+400, 620, "继续");
+	IMAGE Next;
+	loadimage(&Next, _T("继续.png"), 300, 100);
+	putimage(600, 500, &Next);
 }
 bool inNext(ExMessage m) {
-	if (m.x >= 480+400 && m.x <= 780+400 && m.y >= 600 && m.y <= 700) {
+	if (m.x >= 600 && m.x <= 900 && m.y >= 500 && m.y <= 600) {
 		return true;
 	}
 	else return false;
 }
 bool inNext(MOUSEMSG m) {
-	if (m.x >= 480 + 400 && m.x <= 780 + 400 && m.y >= 600 && m.y <= 700) {
+	if (m.x >= 600 && m.x <= 900 && m.y >= 500 && m.y <= 600) {
 		return true;
 	}
 	else return false;
@@ -250,4 +248,52 @@ bool ifOpen(int** ans, int step, int i, int j) {
 		}
 	}
 	return false;
+}
+int success() {
+	IMAGE win;
+	loadimage(&win, _T("挑战成功.jpg"), 1500, 800);
+	putimage(0, 0, &win);
+	IMAGE Continue, returnMenu;
+	loadimage(&Continue, _T("继续.png"), 300, 100);
+	loadimage(&returnMenu, _T("返回菜单.png"), 300, 100);
+	putimage(600, 500, &Continue);
+	putimage(600, 650, &returnMenu);
+	while (1) {
+		MOUSEMSG m = GetMouseMsg();
+		if (m.uMsg == WM_LBUTTONDOWN) {
+			if (inNext(m)) {
+				return 1;
+			}
+			if (m.x >= 600 && m.x <= 900 && m.y >= 650 && m.y <= 750) {
+				return 2;
+			}
+		}
+	}
+}
+int lose() {
+	IMAGE lose;
+	loadimage(&lose, _T("挑战失败.jpg"), 1500, 800);
+	putimage(0, 0, &lose);
+	IMAGE answer, restreat, returnMenu;
+	loadimage(&answer, _T("查看答案.png"), 300, 100);
+	loadimage(&restreat, _T("重新开始.png"), 300, 100);
+	loadimage(&returnMenu, _T("返回菜单.png"), 300, 100);
+	putimage(600, 350, &answer);
+	putimage(600, 500, &restreat);
+	putimage(600, 650, &returnMenu);
+	while (1) {
+		MOUSEMSG m = GetMouseMsg();
+		if (m.uMsg == WM_LBUTTONDOWN) {
+			if (m.x >= 600 && m.x <= 900 && m.y >= 350 && m.y <= 450) {
+				return 1;
+			}
+			if (m.x >= 600 && m.x <= 900 && m.y >= 500 && m.y <= 600) {
+				return 2;
+			}
+			if (m.x >= 600 && m.x <= 900 && m.y >= 650 && m.y <= 750) {
+				return 3;
+			}
+		}
+	}
+	
 }

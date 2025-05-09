@@ -19,7 +19,7 @@ public:
 	int clickButtom(MOUSEMSG m);
 	void drawGameButtom(int size);
 	void drawOverButtom();
-	friend bool mouseMsg(ExMessage* msg, int& n, int** ans, int** realB, int size , int stepNum , int x1, int y1, int x2, int y2);
+	friend int mouseMsg(ExMessage* msg, int& n, int** ans, int** realB, int size , int stepNum , int x1, int y1, int x2, int y2);
 private:
 	int x;
 	int y;
@@ -45,3 +45,5 @@ void drawRetreat();
 bool inRetreat(MOUSEMSG m);
 bool inRetreat(ExMessage m);
 bool ifOpen(int** ans, int step,int i, int j);
+int success();
+int lose();

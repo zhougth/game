@@ -109,7 +109,7 @@ void Random(int n) {//n指的是步数
 	setlinecolor(BLACK);
 	settextcolor(BLACK);
 	IMAGE mPlay;
-	loadimage(&mPlay, _T("test.jpg"), 1920, 1000);
+	loadimage(&mPlay, _T("背景.jpg"), 1920, 1000);
 	putimage(0, 0, &mPlay);
 	int** A = new int* [n * 5];
 	int** realB = new int* [n * 5];

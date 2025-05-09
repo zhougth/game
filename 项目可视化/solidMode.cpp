@@ -171,11 +171,37 @@ void game(int stepNum, int size, int level) {
 			EndBatchDraw();
 			drawReturn();
 			while (peekmessage(&msg, EM_MOUSE)) {
-
 				switch (msg.message) {
 				case WM_LBUTTONDOWN: {
-					if (mouseMsg(&msg, num, ans, total[2], 3, 3, 50 + 180, 100, 180 + 350, 400)) {
+					if (int state=mouseMsg(&msg, num, ans, total[2], 3, 3, 50 + 180, 100, 180 + 350, 400)) {
 						solidtopic.freeMemory(1);
+						switch (state) {
+						case 1: {
+							game(5, 5, 1);
+							break;
+						}
+						case 2: {
+							return;
+						}
+						case 9: {//游戏失败
+							int tmpState = lose();
+							switch (tmpState) {
+							case 1: {
+								//查看答案
+								break;
+							}
+							case 2: {
+								//重新开始
+								game(3, 3, 0);
+								break;
+							}
+							case 3: {
+								//返回菜单
+								return;
+							}
+							}
+						}
+						}
 						return;
 					}
 					else if (inRetreat(msg)) {
@@ -237,6 +263,7 @@ void game(int stepNum, int size, int level) {
 				switch (msg.message) {
 				case WM_LBUTTONDOWN: {
 					if (mouseMsg(&msg, num, ans, total[2], 5, 5, 150, 100, 450, 400)) {
+						
 						solidtopic.freeMemory(2);
 						return;
 					}
@@ -255,14 +282,14 @@ void game(int stepNum, int size, int level) {
 	}
 	}
 }
-bool mouseMsg(ExMessage* msg, int& n, int** ans, int** realB, int size, int stepNum, int x1, int y1, int x2, int y2) {
+int mouseMsg(ExMessage* msg, int& n, int** ans, int** realB, int size, int stepNum, int x1, int y1, int x2, int y2) {
 	if ((msg->x) > (x2) || (msg->y) > (y2) || (msg->x) < x1 || (msg->y) < y1) {
-		return false;
+		return 0;
 	}
 	int j = (msg->x - x1) / ((x2 - x1) / (size));//列
 	int i = (msg->y - y1) / ((x2 - x1) / (size));//行
 	if (ifOpen(ans, n - 1, i, j)) {
-		return false;
+		return 0;
 	}
 	IMAGE ON;
 	loadimage(&ON, _T("on.jpg"), ((x2 - x1) / (size)), ((x2 - x1) / (size)));
@@ -274,32 +301,20 @@ bool mouseMsg(ExMessage* msg, int& n, int** ans, int** realB, int size, int step
 	outtextxy(x1 + j * ((x2 - x1) / (size)) + ((x2 - x1) / (size)) / 2 - 18, y1 + ((x2 - x1) / (size)) * i + ((x2 - x1) / (size)) / 2 - 18, buffer);
 	n++;
 	IMAGE win, lose;
-	loadimage(&win, _T("win.png"), 350, 200);
 	loadimage(&lose, _T("lose.png"), 350, 200);
 	if (check(ans, realB, stepNum)) {
-		putimage(180 + 400, 100 + 200, &win);
-		while (1) {
-			MOUSEMSG m = GetMouseMsg();
-			if (m.uMsg == WM_LBUTTONDOWN && m.x >= 580 && m.x <= 880 + 50 && m.y >= 300 && m.y <= 500) {
-				return true;
-			}
-		}
+		int state = success();
+		return state;
 	}
-	else if (n > stepNum) {
+	else if (n > stepNum) {//失败
 		putimage(180 + 400, 100 + 200, &lose);
-		while (1) {
-			MOUSEMSG m = GetMouseMsg();
-			if (m.uMsg == WM_LBUTTONDOWN && m.x >= 580 && m.x <= 880 + 50 && m.y >= 300 && m.y <= 500) {
-				return true;
-			}
-		}
+		return 9;
 	}
-	else return false;
+	else return 0;
 }
 void SolidMode() {
 	IMAGE mm;
 	loadimage(&mm, _T("关卡模式背景.jpg"), 1500, 800);
-	putimage(0, 0, &mm);
 	IMAGE one, two, three, four, five, six;
 	loadimage(&one, _T("1.png"), 200, 200);
 	loadimage(&two, _T("2.png"), 200, 200);
@@ -307,28 +322,32 @@ void SolidMode() {
 	loadimage(&four, _T("4.png"), 200, 200);
 	loadimage(&five, _T("5.png"), 200, 200);
 	loadimage(&six, _T("6.png"), 200, 200);
-	putimage(325, 250, &one);
-	putimage(625, 250, &two);
-	putimage(925, 250, &three);
-	putimage(325, 550, &four);
-	putimage(625, 550, &five);
-	putimage(925, 550, &six);
 	IMAGE bk;
 	loadimage(&bk, _T("返回.png"), 225, 100);
-	putimage(1200, 625, &bk);
+	
 	while (1) {
+		BeginBatchDraw();
+		putimage(0, 0, &mm);
+		putimage(325, 250, &one);
+		putimage(625, 250, &two);
+		putimage(925, 250, &three);
+		putimage(325, 550, &four);
+		putimage(625, 550, &five);
+		putimage(925, 550, &six);
+		putimage(1200, 625, &bk);
+		EndBatchDraw();
 		MOUSEMSG m = GetMouseMsg();
 		if (checkIn(m,325,250,525,450)) {
 			game(3, 3, 0);
-			break;
+			
 		}
 		if (checkIn(m, 625, 250, 825, 450)) {
 			game(5, 5, 1);
-			break;
+			
 		}
 		if (checkIn(m, 925, 250, 1125, 450)) {
 			game(5, 5, 2);
-			break;
+			
 		}
 		if (checkIn(m,1200,625,1425,725)) {
 			return;
