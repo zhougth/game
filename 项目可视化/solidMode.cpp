@@ -14,15 +14,7 @@ int*** solidTopic::getTopic(int num) {
 		for (int i = 0; i < 3; i++) {
 			for (int j = 0; j < 2; j++) {
 				total[0][i][j] = A1[i][j];
-			}
-		}
-		for (int i = 0; i < 3; i++) {
-			for (int j = 0; j < 2; j++) {
 				total[1][i][j] = relativeB1[i][j];
-			}
-		}
-		for (int i = 0; i < 3; i++) {
-			for (int j = 0; j < 2; j++) {
 				total[2][i][j] = realB1[i][j];
 			}
 		}
@@ -39,15 +31,7 @@ int*** solidTopic::getTopic(int num) {
 		for (int i = 0; i < 5; i++) {
 			for (int j = 0; j < 2; j++) {
 				total[0][i][j] = A2[i][j];
-			}
-		}
-		for (int i = 0; i < 5; i++) {
-			for (int j = 0; j < 2; j++) {
 				total[1][i][j] = relativeB2[i][j];
-			}
-		}
-		for (int i = 0; i < 5; i++) {
-			for (int j = 0; j < 2; j++) {
 				total[2][i][j] = realB2[i][j];
 			}
 		}
@@ -64,16 +48,42 @@ int*** solidTopic::getTopic(int num) {
 		for (int i = 0; i < 5; i++) {
 			for (int j = 0; j < 2; j++) {
 				total[0][i][j] = A3[i][j];
-			}
-		}
-		for (int i = 0; i < 5; i++) {
-			for (int j = 0; j < 2; j++) {
 				total[1][i][j] = relativeB3[i][j];
+				total[2][i][j] = realB3[i][j];
 			}
 		}
-		for (int i = 0; i < 5; i++) {
+		return total;
+	}
+	case 4: {
+		total = new int** [3];
+		for (int i = 0; i < 3; i++) {
+			total[i] = new int* [7];
+			for (int j = 0; j <7; j++) {
+				total[i][j] = new int[2];
+			}
+		}
+		for (int i = 0; i < 7; i++) {
 			for (int j = 0; j < 2; j++) {
-				total[2][i][j] = realB3[i][j];
+				total[0][i][j] = A4[i][j];
+				total[1][i][j] = relativeB4[i][j];
+				total[2][i][j] = realB4[i][j];
+			}
+		}
+		return total;
+	}
+	case 5: {
+		total = new int** [3];
+		for (int i = 0; i < 3; i++) {
+			total[i] = new int* [7];
+			for (int j = 0; j < 7; j++) {
+				total[i][j] = new int[2];
+			}
+		}
+		for (int i = 0; i < 7; i++) {
+			for (int j = 0; j < 2; j++) {
+				total[0][i][j] = A5[i][j];
+				total[1][i][j] = relativeB5[i][j];
+				total[2][i][j] = realB5[i][j];
 			}
 		}
 		return total;
@@ -88,12 +98,14 @@ void solidTopic::freeMemory(int n) {
 		num = 3;
 		break;
 	}
-	case 2: {
+	case 2:
+	case 3: {
 		num = 5;
 		break;
 	}
-	case 3: {
-		num = 5;
+	case 4:
+	case 5: {
+		num = 7;
 		break;
 	}
 	default: {
@@ -101,7 +113,6 @@ void solidTopic::freeMemory(int n) {
 		break;
 	}
 	}
-	cout << "num==" << num << endl;
 	for (int i = 0; i < 3; i++) {
 		for (int j = 0; j < num; j++) {
 			delete[] total[i][j];
@@ -223,6 +234,7 @@ void game(int stepNum, int size, int level) {
 						retreat(num, ans, total[2], 3, 3, 50 + 180, 100, 180 + 350, 400);
 					}
 					else if (inReturn(msg)) {
+						solidtopic.freeMemory(1);
 						return;
 					}
 					break;
@@ -279,7 +291,10 @@ void game(int stepNum, int size, int level) {
 						switch (state) {
 						case 1: {
 							solidtopic.freeMemory(2);
-							game(5, 5, 2);
+							if (level == 1)
+								game(5, 5, 2);
+							else if (level == 2)
+								game(7, 10, 3);
 							break;
 						}
 						case 2: {
@@ -324,6 +339,111 @@ void game(int stepNum, int size, int level) {
 						retreat(num, ans, total[2], 5, 5, 150, 100, 450, 400);
 					}
 					else if (inReturn(msg)) {
+						return;
+					}
+					break;
+				}
+				}
+			}
+		}
+		break;
+	}
+	case 3:
+	case 4:{
+		loadimage(&ON, _T("on.png"), 40, 40);
+		loadimage(&OFF, _T("off.png"), 40, 40);
+		int*** total = solidtopic.getTopic(level+1);
+		for (int i = 0; i < 10; i++) {
+			for (int j = 0; j < 10; j++) {
+				putimage(40 + 40 + j * 40, 90 + 40 * i, &OFF);
+				putimage(40 + 520 + j * 40, 90 + 40 * i, &OFF);
+				putimage(40 + 60 + 940 + j * 40, 90 + 40 * i, &OFF);
+			}
+		}
+		for (int i = 0; i < stepNum; i++) {
+			putimage(40 + 520 + total[0][i][1] * 40, 90 + 40 * total[0][i][0], &ON);
+		    settextstyle(20, 0, "楷体");
+		    char buffer[20];
+		    snprintf(buffer, sizeof(buffer), "%d", i + 1);
+		    outtextxy(40 + 520 + total[0][i][1] * 40 + 10, 90 + 40 * total[0][i][0] + 10, buffer);//A的实际轨迹
+		    if (i > 0) {
+			    if (total[1][i][0] == total[1][i - 1][0] && total[1][i][1] == total[1][i - 1][1]) {
+				settextcolor(RED);
+			    }
+		    }
+		    putimage(40 + 60 + 940 + total[1][i][1] * 40, 90 + 40 * total[1][i][0], &ON);
+		    outtextxy(40 + 60 + 940 + total[1][i][1] * 40 + 10, 90 + 40 * total[1][i][0] + 10, buffer);
+		    settextcolor(BLACK);
+		}
+		int num = 1;
+		drawRetreat();
+		//撤回
+		int start = timer1();
+		while (1) {
+			BeginBatchDraw();
+			timer2(start);
+			settextstyle(20, 0, "楷体");
+			settextcolor(BLACK);
+			ExMessage msg;
+			int** step = new int* [stepNum];
+			for (int i = 0; i < stepNum; i++) {
+				step[i] = new int[2];
+			}
+			EndBatchDraw();
+			drawReturn();
+			while (peekmessage(&msg, EM_MOUSE)) {
+				switch (msg.message) {
+				case WM_LBUTTONDOWN: {
+					if (int state = mouseMsg(start, &msg, num, ans, total[2], 10, 7, 80, 90, 480, 490)) {
+						switch (state) {
+						case 1: {
+							solidtopic.freeMemory(level+1);
+							game(7, 10, level+1);
+							break;
+						}
+						case 2: {
+							solidtopic.freeMemory(level+1);
+							return;
+						}
+						case 9: {//游戏失败
+							int tmpState = lose(start);
+							switch (tmpState) {
+							case 1: {
+								//查看答案
+								int tp = showAns(7, 10, total);
+								if (tp == 1) {
+									//返回菜单
+									solidtopic.freeMemory(level+1);
+									return;
+								}
+								else if (tp == 2) {//重新开始
+									solidtopic.freeMemory(level+1);
+									game(7, 10, level);
+									break;
+								}
+								break;
+							}
+							case 2: {
+								//重新开始
+								solidtopic.freeMemory(level+1);
+								game(7, 10, level);
+								break;
+							}
+							case 3: {
+								//返回菜单
+								solidtopic.freeMemory(level+1);
+								return;
+							}
+							}
+						}
+						}
+						return;
+					}
+					else if (inRetreat(msg)) {
+						retreat(num, ans, total[2], 10, 7, 80, 90, 480, 490);
+					}
+					else if (inReturn(msg)) {
+						solidtopic.freeMemory(level + 1);
 						return;
 					}
 					break;
@@ -397,7 +517,12 @@ void SolidMode() {
 		}
 		if (checkIn(m, 925, 250, 1125, 450)) {
 			game(5, 5, 2);
-			
+		}
+		if (checkIn(m, 325, 550, 525, 750)) {
+			game(7, 10, 3);
+		}
+		if (checkIn(m, 625, 550, 825, 750)) {
+			game(7, 10, 4);
 		}
 		if (checkIn(m,1200,625,1425,725)) {
 			return;
