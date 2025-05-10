@@ -112,7 +112,7 @@ bool check(int **a, int **b, int n) {
 void retreat(int& n, int** ans, int** realB, int size, int stepNum, int x1, int y1, int x2, int y2) {
 	if (n >= 2) {
 		IMAGE off;
-		loadimage(&off, _T("off.jpg"), ((x2 - x1) / (size)), ((x2 - x1) / (size)));
+		loadimage(&off, _T("off.png"), ((x2 - x1) / (size)), ((x2 - x1) / (size)));
 		putimage(x1 + ans[n - 2][1] * ((x2 - x1) / (size)), y1 + ((x2 - x1) / (size)) * ans[n - 2][0], &off);
 		n--;
 	}     
@@ -249,7 +249,7 @@ bool ifOpen(int** ans, int step, int i, int j) {
 	}
 	return false;
 }
-int success() {
+int success(int start) {
 	IMAGE win;
 	loadimage(&win, _T("挑战成功.jpg"), 1500, 800);
 	putimage(0, 0, &win);
@@ -258,6 +258,7 @@ int success() {
 	loadimage(&returnMenu, _T("返回菜单.png"), 300, 100);
 	putimage(600, 500, &Continue);
 	putimage(600, 650, &returnMenu);
+	showTime(start);
 	while (1) {
 		MOUSEMSG m = GetMouseMsg();
 		if (m.uMsg == WM_LBUTTONDOWN) {
@@ -270,7 +271,7 @@ int success() {
 		}
 	}
 }
-int lose() {
+int lose(int start) {
 	IMAGE lose;
 	loadimage(&lose, _T("挑战失败.jpg"), 1500, 800);
 	putimage(0, 0, &lose);
@@ -278,16 +279,17 @@ int lose() {
 	loadimage(&answer, _T("查看答案.png"), 300, 100);
 	loadimage(&restreat, _T("重新开始.png"), 300, 100);
 	loadimage(&returnMenu, _T("返回菜单.png"), 300, 100);
-	putimage(600, 350, &answer);
-	putimage(600, 500, &restreat);
+	putimage(600, 450, &answer);
+	putimage(600, 550, &restreat);
 	putimage(600, 650, &returnMenu);
+	showTime(start);
 	while (1) {
 		MOUSEMSG m = GetMouseMsg();
 		if (m.uMsg == WM_LBUTTONDOWN) {
-			if (m.x >= 600 && m.x <= 900 && m.y >= 350 && m.y <= 450) {
+			if (m.x >= 600 && m.x <= 900 && m.y >= 450 && m.y <= 550) {
 				return 1;
 			}
-			if (m.x >= 600 && m.x <= 900 && m.y >= 500 && m.y <= 600) {
+			if (m.x >= 600 && m.x <= 900 && m.y >= 550 && m.y <= 650) {
 				return 2;
 			}
 			if (m.x >= 600 && m.x <= 900 && m.y >= 650 && m.y <= 750) {
@@ -296,4 +298,131 @@ int lose() {
 		}
 	}
 	
+}
+void showTime(int start) {
+	settextstyle(40, 0, "楷体");
+	int durTime = clock() - start;
+	int min = durTime / 1000 / 60;
+	int sec = durTime / 1000 % 60;
+	char bufferm[20];
+	char buffers[20];
+	snprintf(bufferm, sizeof(bufferm), "%d", min);
+	snprintf(buffers, sizeof(buffers), "%d", sec);
+	IMAGE time;
+	loadimage(&time, _T("用时.png"), 300, 100);
+	putimage(600,350, &time);
+	settextcolor(RGB(136, 126, 101));
+	if (min < 10) {
+		outtextxy(740, 380, "0");
+	}
+	outtextxy(740+20, 380, bufferm);
+	outtextxy(740 + 20 + 20, 380, ":");
+	if (sec < 10) {
+		outtextxy(740 + 20 + 20 + 20, 380, "0");
+		outtextxy(740 + 20 + 20 + 20+20, 380, buffers);
+	}
+	else {
+		outtextxy(740 + 20 + 20+ 20, 380, buffers);
+	}
+}
+int showAns(int stepNum, int size, int*** total) {
+	IMAGE mPlay;
+	loadimage(&mPlay, _T("背景.jpg"), 1500, 800);
+	putimage(0, 0, &mPlay);
+	IMAGE OFF;
+	IMAGE ON;
+	switch (size) {
+	case 3: {	
+		loadimage(&ON, _T("on.png"), 100, 100);
+		loadimage(&OFF, _T("off.png"), 100, 100);
+		int a = 0, b = 0,c=0;
+		for (int i = 0; i < 3; i++) {
+			for (int j = 0; j < 3; j++) {
+				putimage(180 + 400 + j * 100, 100 + 100 * i, &OFF);
+				putimage(180 + 300 + 450 + j * 100, 100 + 100 * i, &OFF);
+				putimage(180 + 50 + j * 100, 100 + 100 * i, &OFF);
+			}
+		}
+		for (int i = 0; i < stepNum; i++) {
+			char buffera[20];
+			snprintf(buffera, sizeof(buffera), "%d", a + 1);//答案
+			putimage(180 + 400 + total[0][i][1] * 100, 100 + 100 * total[0][i][0], &ON);
+			putimage(180 + 300 + 450 + total[1][i][1] * 100, 100 + 100 * total[1][i][0], &ON);
+			putimage(180 +50 + total[2][i][1] * 100, 100 + 100 * total[2][i][0], &ON);//答案
+			outtextxy(180 + 400 + total[0][i][1] * 100 + 30, 100 + 100 * total[0][i][0] + 30, buffera);
+			outtextxy(180 + 300 + 450 + total[1][i][1] * 100 + 30, 100 + 100 * total[1][i][0] + 30, buffera);
+			outtextxy(180 + 50 + total[2][i][1] * 100+30, 100 + 100 * total[2][i][0]+30, buffera);
+			a++;
+		}
+		break;
+	}
+	case 5: {
+		loadimage(&ON, _T("on.png"), 60, 60);
+		loadimage(&OFF, _T("off.png"), 60, 60);
+		int a = 0;
+		for (int i = 0; i < size; i++) {
+			for (int j = 0; j < size; j++) {
+				putimage(150 + j * 60, 100 + 60 * i, &OFF);
+				putimage(150 + 400 + j * 60, 100 + 60 * i, &OFF);
+				putimage(150 + 400 + 400 + j * 60, 100 + 60 * i, &OFF);
+			}
+		}
+		for (int i = 0; i < stepNum; i++) {
+			char buffera[20];
+			snprintf(buffera, sizeof(buffera), "%d", a + 1);
+			putimage(150 + 400 + total[0][i][1] * 60, 100 + 60 * total[0][i][0], &ON);
+			putimage(150 + 400 + 400 + total[1][i][1] * 60, 100 + 60 * total[1][i][0], &ON);
+			putimage(150 + total[2][i][1] * 60, 100 + 60 * total[2][i][0], &ON);
+			outtextxy(150  + total[2][i][1] * 60 + 10, 100 + 60 * total[2][i][0] + 10, buffera);
+			outtextxy(150 + 400 + total[0][i][1] * 60 + 10, 100 + 60 * total[0][i][0] + 10, buffera);
+			outtextxy(150 + 400 + 400 + total[1][i][1] * 60 + 10, 100 + 60 * total[1][i][0] + 10, buffera);
+			a++;
+		}
+		break;
+	}
+	case 10: {
+		loadimage(&ON, _T("on.png"), 40, 40);
+		loadimage(&OFF, _T("off.png"), 40, 40);
+		for (int i = 0; i < size; i++) {
+			for (int j = 0; j < size; j++) {
+				putimage(40 + 40 + j * 40, 90 + 40 * i, &OFF);
+				putimage(40 + 520 + j * 40, 90 + 40 * i, &OFF);
+				putimage(40 + 60 + 940 + j * 40, 90 + 40 * i, &OFF);
+			}
+		}
+		int a = 1, b = 1;
+		for (int i = 0; i < stepNum; i++) {
+			putimage(40 + 40 + total[2][i][1] * 40, 90 + 40 * total[2][i][0], &ON);
+			putimage(40 + 520 + total[0][i][1] * 40, 90 + 40 * total[0][i][0], &ON);
+			settextstyle(20, 0, "楷体");
+			char buffer[20];
+			snprintf(buffer, sizeof(buffer), "%d", i + 1);
+			outtextxy(40 + 520 + total[0][i][1] * 40 + 10, 90 + 40 * total[0][i][0] + 10, buffer);//A的实际轨迹
+			if (i > 0) {
+				if (total[1][i][0] == total[1][i - 1][0] && total[1][i][1] == total[1][i - 1][1]) {
+					settextcolor(RED);
+				}
+			}
+			putimage(40 + 60 + 940 + total[1][i][1] * 40, 90 + 40 * total[1][i][0], &ON);
+			outtextxy(40 + 60 + 940 + total[1][i][1] * 40 + 10, 90 + 40 * total[1][i][0] + 10, buffer);
+			settextcolor(BLACK);
+			outtextxy(40 + 40 + total[2][i][1] * 40+10, 90 + 40 * total[2][i][0]+10, buffer);
+		}
+	}
+	}
+	drawReturn();//退出
+	IMAGE reStrat;
+	loadimage(&reStrat, _T("重新开始.png"), 300, 100);
+	putimage(300 + 480 + 40, 600, &reStrat);
+	while (1) {
+		MOUSEMSG m = GetMouseMsg();
+		if (m.uMsg == WM_LBUTTONDOWN) {
+			if (inReturn(m)) {//退出
+				return 1;
+			}
+			else if (m.x >= 300 + 520 && m.x <= 820 + 300 && m.y >= 600 && m.y <= 700) {//重新开始
+				return 2;
+			}
+		}
+	}
 }

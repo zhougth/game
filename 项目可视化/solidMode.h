@@ -18,4 +18,4 @@ public:
 };
 void game(int stepNum, int size,int level);
 void SolidMode();
-int mouseMsg(ExMessage* msg, int& n, int** ans, int** realB, int size, int stepNum, int x1, int y1, int x2, int y2);
+int mouseMsg(int start,ExMessage* msg, int& n, int** ans, int** realB, int size, int stepNum, int x1, int y1, int x2, int y2);

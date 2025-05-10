@@ -108,9 +108,7 @@ void Random(int n) {//n指的是步数
 	setbkmode(TRANSPARENT);
 	setlinecolor(BLACK);
 	settextcolor(BLACK);
-	IMAGE mPlay;
-	loadimage(&mPlay, _T("背景.jpg"), 1920, 1000);
-	putimage(0, 0, &mPlay);
+	
 	int** A = new int* [n * 5];
 	int** realB = new int* [n * 5];
 	int** relativeB = new int* [n * 5];
@@ -141,9 +139,13 @@ void Random(int n) {//n指的是步数
 		cout << total[2][i][0] + 1 << "  " << total[2][i][1] + 1 << endl;
 	}
 	//上面是获取题目以及答案
+flag:
+	IMAGE mPlay;
+	loadimage(&mPlay, _T("背景.jpg"), 1920, 1000);
+	putimage(0, 0, &mPlay);
 	IMAGE ON, OFF;
-	loadimage(&ON, _T("on.jpg"), 40, 40);
-	loadimage(&OFF, _T("off.jpg"), 40, 40);
+	loadimage(&ON, _T("on.png"), 40, 40);
+	loadimage(&OFF, _T("off.png"), 40, 40);
 	for (int i = 0; i < 10; i++) {
 		for (int j = 0; j < 10; j++) {
 			putimage(40 + 40 + j * 40, 90 + 40 * i, &OFF);
@@ -185,14 +187,53 @@ void Random(int n) {//n指的是步数
 		while (peekmessage(&msg, EM_MOUSE)) {
 			switch (msg.message) {
 			case WM_LBUTTONDOWN: {
-				if (randomMsg(&msg, ans, realB, num, n)) {
-					freeMemory(n / 5, A, realB, relativeB, total);
+				if (int state=randomMsg(start,&msg, ans, realB, num, n)) {
+					
+					switch (state) {
+					case 1: {
+						freeMemory(n / 5, A, realB, relativeB, total);
+						Random(n);//进行下一个随机关卡
+						break;
+					}
+					case 2: {
+						freeMemory(n / 5, A, realB, relativeB, total);
+						return;
+					}
+					case 9: {//失败
+						int tmpState=lose(start);
+						switch (tmpState) {
+						case 1: {
+							//查看答案
+							int tp=showAns(n, 10, total);
+							if (tp == 1) {
+								//返回菜单
+								freeMemory(n / 5, A, realB, relativeB, total);
+								return;
+							}
+							else if (tp == 2) {//重新开始
+								goto flag;
+								break;
+							}
+							break;
+						}
+						case 2: {
+							goto flag;//重新开始当前的随机关卡
+							break;
+						}
+						case 3: {
+							freeMemory(n / 5, A, realB, relativeB, total);
+							return;
+						}
+						}
+					}
+					}
 					return;
 				}
 				else if (inRetreat(msg)) {
 					retreat(num, ans, realB, 10, n, 80, 90, 480, 490);
 				}
 				else if (inReturn(msg)) {
+					freeMemory(n / 5, A, realB, relativeB, total);
 					return;
 				}
 				break;
@@ -202,7 +243,7 @@ void Random(int n) {//n指的是步数
 
 	}
 }
-bool randomMsg(ExMessage* msg, int** ans, int** realB, int& n, int stepNum) {
+int randomMsg(int start,ExMessage* msg, int** ans, int** realB, int& n, int stepNum) {
 	if ((msg->x < 80) || (msg->x) > (40 + 40 + 9 * 40 + 40) || (msg->y) > (90 + 40 * 9 + 40) || (msg->y < 90)) {
 		return false;
 	}
@@ -214,49 +255,23 @@ bool randomMsg(ExMessage* msg, int** ans, int** realB, int& n, int stepNum) {
 	ans[n - 1][0] = i;
 	ans[n - 1][1] = j;
 	IMAGE ON;
-	loadimage(&ON, _T("on.jpg"), 40, 40);
+	loadimage(&ON, _T("on.png"), 40, 40);
 	putimage(40 + 40 + j * 40, 90 + 40 * i, &ON);
 	settextstyle(20, 0, "楷体");
 	char buffer[20];
 	snprintf(buffer, sizeof(buffer), "%d", n);
 	outtextxy(40 + 40 + j * 40 + 10, 90 + 40 * i + 10, buffer);
 	n++;
-	IMAGE win, lose;
-	loadimage(&win, _T("win.png"), 350, 200);
-	loadimage(&lose, _T("lose.png"), 350, 200);
 	if (check(ans, realB, stepNum)) {
-		putimage(180 + 400, 100 + 200, &win);
-		settextstyle(40, 0, "楷体");
-		drawNext();
-		while (1) {
-			MOUSEMSG m = GetMouseMsg();
-			if (m.uMsg == WM_LBUTTONDOWN && m.x >= 580 && m.x <= 880 + 50 && m.y >= 300 && m.y <= 500) {
-				settextstyle(40, 0, "楷体");
-				return true;
-			}
-			else if (m.uMsg == WM_LBUTTONDOWN && inNext(m)) {
-				Random(5);
-				return true;
-			}
-			else if (inReturn(m)) {
-				return true;
-			}
-		}
+		int state=success(start);
+		return state;
 	}
 	else if (n > stepNum) {
-		putimage(180 + 400, 100 + 200, &lose);
-		while (1) {
-			MOUSEMSG m = GetMouseMsg();
-			if (m.uMsg == WM_LBUTTONDOWN && m.x >= 580 && m.x <= 880 + 50 && m.y >= 300 && m.y <= 500) {
-				settextstyle(40, 0, "楷体");
-				return true;
-			}
-		}
+		return 9;
 	}
-
 	else {
 		settextstyle(40, 0, "楷体");
-		return false;
+		return 0;
 	}
 }
 bool isDeadEnd(int x, int y, int** visited, int directionx[4], int directiony[4]) {

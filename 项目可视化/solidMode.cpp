@@ -117,7 +117,7 @@ void game(int stepNum, int size, int level) {
 	setlinecolor(BLACK);
 	settextcolor(BLACK);
 	IMAGE mPlay;
-	loadimage(&mPlay, _T("背景.jpg"), 1920, 900);
+	loadimage(&mPlay, _T("背景.jpg"), 1500, 800);
 	putimage(0, 0, &mPlay);
 	solidTopic solidtopic;
 	int** ans = new int* [stepNum];
@@ -129,8 +129,8 @@ void game(int stepNum, int size, int level) {
 	IMAGE ON;
 	switch (level) {
 	case 0: {
-		loadimage(&ON, _T("on.jpg"), 100, 100);
-		loadimage(&OFF, _T("off.jpg"), 100, 100);
+		loadimage(&ON, _T("on.png"), 100, 100);
+		loadimage(&OFF, _T("off.png"), 100, 100);
 		int*** total = solidtopic.getTopic(1);
 		for (int i = 0; i < 3; i++) {
 			for (int j = 0; j < 3; j++) {
@@ -173,30 +173,45 @@ void game(int stepNum, int size, int level) {
 			while (peekmessage(&msg, EM_MOUSE)) {
 				switch (msg.message) {
 				case WM_LBUTTONDOWN: {
-					if (int state=mouseMsg(&msg, num, ans, total[2], 3, 3, 50 + 180, 100, 180 + 350, 400)) {
-						solidtopic.freeMemory(1);
+					if (int state=mouseMsg(start,&msg, num, ans, total[2], 3, 3, 50 + 180, 100, 180 + 350, 400)) {
+						
 						switch (state) {
 						case 1: {
+							solidtopic.freeMemory(1);
 							game(5, 5, 1);
 							break;
 						}
 						case 2: {
+							solidtopic.freeMemory(1);
 							return;
 						}
 						case 9: {//游戏失败
-							int tmpState = lose();
+							int tmpState = lose(start);
 							switch (tmpState) {
 							case 1: {
 								//查看答案
+								int tp=showAns(3, 3, total);
+								if (tp == 1) {
+									//返回菜单
+									solidtopic.freeMemory(1);
+									return;
+								}
+								else if (tp == 2) {//重新开始
+									solidtopic.freeMemory(1);
+									game(3, 3, 0);
+									break;
+								}
 								break;
 							}
 							case 2: {
 								//重新开始
+								solidtopic.freeMemory(1);
 								game(3, 3, 0);
 								break;
 							}
 							case 3: {
 								//返回菜单
+								solidtopic.freeMemory(1);
 								return;
 							}
 							}
@@ -213,17 +228,14 @@ void game(int stepNum, int size, int level) {
 					break;
 				}
 				}
-
 			}
-
 		}
 		break;
 	}
 	case 1:
 	case 2: {
-		loadimage(&ON, _T("on.jpg"), 60, 60);
-		loadimage(&OFF, _T("off.jpg"), 60, 60);
-
+		loadimage(&ON, _T("on.png"), 60, 60);
+		loadimage(&OFF, _T("off.png"), 60, 60);
 		int*** total = solidtopic.getTopic(2);
 		if (level == 2)total = solidtopic.getTopic(3);
 		for (int i = 0; i < size; i++) {
@@ -262,9 +274,50 @@ void game(int stepNum, int size, int level) {
 			while (peekmessage(&msg, EM_MOUSE)) {
 				switch (msg.message) {
 				case WM_LBUTTONDOWN: {
-					if (mouseMsg(&msg, num, ans, total[2], 5, 5, 150, 100, 450, 400)) {
+					if (int state=mouseMsg(start,&msg, num, ans, total[2], 5, 5, 150, 100, 450, 400)) {
 						
-						solidtopic.freeMemory(2);
+						switch (state) {
+						case 1: {
+							solidtopic.freeMemory(2);
+							game(5, 5, 2);
+							break;
+						}
+						case 2: {
+							solidtopic.freeMemory(2);
+							return;
+						}
+						case 9: {//游戏失败
+							int tmpState = lose(start);
+							switch (tmpState) {
+							case 1: {
+								//查看答案
+								int tp = showAns(5, 5, total);
+								if (tp == 1) {
+									//返回菜单
+									solidtopic.freeMemory(2);
+									return;
+								}
+								else if (tp == 2) {//重新开始
+									solidtopic.freeMemory(2);
+									game(5, 5, level);
+									break;
+								}
+								break;
+							}
+							case 2: {
+								//重新开始
+								solidtopic.freeMemory(2);
+								game(5, 5, level);
+								break;
+							}
+							case 3: {
+								//返回菜单
+								solidtopic.freeMemory(2);
+								return;
+							}
+							}
+						}
+						}
 						return;
 					}
 					else if (inRetreat(msg)) {
@@ -282,7 +335,7 @@ void game(int stepNum, int size, int level) {
 	}
 	}
 }
-int mouseMsg(ExMessage* msg, int& n, int** ans, int** realB, int size, int stepNum, int x1, int y1, int x2, int y2) {
+int mouseMsg(int start,ExMessage* msg, int& n, int** ans, int** realB, int size, int stepNum, int x1, int y1, int x2, int y2) {
 	if ((msg->x) > (x2) || (msg->y) > (y2) || (msg->x) < x1 || (msg->y) < y1) {
 		return 0;
 	}
@@ -292,7 +345,7 @@ int mouseMsg(ExMessage* msg, int& n, int** ans, int** realB, int size, int stepN
 		return 0;
 	}
 	IMAGE ON;
-	loadimage(&ON, _T("on.jpg"), ((x2 - x1) / (size)), ((x2 - x1) / (size)));
+	loadimage(&ON, _T("on.png"), ((x2 - x1) / (size)), ((x2 - x1) / (size)));
 	ans[n - 1][0] = i;
 	ans[n - 1][1] = j;
 	putimage(x1 + j * ((x2 - x1) / (size)), y1 + ((x2 - x1) / (size)) * i, &ON);
@@ -300,14 +353,11 @@ int mouseMsg(ExMessage* msg, int& n, int** ans, int** realB, int size, int stepN
 	snprintf(buffer, sizeof(buffer), "%d", n);
 	outtextxy(x1 + j * ((x2 - x1) / (size)) + ((x2 - x1) / (size)) / 2 - 18, y1 + ((x2 - x1) / (size)) * i + ((x2 - x1) / (size)) / 2 - 18, buffer);
 	n++;
-	IMAGE win, lose;
-	loadimage(&lose, _T("lose.png"), 350, 200);
 	if (check(ans, realB, stepNum)) {
-		int state = success();
+		int state = success(start);
 		return state;
 	}
 	else if (n > stepNum) {//失败
-		putimage(180 + 400, 100 + 200, &lose);
 		return 9;
 	}
 	else return 0;
