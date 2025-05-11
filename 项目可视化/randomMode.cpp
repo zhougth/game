@@ -1,7 +1,7 @@
 #include"randomMode.h"
 #include"game.h"
-int*** random(int n, int** A, int** realB, int** relativeB, int*** total) {//5的n倍步
-	srand((unsigned int)time(NULL));
+int*** random(int n, int** A, int** realB, int** relativeB, int*** total) {//n步
+fflag:
 	int directionx[4] = { -1,0,1,0 };
 	int directiony[4] = { 0,1,0,-1 };
 	for (int i = 0; i < n; i++) {
@@ -41,7 +41,12 @@ int*** random(int n, int** A, int** realB, int** relativeB, int*** total) {//5的
 			foundValidPathA = false;
 			foundValidPathB = false;
 			// 生成 A 的方向，排除与上一次相反的方向
+			int countA = 0;
 			do {
+				countA++;
+				if (countA > 30) {
+					goto fflag;
+				}
 				Adir[i] = rand() % 4;
 				nextAx = A[i + 1][0] + directionx[Adir[i]];
 				nextAy = A[i + 1][1] + directiony[Adir[i]];
@@ -56,13 +61,17 @@ int*** random(int n, int** A, int** realB, int** relativeB, int*** total) {//5的
 					foundValidPathA = true;
 				}
 				else {
-					// 如果是死胡同，回溯
-					visitA[nextAx][nextAy] = 0;
-					continue;
+					// 如果是死胡同，重新随机
+					goto fflag;
 				}
 			}
 			// 生成 realB 的方向，排除与上一次相反的方向
+			int countB = 0;
 			do {
+				countB++;
+				if (countB > 30) {
+					goto fflag;
+				}
 				Bdir[i] = rand() % 4;
 				nextBx = realB[i + 1][0] + directionx[Bdir[i]];
 				nextBy = realB[i + 1][1] + directiony[Bdir[i]];
@@ -80,9 +89,8 @@ int*** random(int n, int** A, int** realB, int** relativeB, int*** total) {//5的
 					foundValidPathB = true;
 				}
 				else {
-					// 如果是死胡同，回溯
-					visitB[nextBx][nextBy] = 0;
-					continue;
+					// 如果是死胡同，重新随机
+					goto fflag;
 				}
 			}
 			else continue;
@@ -194,12 +202,12 @@ flag:
 				if (int state=randomMsg(start,&msg, ans, realB, num, n)) {				
 					switch (state) {
 					case 1: {
-						freeMemory(n / 5, A, realB, relativeB, total);
+						freeMemory(n , A, realB, relativeB, total);
 						Random(n);//进行下一个随机关卡
 						break;
 					}
 					case 2: {
-						freeMemory(n / 5, A, realB, relativeB, total);
+						freeMemory(n, A, realB, relativeB, total);
 						return;
 					}
 					case 9: {//失败
@@ -210,7 +218,7 @@ flag:
 							int tp=showAns(n, 10, total);
 							if (tp == 1) {
 								//返回菜单
-								freeMemory(n / 5, A, realB, relativeB, total);
+								freeMemory(n , A, realB, relativeB, total);
 								return;
 							}
 							else if (tp == 2) {//重新开始
@@ -224,7 +232,7 @@ flag:
 							break;
 						}
 						case 3: {
-							freeMemory(n / 5, A, realB, relativeB, total);
+							freeMemory(n, A, realB, relativeB, total);
 							return;
 						}
 						}
@@ -236,7 +244,7 @@ flag:
 					retreat(num, ans, realB, 10, n, 80, 90, 480, 490);
 				}
 				else if (inReturn(msg)) {
-					freeMemory(n / 5, A, realB, relativeB, total);
+					freeMemory(n , A, realB, relativeB, total);
 					return;
 				}
 				break;
@@ -295,7 +303,7 @@ bool isDeadEnd(int x, int y, int** visited, int directionx[4], int directiony[4]
 	return count==4; // 如果四个方向都被堵死，则是死胡同
 }
 void freeMemory(int n, int** A, int** realB, int** relativeB, int*** total) {
-	for (int i = 0; i < n * 5; i++) {
+	for (int i = 0; i < n ; i++) {
 		delete[]A[i];
 		delete[]realB[i];
 		delete[]relativeB[i];

@@ -163,7 +163,7 @@ void menu() {
 					SolidMode();
 				}
 				if (checkIn(m1, 625, 500, 825, 580)) {
-					Random(7);
+					Random(10);
 				}
 				if (checkIn(m1, 625, 600, 825, 680)) {
 					break;

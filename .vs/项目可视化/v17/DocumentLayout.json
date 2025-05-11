@@ -3,16 +3,20 @@
   "WorkspaceRootPath": "D:\\vs\\project\\\u9879\u76EE\u53EF\u89C6\u5316\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{FC2C105C-42C4-4DE9-8E6C-7FF3E9FD9D4B}|\u9879\u76EE\u53EF\u89C6\u5316\\\u9879\u76EE\u53EF\u89C6\u5316.vcxproj|D:\\vs\\project\\\u9879\u76EE\u53EF\u89C6\u5316\\\u9879\u76EE\u53EF\u89C6\u5316\\solidMode.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{FC2C105C-42C4-4DE9-8E6C-7FF3E9FD9D4B}|\u9879\u76EE\u53EF\u89C6\u5316\\\u9879\u76EE\u53EF\u89C6\u5316.vcxproj|solutionrelative:\u9879\u76EE\u53EF\u89C6\u5316\\solidMode.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{FC2C105C-42C4-4DE9-8E6C-7FF3E9FD9D4B}|\u9879\u76EE\u53EF\u89C6\u5316\\\u9879\u76EE\u53EF\u89C6\u5316.vcxproj|D:\\vs\\project\\\u9879\u76EE\u53EF\u89C6\u5316\\\u9879\u76EE\u53EF\u89C6\u5316\\game.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{FC2C105C-42C4-4DE9-8E6C-7FF3E9FD9D4B}|\u9879\u76EE\u53EF\u89C6\u5316\\\u9879\u76EE\u53EF\u89C6\u5316.vcxproj|solutionrelative:\u9879\u76EE\u53EF\u89C6\u5316\\game.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{FC2C105C-42C4-4DE9-8E6C-7FF3E9FD9D4B}|\u9879\u76EE\u53EF\u89C6\u5316\\\u9879\u76EE\u53EF\u89C6\u5316.vcxproj|D:\\vs\\project\\\u9879\u76EE\u53EF\u89C6\u5316\\\u9879\u76EE\u53EF\u89C6\u5316\\randomMode.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{FC2C105C-42C4-4DE9-8E6C-7FF3E9FD9D4B}|\u9879\u76EE\u53EF\u89C6\u5316\\\u9879\u76EE\u53EF\u89C6\u5316.vcxproj|solutionrelative:\u9879\u76EE\u53EF\u89C6\u5316\\randomMode.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FC2C105C-42C4-4DE9-8E6C-7FF3E9FD9D4B}|\u9879\u76EE\u53EF\u89C6\u5316\\\u9879\u76EE\u53EF\u89C6\u5316.vcxproj|D:\\vs\\project\\\u9879\u76EE\u53EF\u89C6\u5316\\\u9879\u76EE\u53EF\u89C6\u5316\\solidMode.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{FC2C105C-42C4-4DE9-8E6C-7FF3E9FD9D4B}|\u9879\u76EE\u53EF\u89C6\u5316\\\u9879\u76EE\u53EF\u89C6\u5316.vcxproj|solutionrelative:\u9879\u76EE\u53EF\u89C6\u5316\\solidMode.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FC2C105C-42C4-4DE9-8E6C-7FF3E9FD9D4B}|\u9879\u76EE\u53EF\u89C6\u5316\\\u9879\u76EE\u53EF\u89C6\u5316.vcxproj|D:\\vs\\project\\\u9879\u76EE\u53EF\u89C6\u5316\\\u9879\u76EE\u53EF\u89C6\u5316\\main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{FC2C105C-42C4-4DE9-8E6C-7FF3E9FD9D4B}|\u9879\u76EE\u53EF\u89C6\u5316\\\u9879\u76EE\u53EF\u89C6\u5316.vcxproj|solutionrelative:\u9879\u76EE\u53EF\u89C6\u5316\\main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     }
   ],
   "DocumentGroupContainers": [
@@ -22,43 +26,56 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 3,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 3,
+              "Title": "main.cpp",
+              "DocumentMoniker": "D:\\vs\\project\\\u9879\u76EE\u53EF\u89C6\u5316\\\u9879\u76EE\u53EF\u89C6\u5316\\main.cpp",
+              "RelativeDocumentMoniker": "\u9879\u76EE\u53EF\u89C6\u5316\\main.cpp",
+              "ToolTip": "D:\\vs\\project\\\u9879\u76EE\u53EF\u89C6\u5316\\\u9879\u76EE\u53EF\u89C6\u5316\\main.cpp",
+              "RelativeToolTip": "\u9879\u76EE\u53EF\u89C6\u5316\\main.cpp",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAQAAAAhAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-05-11T04:54:15.209Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
               "Title": "solidMode.cpp",
               "DocumentMoniker": "D:\\vs\\project\\\u9879\u76EE\u53EF\u89C6\u5316\\\u9879\u76EE\u53EF\u89C6\u5316\\solidMode.cpp",
               "RelativeDocumentMoniker": "\u9879\u76EE\u53EF\u89C6\u5316\\solidMode.cpp",
               "ToolTip": "D:\\vs\\project\\\u9879\u76EE\u53EF\u89C6\u5316\\\u9879\u76EE\u53EF\u89C6\u5316\\solidMode.cpp",
               "RelativeToolTip": "\u9879\u76EE\u53EF\u89C6\u5316\\solidMode.cpp",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAH0BAAADAAAA",
+              "ViewState": "AQIAAFcBAAAAAAAAAAAYwH0BAAADAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2025-05-10T14:22:41.938Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 1,
               "Title": "randomMode.cpp",
               "DocumentMoniker": "D:\\vs\\project\\\u9879\u76EE\u53EF\u89C6\u5316\\\u9879\u76EE\u53EF\u89C6\u5316\\randomMode.cpp",
               "RelativeDocumentMoniker": "\u9879\u76EE\u53EF\u89C6\u5316\\randomMode.cpp",
               "ToolTip": "D:\\vs\\project\\\u9879\u76EE\u53EF\u89C6\u5316\\\u9879\u76EE\u53EF\u89C6\u5316\\randomMode.cpp",
               "RelativeToolTip": "\u9879\u76EE\u53EF\u89C6\u5316\\randomMode.cpp",
-              "ViewState": "AQIAAJcAAAAAAAAAAAAAAMEAAAA+AAAA",
+              "ViewState": "AQIAAPYAAAAAAAAAAAAIwNEAAAAQAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2025-05-10T07:18:41.566Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 0,
               "Title": "game.cpp",
               "DocumentMoniker": "D:\\vs\\project\\\u9879\u76EE\u53EF\u89C6\u5316\\\u9879\u76EE\u53EF\u89C6\u5316\\game.cpp",
               "RelativeDocumentMoniker": "\u9879\u76EE\u53EF\u89C6\u5316\\game.cpp",
               "ToolTip": "D:\\vs\\project\\\u9879\u76EE\u53EF\u89C6\u5316\\\u9879\u76EE\u53EF\u89C6\u5316\\game.cpp",
               "RelativeToolTip": "\u9879\u76EE\u53EF\u89C6\u5316\\game.cpp",
-              "ViewState": "AQIAAAQAAAAAAAAAAAAIwEwAAAALAAAA",
+              "ViewState": "AQIAAAoAAAAAAAAAAAAAAL8AAAABAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2025-04-08T11:24:36.453Z",
               "EditorCaption": ""
