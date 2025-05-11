@@ -85,19 +85,19 @@ void timer2(int startTime) {
 	snprintf(buffers, sizeof(buffers), "%d", sec);
 	IMAGE time;
 	loadimage(&time, _T("用时.png"), 300, 100);
-	putimage(80, 550+50, &time);
+	putimage(80+150, 550+50, &time);
 	settextcolor(RGB(136,126,101));
 	if (min < 10) {
-		outtextxy(200 + 20, 570+60, "0");
+		outtextxy(200 + 20 + 150, 570+60, "0");
 	}
-	outtextxy(100 + 100+20 + 20, 570 + 50+10, bufferm);
-	outtextxy(220+20 + 20, 570 + 50+10, ":");
+	outtextxy(100 + 100+20 + 20 + 150, 570 + 50+10, bufferm);
+	outtextxy(220+20 + 20 + 150, 570 + 50+10, ":");
 	if (sec < 10) {
-		outtextxy(250 + 20 + 20, 570 + 50 + 10, "0");
-		outtextxy(270 + 20 + 20, 570 + 50 + 10, buffers);
+		outtextxy(250 + 20 + 20 + 150, 570 + 50 + 10, "0");
+		outtextxy(270 + 20 + 20 + 150, 570 + 50 + 10, buffers);
 	}
 	else {
-		outtextxy(250 + 20 + 20, 570 + 50 + 10, buffers);
+		outtextxy(250 + 20 + 20 + 150, 570 + 50 + 10, buffers);
 	}
 }
 bool check(int **a, int **b, int n) {
@@ -193,16 +193,16 @@ void menu() {
 void drawReturn() {
 	IMAGE Return;
 	loadimage(&Return, _T("退出.png"), 300, 100);
-	putimage(40+400, 550 + 50, &Return);
+	putimage(40+400 + 150, 550 + 50, &Return);
 }
 bool inReturn(ExMessage m) {
-	if (m.x >= 440 && m.x <= 740 && m.y >= 600 && m.y <= 700) {
+	if (m.x >= 440 + 150 && m.x <= 740 + 150 && m.y >= 600 && m.y <= 700) {
 		return true;
 	}
 	else return false;
 }
 bool inReturn(MOUSEMSG m) {
-	if (m.x >= 440 && m.x <= 740 && m.y >= 600 && m.y <= 700) {
+	if (m.x >= 440 + 150 && m.x <= 740 + 150 && m.y >= 600 && m.y <= 700) {
 		return true;
 	}
 	else return false;
@@ -227,16 +227,16 @@ bool inNext(MOUSEMSG m) {
 void drawRetreat() {
 	IMAGE Retreat;
 	loadimage(&Retreat, _T("撤回.png"), 300, 100);
-	putimage(800, 550 + 50, &Retreat);
+	putimage(800 + 150, 550 + 50, &Retreat);
 }
 bool inRetreat(MOUSEMSG m) {
-	if (m.x >= 800 && m.x <= 800 + 300 && m.y >= 600 && m.y <= 700) {
+	if (m.x >= 800 + 150 && m.x <= 800 + 150 + 300 && m.y >= 600 && m.y <= 700) {
 		return true;
 	}
 	else return false;
 }
 bool inRetreat(ExMessage m) {
-	if (m.x >= 800 && m.x <= 800 + 300 && m.y >= 600 && m.y <= 700) {
+	if (m.x >= 800 + 150 && m.x <= 800 + 150 + 300 && m.y >= 600 && m.y <= 700) {
 		return true;
 	}
 	else return false;
@@ -381,46 +381,46 @@ int showAns(int stepNum, int size, int*** total) {
 		break;
 	}
 	case 10: {
-		loadimage(&ON, _T("on.png"), 40, 40);
-		loadimage(&OFF, _T("off.png"), 40, 40);
+		loadimage(&ON, _T("on.png"), 44, 44);
+		loadimage(&OFF, _T("off.png"), 44, 44);
 		for (int i = 0; i < size; i++) {
 			for (int j = 0; j < size; j++) {
-				putimage(40 + 40 + j * 40, 90 + 40 * i, &OFF);
-				putimage(40 + 520 + j * 40, 90 + 40 * i, &OFF);
-				putimage(40 + 60 + 940 + j * 40, 90 + 40 * i, &OFF);
+				putimage( 40 + j * 44, 90 + 44* i, &OFF);
+				putimage( 520 + j * 44, 90 + 44 * i, &OFF);
+				putimage( 60 + 940 + j * 44, 90 + 44 * i, &OFF);
 			}
 		}
 		int a = 1, b = 1;
 		for (int i = 0; i < stepNum; i++) {
-			putimage(40 + 40 + total[2][i][1] * 40, 90 + 40 * total[2][i][0], &ON);
-			putimage(40 + 520 + total[0][i][1] * 40, 90 + 40 * total[0][i][0], &ON);
+			putimage( 40 + total[2][i][1] * 44, 90 + 44 * total[2][i][0], &ON);
+			putimage( 520 + total[0][i][1] * 44, 90 + 44 * total[0][i][0], &ON);
 			settextstyle(20, 0, "楷体");
 			char buffer[20];
 			snprintf(buffer, sizeof(buffer), "%d", i + 1);
-			outtextxy(40 + 520 + total[0][i][1] * 40 + 10, 90 + 40 * total[0][i][0] + 10, buffer);//A的实际轨迹
+			outtextxy( 520 + total[0][i][1] * 44 + 10, 90 + 44 * total[0][i][0] + 10, buffer);//A的实际轨迹
 			if (i > 0) {
 				if (total[1][i][0] == total[1][i - 1][0] && total[1][i][1] == total[1][i - 1][1]) {
 					settextcolor(RED);
 				}
 			}
-			putimage(40 + 60 + 940 + total[1][i][1] * 40, 90 + 40 * total[1][i][0], &ON);
-			outtextxy(40 + 60 + 940 + total[1][i][1] * 40 + 10, 90 + 40 * total[1][i][0] + 10, buffer);
+			putimage(60 + 940 + total[1][i][1] * 44, 90 + 44 * total[1][i][0], &ON);
+			outtextxy( 60 + 940 + total[1][i][1] * 44 + 10, 90 + 44 * total[1][i][0] + 10, buffer);
 			settextcolor(BLACK);
-			outtextxy(40 + 40 + total[2][i][1] * 40+10, 90 + 40 * total[2][i][0]+10, buffer);
+			outtextxy( 40 + total[2][i][1] * 44+10, 90 + 44 * total[2][i][0]+10, buffer);
 		}
 	}
 	}
 	drawReturn();//退出
 	IMAGE reStrat;
 	loadimage(&reStrat, _T("重新开始.png"), 300, 100);
-	putimage(300 + 480 + 40, 600, &reStrat);
+	putimage(150+300 + 480 + 40, 600, &reStrat);
 	while (1) {
 		MOUSEMSG m = GetMouseMsg();
 		if (m.uMsg == WM_LBUTTONDOWN) {
 			if (inReturn(m)) {//退出
 				return 1;
 			}
-			else if (m.x >= 300 + 520 && m.x <= 820 + 300 && m.y >= 600 && m.y <= 700) {//重新开始
+			else if (m.x >= 150 + 300 + 520 && m.x <= 150 + 820 + 300 && m.y >= 600 && m.y <= 700) {//重新开始
 				return 2;
 			}
 		}

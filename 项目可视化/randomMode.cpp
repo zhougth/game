@@ -153,32 +153,32 @@ void Random(int n) {//n指的是步数
 	//上面是获取题目以及答案
 flag:
 	IMAGE mPlay;
-	loadimage(&mPlay, _T("背景.jpg"), 1920, 1000);
+	loadimage(&mPlay, _T("背景.jpg"), 1500, 800);
 	putimage(0, 0, &mPlay);
 	IMAGE ON, OFF;
-	loadimage(&ON, _T("on.png"), 40, 40);
-	loadimage(&OFF, _T("off.png"), 40, 40);
+	loadimage(&ON, _T("on.png"), 44, 44);
+	loadimage(&OFF, _T("off.png"), 44, 44);
 	for (int i = 0; i < 10; i++) {
 		for (int j = 0; j < 10; j++) {
-			putimage(40 + 40 + j * 40, 90 + 40 * i, &OFF);
-			putimage(40 + 520 + j * 40, 90 + 40 * i, &OFF);
-			putimage(40 + 60 + 940 + j * 40, 90 + 40 * i, &OFF);
+			putimage( 40 + j * 44, 90 + 44 * i, &OFF);
+			putimage( 520 + j * 44, 90 + 44 * i, &OFF);
+			putimage(60 + 940 + j * 44, 90 + 44 * i, &OFF);
 		}
 	}
 	int a = 1, b = 1;
 	for (int i = 0; i < n; i++) {
-		putimage(40 + 520 + total[0][i][1] * 40, 90 + 40 * total[0][i][0], &ON);
+		putimage( 520 + total[0][i][1] * 44, 90 + 44 * total[0][i][0], &ON);
 		settextstyle(20, 0, "楷体");
 		char buffer[20];
 		snprintf(buffer, sizeof(buffer), "%d", i + 1);
-		outtextxy(40 + 520 + total[0][i][1] * 40 + 10, 90 + 40 * total[0][i][0] + 10, buffer);//A的实际轨迹
+		outtextxy( 520 + total[0][i][1] * 44 + 10, 90 + 44 * total[0][i][0] + 10, buffer);//A的实际轨迹
 		if (i > 0) {
 			if (total[1][i][0] == total[1][i - 1][0] && total[1][i][1] == total[1][i - 1][1]) {
 				settextcolor(RED);
 			}
 		}
-		putimage(40 + 60 + 940 + total[1][i][1] * 40, 90 + 40 * total[1][i][0], &ON);
-		outtextxy(40 + 60 + 940 + total[1][i][1] * 40 + 10, 90 + 40 * total[1][i][0] + 10, buffer);
+		putimage(60 + 940 + total[1][i][1] * 44, 90 + 44 * total[1][i][0], &ON);
+		outtextxy(60 + 940 + total[1][i][1] * 44 + 10, 90 + 44 * total[1][i][0] + 10, buffer);
 		settextcolor(BLACK);
 	}
 	int** ans = new int* [n];
@@ -241,7 +241,7 @@ flag:
 					return;
 				}
 				else if (inRetreat(msg)) {
-					retreat(num, ans, realB, 10, n, 80, 90, 480, 490);
+					retreat(num, ans, realB, 10, n, 40, 90, 480, 530);
 				}
 				else if (inReturn(msg)) {
 					freeMemory(n , A, realB, relativeB, total);
@@ -254,23 +254,23 @@ flag:
 	}
 }
 int randomMsg(int start,ExMessage* msg, int** ans, int** realB, int& n, int stepNum) {
-	if ((msg->x < 80) || (msg->x) > (40 + 40 + 9 * 40 + 40) || (msg->y) > (90 + 40 * 9 + 40) || (msg->y < 90)) {
+	if ((msg->x < 40) || (msg->x) > ( 40 + 10 * 44) || (msg->y) > (90 + 44 * 10 ) || (msg->y < 90)) {
 		return false;
 	}
 	cout << msg->x << "  " << msg->y << endl;
-	int j = (msg->x - 80) / 40;//列
-	int i = (msg->y - 90) / 40;//行
+	int j = (msg->x -40) / 44;//列
+	int i = (msg->y - 90) / 44;//行
 	if (ifOpen(ans, n - 1, i, j))return false;
 	cout << "i=" << i << "  " << "j=" << j << endl;
 	ans[n - 1][0] = i;
 	ans[n - 1][1] = j;
 	IMAGE ON;
-	loadimage(&ON, _T("on.png"), 40, 40);
-	putimage(40 + 40 + j * 40, 90 + 40 * i, &ON);
+	loadimage(&ON, _T("on.png"), 44, 44);
+	putimage( 40 + j * 44, 90 + 44 * i, &ON);
 	settextstyle(20, 0, "楷体");
 	char buffer[20];
 	snprintf(buffer, sizeof(buffer), "%d", n);
-	outtextxy(40 + 40 + j * 40 + 10, 90 + 40 * i + 10, buffer);
+	outtextxy( 40 + j * 44 + 10, 90 + 44 * i + 10, buffer);
 	n++;
 	if (check(ans, realB, stepNum)) {
 		int state=success(start);

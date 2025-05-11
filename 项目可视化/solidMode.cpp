@@ -350,29 +350,29 @@ void game(int stepNum, int size, int level) {
 	}
 	case 3:
 	case 4:{
-		loadimage(&ON, _T("on.png"), 40, 40);
-		loadimage(&OFF, _T("off.png"), 40, 40);
+		loadimage(&ON, _T("on.png"), 44, 44);
+		loadimage(&OFF, _T("off.png"), 44, 44);
 		int*** total = solidtopic.getTopic(level+1);
 		for (int i = 0; i < 10; i++) {
 			for (int j = 0; j < 10; j++) {
-				putimage(40 + 40 + j * 40, 90 + 40 * i, &OFF);
-				putimage(40 + 520 + j * 40, 90 + 40 * i, &OFF);
-				putimage(40 + 60 + 940 + j * 40, 90 + 40 * i, &OFF);
+				putimage( 40 + j * 44, 90 + 44 * i, &OFF);
+				putimage( 520 + j * 44, 90 + 44 * i, &OFF);
+				putimage( 60 + 940 + j * 44, 90 + 44 * i, &OFF);
 			}
 		}
 		for (int i = 0; i < stepNum; i++) {
-			putimage(40 + 520 + total[0][i][1] * 40, 90 + 40 * total[0][i][0], &ON);
+			putimage( 520 + total[0][i][1] * 44, 90 + 44 * total[0][i][0], &ON);
 		    settextstyle(20, 0, "楷体");
 		    char buffer[20];
 		    snprintf(buffer, sizeof(buffer), "%d", i + 1);
-		    outtextxy(40 + 520 + total[0][i][1] * 40 + 10, 90 + 40 * total[0][i][0] + 10, buffer);//A的实际轨迹
+		    outtextxy( 520 + total[0][i][1] * 44 + 10, 90 + 44 * total[0][i][0] + 10, buffer);//A的实际轨迹
 		    if (i > 0) {
 			    if (total[1][i][0] == total[1][i - 1][0] && total[1][i][1] == total[1][i - 1][1]) {
 				settextcolor(RED);
 			    }
 		    }
-		    putimage(40 + 60 + 940 + total[1][i][1] * 40, 90 + 40 * total[1][i][0], &ON);
-		    outtextxy(40 + 60 + 940 + total[1][i][1] * 40 + 10, 90 + 40 * total[1][i][0] + 10, buffer);
+		    putimage( 60 + 940 + total[1][i][1] * 44, 90 + 44 * total[1][i][0], &ON);
+		    outtextxy( 60 + 940 + total[1][i][1] * 44 + 10, 90 + 44 * total[1][i][0] + 10, buffer);
 		    settextcolor(BLACK);
 		}
 		int num = 1;
@@ -394,7 +394,7 @@ void game(int stepNum, int size, int level) {
 			while (peekmessage(&msg, EM_MOUSE)) {
 				switch (msg.message) {
 				case WM_LBUTTONDOWN: {
-					if (int state = mouseMsg(start, &msg, num, ans, total[2], 10, 7, 80, 90, 480, 490)) {
+					if (int state = mouseMsg(start, &msg, num, ans, total[2], 10, 7, 40, 90, 480, 530)) {
 						switch (state) {
 						case 1: {
 							solidtopic.freeMemory(level+1);
@@ -440,7 +440,7 @@ void game(int stepNum, int size, int level) {
 						return;
 					}
 					else if (inRetreat(msg)) {
-						retreat(num, ans, total[2], 10, 7, 80, 90, 480, 490);
+						retreat(num, ans, total[2], 10, 7, 40, 90, 480, 530);
 					}
 					else if (inReturn(msg)) {
 						solidtopic.freeMemory(level + 1);
