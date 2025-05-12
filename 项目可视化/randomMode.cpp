@@ -1,5 +1,6 @@
 #include"randomMode.h"
 #include"game.h"
+#include<vector>
 int*** random(int n, int** A, int** realB, int** relativeB, int*** total) {//n步
 fflag:
 	int directionx[4] = { -1,0,1,0 };
@@ -172,15 +173,8 @@ flag:
 		char buffer[20];
 		snprintf(buffer, sizeof(buffer), "%d", i + 1);
 		outtextxy( 520 + total[0][i][1] * 44 + 10, 90 + 44 * total[0][i][0] + 10, buffer);//A的实际轨迹
-		if (i > 0) {
-			if (total[1][i][0] == total[1][i - 1][0] && total[1][i][1] == total[1][i - 1][1]) {
-				settextcolor(RED);
-			}
-		}
-		putimage(60 + 940 + total[1][i][1] * 44, 90 + 44 * total[1][i][0], &ON);
-		outtextxy(60 + 940 + total[1][i][1] * 44 + 10, 90 + 44 * total[1][i][0] + 10, buffer);
-		settextcolor(BLACK);
 	}
+	showRelativeB(total[1], 10, 10);
 	int** ans = new int* [n];
 	for (int i = 0; i < n; i++) {
 		ans[i] = new int[2];
@@ -318,4 +312,95 @@ bool judgeIn(int x, int y, int i, int j) {//x和y是题目表格大小，i和j是坐标
 		return true;
 	}
 	else return false;
+}
+void showRelativeB(int** relativeB, int size, int stepNum) {
+	vector <int> uniqueBx;
+	vector <int> uniqueBy;
+	vector <int> uniqueBn;//经过的次数
+	uniqueBn.resize(stepNum, 0);
+	vector <vector <int>> numB;
+	int tmp = 0;//用来存去重后有多少个坐标
+	for (int i = 0; i < stepNum; i++) {//遍历路径
+		bool ck = false;
+		for (int j = 0; j < tmp; j++) {//寻找是否出现过
+			if (relativeB[i][0] == uniqueBx[j] && relativeB[i][1] == uniqueBy[j]) {//之前经过该点
+				uniqueBn[j]++;
+				ck = true;
+				numB[j].push_back(i);
+				break;
+			}
+		}
+		if (!ck) {//之前没经过
+			uniqueBx.push_back(relativeB[i][0]);
+			uniqueBy.push_back(relativeB[i][1]);
+			uniqueBn[tmp++] = 1;
+			numB.push_back({ i });//
+		}
+	}
+/*	for (int i = 0; i < stepNum; i++) {//遍历路径
+		for (int j = 0; j < tmp; j++) {//遍历去重后的路径
+			if (relativeB[i][0] == uniqueBx[j] && relativeB[i][1] == uniqueBy[j]) {//找到那个点
+				numB[j].push_back(i);//
+				cout << "i=" << i << "  j==" << j << endl;
+				break;
+			}
+		}
+	}*/
+	cout << "去重后共" << tmp << endl;
+	for (int i = 0; i < tmp; i++) {
+		cout << uniqueBx[i] + 1 << "," << uniqueBy[i] + 1 << "   经过" << uniqueBn[i] << "次" << endl;
+		cout << "分别是" << endl;
+		for (int j = 0; j < uniqueBn[i]; j++) {
+			cout << "i=="<<i<<"    j=="<<j<<"  "<<numB[i][j] << endl;
+		}
+	}
+	IMAGE ON;
+	loadimage(&ON, _T("on.png"), 44, 44);
+	for (int i = 0; i < tmp; i++) {
+		putimage(60 + 940 + uniqueBy[i] * 44, 90 + 44 * uniqueBx[i], &ON);
+		switch (uniqueBn[i]) {
+		case 1: {
+			settextstyle(20, 0, "楷体");
+			char buffer[20];
+			snprintf(buffer, sizeof(buffer), "%d", numB[i][0]+1);
+			outtextxy(60 + 940 + uniqueBy[i] * 44 + 10, 90 + 44 * uniqueBx[i] + 10, buffer);
+			break;
+		}
+		case 2: {
+			settextstyle(18, 0, "楷体");
+			char buffer[20];
+			snprintf(buffer, sizeof(buffer), "%d", numB[i][0] + 1);
+			outtextxy(60 + 940 + uniqueBy[i] * 44 + 5, 90 + 44 * uniqueBx[i] + 10+5, buffer);
+			snprintf(buffer, sizeof(buffer), "%d", numB[i][1] + 1);
+			outtextxy(60 + 940 + uniqueBy[i] * 44 + 9+14, 90 + 44 * uniqueBx[i] + 10+5, buffer);
+			break;
+		}
+		case 3: {
+			settextstyle(13, 0, "楷体");
+			char buffer[20];
+			snprintf(buffer, sizeof(buffer), "%d", numB[i][0] + 1);
+			outtextxy(60 + 940 + uniqueBy[i] * 44 + 5, 90 + 44 * uniqueBx[i] + 5, buffer);
+			snprintf(buffer, sizeof(buffer), "%d", numB[i][1] + 1);
+			outtextxy(60 + 940 + uniqueBy[i] * 44 + 44-15, 90 + 44 * uniqueBx[i] + 5, buffer);
+			snprintf(buffer, sizeof(buffer), "%d", numB[i][2] + 1);
+			outtextxy(60 + 940 + uniqueBy[i] * 44 + 5, 90 + 44 * uniqueBx[i] +44-15, buffer);
+			break;
+		}
+		case 4: {
+			settextstyle(13, 0, "楷体");
+			char buffer[20];
+			snprintf(buffer, sizeof(buffer), "%d", numB[i][0] + 1);
+			outtextxy(60 + 940 + uniqueBy[i] * 44 + 5, 90 + 44 * uniqueBx[i] + 5, buffer);
+			snprintf(buffer, sizeof(buffer), "%d", numB[i][1] + 1);
+			outtextxy(60 + 940 + uniqueBy[i] * 44 + 44 - 15, 90 + 44 * uniqueBx[i] + 5, buffer);
+			snprintf(buffer, sizeof(buffer), "%d", numB[i][2] + 1);
+			outtextxy(60 + 940 + uniqueBy[i] * 44 + 5, 90 + 44 * uniqueBx[i] + 44 - 15, buffer);
+			snprintf(buffer, sizeof(buffer), "%d", numB[i][3] + 1);
+			outtextxy(60 + 940 + uniqueBy[i] * 44 + 44-15, 90 + 44 * uniqueBx[i] + 44 - 15, buffer);
+			break;
+		}
+		}
+		
+		
+	}
 }
