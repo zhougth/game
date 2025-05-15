@@ -97,11 +97,26 @@ fflag:
 			else continue;
 		}
 	}
+	
 	relativeB[0][0] = realB[0][0];
 	relativeB[0][1] = realB[0][1];
 	for (int i = 1; i < n ; i++) {
 		relativeB[i][0] = relativeB[i - 1][0] + directionx[Adir[i - 1]] + (-1) * directionx[Bdir[i - 1]];
 		relativeB[i][1] = relativeB[i - 1][1] + directiony[Adir[i - 1]] + (-1) * directiony[Bdir[i - 1]];
+	}//创建B的相对航迹
+
+	for (int i = 0; i < n; i++) {
+		if (!(judgeIn(10, 10, relativeB[i][0], relativeB[i][1]))) {
+			goto fflag;
+		}
+	}//判断B的相对轨迹是否都在表格内，若不在则重新规划路线
+
+	int check1[10][10] = {0};//用来记录各个点出现的次数
+	for (int i = 0; i < n; i++) {
+		check1[relativeB[i][0]][relativeB[i][1]]++;
+		if (check1[relativeB[i][0]][relativeB[i][1]] > 4) {
+			goto fflag;//要是b的相对航迹在同一个点出现4次以上，则重新规划路线，避免出现显示错误
+		}
 	}
 	total[0] = A;
 	total[1] = relativeB;
@@ -128,17 +143,7 @@ void Random(int n) {//n指的是步数
 	for (int i = 0; i < 3; i++) {
 		total[i] = nullptr;
 	}
-	bool ck = false;
-	do {
-		total = random(n , A, realB, relativeB, total);
-		ck = false;
-		for (int i = 0; i < n; i++) {
-			if (!(judgeIn(10, 10, total[1][i][0], total[1][i][1]))) {
-				ck = true;
-				break;
-			}
-		}
-	} while (ck);
+	total = random(n, A, realB, relativeB, total);
 	cout << "A" << endl;
 	for (int i = 0; i < n; i++) {
 		cout << total[0][i][0] + 1 << "  " << total[0][i][1] + 1 << endl;
@@ -376,7 +381,7 @@ void showRelativeB(int** relativeB, int size, int stepNum) {
 			break;
 		}
 		case 3: {
-			settextstyle(13, 0, "楷体");
+			settextstyle(14, 0, "楷体");
 			char buffer[20];
 			snprintf(buffer, sizeof(buffer), "%d", numB[i][0] + 1);
 			outtextxy(60 + 940 + uniqueBy[i] * 44 + 5, 90 + 44 * uniqueBx[i] + 5, buffer);
@@ -387,7 +392,7 @@ void showRelativeB(int** relativeB, int size, int stepNum) {
 			break;
 		}
 		case 4: {
-			settextstyle(13, 0, "楷体");
+			settextstyle(14, 0, "楷体");
 			char buffer[20];
 			snprintf(buffer, sizeof(buffer), "%d", numB[i][0] + 1);
 			outtextxy(60 + 940 + uniqueBy[i] * 44 + 5, 90 + 44 * uniqueBx[i] + 5, buffer);

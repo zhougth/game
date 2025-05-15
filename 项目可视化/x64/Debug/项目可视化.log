@@ -1,5 +1,6 @@
 ﻿  game.cpp
   main.cpp
+  players.cpp
   randomMode.cpp
   solidMode.cpp
   正在生成代码...

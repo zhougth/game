@@ -129,6 +129,7 @@
   <ItemGroup>
     <ClCompile Include="game.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="players.cpp" />
     <ClCompile Include="randomMode.cpp" />
     <ClCompile Include="solidMode.cpp" />
   </ItemGroup>
@@ -136,6 +137,7 @@
     <ClInclude Include="game.h" />
     <ClInclude Include="randomMode.h" />
     <ClInclude Include="solidMode.h" />
+    <ClInclude Include="players.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
