@@ -342,15 +342,6 @@ void showRelativeB(int** relativeB, int size, int stepNum) {
 			numB.push_back({ i });//
 		}
 	}
-/*	for (int i = 0; i < stepNum; i++) {//遍历路径
-		for (int j = 0; j < tmp; j++) {//遍历去重后的路径
-			if (relativeB[i][0] == uniqueBx[j] && relativeB[i][1] == uniqueBy[j]) {//找到那个点
-				numB[j].push_back(i);//
-				cout << "i=" << i << "  j==" << j << endl;
-				break;
-			}
-		}
-	}*/
 	cout << "去重后共" << tmp << endl;
 	for (int i = 0; i < tmp; i++) {
 		cout << uniqueBx[i] + 1 << "," << uniqueBy[i] + 1 << "   经过" << uniqueBn[i] << "次" << endl;
