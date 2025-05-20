@@ -1,6 +1,7 @@
 #include"game.h"
 #include"solidMode.h"
 #include"randomMode.h"
+#include"players.h"
 using namespace std;
 void button::setColor(COLORREF colorr) {
 	color = colorr;
@@ -124,7 +125,7 @@ bool checkIn(MOUSEMSG m,int x1,int y1,int x2,int y2) {
 	}
 	return false;
 }
-void menu() {
+void menu(players& Player) {
 	initgraph(1500, 800);
 	IMAGE mm;
 	loadimage(&mm, _T("脑力航迹.jpg"), 1500, 800);
@@ -160,7 +161,7 @@ void menu() {
 				EndBatchDraw();
 				MOUSEMSG m1 = GetMouseMsg();
 				if (checkIn(m1, 625, 400, 825, 480)) {
-					SolidMode();
+					SolidMode(Player);
 				}
 				if (checkIn(m1, 625, 500, 825, 580)) {
 					Random(10);
@@ -381,6 +382,7 @@ int showAns(int stepNum, int size, int*** total) {
 		break;
 	}
 	case 10: {
+		
 		loadimage(&ON, _T("on.png"), 44, 44);
 		loadimage(&OFF, _T("off.png"), 44, 44);
 		for (int i = 0; i < size; i++) {
@@ -390,6 +392,8 @@ int showAns(int stepNum, int size, int*** total) {
 				putimage( 60 + 940 + j * 44, 90 + 44 * i, &OFF);
 			}
 		}
+		settextcolor(BLACK);
+		showRelativeB(total[1], size, stepNum);
 		int a = 1, b = 1;
 		for (int i = 0; i < stepNum; i++) {
 			putimage( 40 + total[2][i][1] * 44, 90 + 44 * total[2][i][0], &ON);
@@ -398,13 +402,6 @@ int showAns(int stepNum, int size, int*** total) {
 			char buffer[20];
 			snprintf(buffer, sizeof(buffer), "%d", i + 1);
 			outtextxy( 520 + total[0][i][1] * 44 + 10, 90 + 44 * total[0][i][0] + 10, buffer);//A的实际轨迹
-			if (i > 0) {
-				if (total[1][i][0] == total[1][i - 1][0] && total[1][i][1] == total[1][i - 1][1]) {
-					settextcolor(RED);
-				}
-			}
-			putimage(60 + 940 + total[1][i][1] * 44, 90 + 44 * total[1][i][0], &ON);
-			outtextxy( 60 + 940 + total[1][i][1] * 44 + 10, 90 + 44 * total[1][i][0] + 10, buffer);
 			settextcolor(BLACK);
 			outtextxy( 40 + total[2][i][1] * 44+10, 90 + 44 * total[2][i][0]+10, buffer);
 		}

@@ -1,5 +1,6 @@
 #include "solidMode.h"
 #include "game.h"
+#include "players.h"
 using namespace std;
 int*** solidTopic::getTopic(int num) {
 	switch (num) {
@@ -122,7 +123,7 @@ void solidTopic::freeMemory(int n) {
 	delete[] total;
 	total = NULL;
 }
-void game(int stepNum, int size, int level) {
+void game(int stepNum, int size, int level,players& Player) {
 	settextstyle(35, 0, "楷体"); 
 	setbkmode(TRANSPARENT);
 	setlinecolor(BLACK);
@@ -188,11 +189,13 @@ void game(int stepNum, int size, int level) {
 						
 						switch (state) {
 						case 1: {
+							Player.winSolidMode(level);
 							solidtopic.freeMemory(1);
-							game(5, 5, 1);
+							game(5, 5, 1, Player);
 							break;
 						}
 						case 2: {
+							Player.winSolidMode(level);
 							solidtopic.freeMemory(1);
 							return;
 						}
@@ -209,7 +212,7 @@ void game(int stepNum, int size, int level) {
 								}
 								else if (tp == 2) {//重新开始
 									solidtopic.freeMemory(1);
-									game(3, 3, 0);
+									game(3, 3, 0, Player);
 									break;
 								}
 								break;
@@ -217,7 +220,7 @@ void game(int stepNum, int size, int level) {
 							case 2: {
 								//重新开始
 								solidtopic.freeMemory(1);
-								game(3, 3, 0);
+								game(3, 3, 0, Player);
 								break;
 							}
 							case 3: {
@@ -290,14 +293,16 @@ void game(int stepNum, int size, int level) {
 						
 						switch (state) {
 						case 1: {
+							Player.winSolidMode(level);
 							solidtopic.freeMemory(2);
 							if (level == 1)
-								game(5, 5, 2);
+								game(5, 5, 2, Player);
 							else if (level == 2)
-								game(7, 10, 3);
+								game(7, 10, 3, Player);
 							break;
 						}
 						case 2: {
+							Player.winSolidMode(level);
 							solidtopic.freeMemory(2);
 							return;
 						}
@@ -314,7 +319,7 @@ void game(int stepNum, int size, int level) {
 								}
 								else if (tp == 2) {//重新开始
 									solidtopic.freeMemory(2);
-									game(5, 5, level);
+									game(5, 5, level, Player);
 									break;
 								}
 								break;
@@ -322,7 +327,7 @@ void game(int stepNum, int size, int level) {
 							case 2: {
 								//重新开始
 								solidtopic.freeMemory(2);
-								game(5, 5, level);
+								game(5, 5, level, Player);
 								break;
 							}
 							case 3: {
@@ -397,11 +402,13 @@ void game(int stepNum, int size, int level) {
 					if (int state = mouseMsg(start, &msg, num, ans, total[2], 10, 7, 40, 90, 480, 530)) {
 						switch (state) {
 						case 1: {
+							Player.winSolidMode(level);
 							solidtopic.freeMemory(level+1);
-							game(7, 10, level+1);
+							game(7, 10, level+1, Player);
 							break;
 						}
 						case 2: {
+							Player.winSolidMode(level);
 							solidtopic.freeMemory(level+1);
 							return;
 						}
@@ -418,7 +425,7 @@ void game(int stepNum, int size, int level) {
 								}
 								else if (tp == 2) {//重新开始
 									solidtopic.freeMemory(level+1);
-									game(7, 10, level);
+									game(7, 10, level, Player);
 									break;
 								}
 								break;
@@ -426,7 +433,7 @@ void game(int stepNum, int size, int level) {
 							case 2: {
 								//重新开始
 								solidtopic.freeMemory(level+1);
-								game(7, 10, level);
+								game(7, 10, level, Player);
 								break;
 							}
 							case 3: {
@@ -482,7 +489,7 @@ int mouseMsg(int start,ExMessage* msg, int& n, int** ans, int** realB, int size,
 	}
 	else return 0;
 }
-void SolidMode() {
+void SolidMode(players& Player) {
 	IMAGE mm;
 	loadimage(&mm, _T("关卡模式背景.jpg"), 1500, 800);
 	IMAGE one, two, three, four, five, six;
@@ -508,21 +515,20 @@ void SolidMode() {
 		EndBatchDraw();
 		MOUSEMSG m = GetMouseMsg();
 		if (checkIn(m,325,250,525,450)) {
-			game(3, 3, 0);
-			
+			game(3, 3, 0,Player);
 		}
 		if (checkIn(m, 625, 250, 825, 450)) {
-			game(5, 5, 1);
+			game(5, 5, 1, Player);
 			
 		}
 		if (checkIn(m, 925, 250, 1125, 450)) {
-			game(5, 5, 2);
+			game(5, 5, 2, Player);
 		}
 		if (checkIn(m, 325, 550, 525, 750)) {
-			game(7, 10, 3);
+			game(7, 10, 3, Player);
 		}
 		if (checkIn(m, 625, 550, 825, 750)) {
-			game(7, 10, 4);
+			game(7, 10, 4, Player);
 		}
 		if (checkIn(m,1200,625,1425,725)) {
 			return;

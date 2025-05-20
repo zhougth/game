@@ -7,6 +7,7 @@
 #include<ctime>
 #include"solidMode.h"
 #include"randomMode.h"
+#include"players.h"
 using namespace std;
 class button {
 public:
@@ -30,7 +31,7 @@ private:
 	int num = 0;
 };
 bool check(int **a, int **b, int n);
-void menu();
+void menu(players& Player);
 int timer1();
 void timer2(int);
 void retreat(int& n, int** ans, int** realB, int size, int stepNum, int x1, int y1, int x2, int y2);

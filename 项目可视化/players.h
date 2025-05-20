@@ -11,8 +11,10 @@ struct TIME {
 	void initial(int tmpTime);//tmpTime单位是毫秒
 	void addTime(TIME other);
 };
+bool operator> (TIME a,TIME b);
 
-struct players {
+class players {
+private:
 	string name;
 	string filePath;
 	bool solid[6];//关卡模式通关情况
@@ -21,17 +23,26 @@ struct players {
 	vector<TIME> totalTime;
 	int maxNum;
 	TIME maxTime;//不是最多的时间，指的是通关随机关卡最多且最快的时间
+public:
 	void initial(string Name);//初始化
 	void save();//保存数据，目前是删除文件然后重新写一个
+	void sort();
+	int getMaxNum();
+	TIME getMaxTime();
+	string getName();
+	void winSolidMode(int num);
 };
 
-struct allPlayers {
+class allPlayers {
+private:
 	int num;//玩家总数量
 	vector<players> Players;
-	void getData();
+public:
+	void getData();//从文件中获取所有玩家名字
 	void addPlayers(players player);
+	void sort();
 	void save();
 };
 
-void PlayersMenu();
+players PlayersMenu();
 

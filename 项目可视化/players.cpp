@@ -14,7 +14,24 @@ void TIME::addTime(TIME other) {
 	this->second %= 60;
 	this->hours += this->mins / 60;
 	this->mins /= 60;
-	
+}
+bool operator> (TIME a, TIME b) {
+	if (a.hours > b.hours) {
+		return true;
+	}
+	else if (a.hours == b.hours) {
+		if (a.mins > b.mins) {
+			return true;
+		}
+		else if (a.mins == b.mins) {
+			if (a.second > b.second) {
+				return true;
+			}
+			else return false;
+		}
+		else return false;
+	}
+	else return false;
 }
 
 void players::initial(string Name) {
@@ -59,28 +76,43 @@ void players::save() {
 	}
 	ofs.close();
 }
-
-void PlayersMenu() {
-	cout << "1.创建角色" << endl;
-	cout << "2.读取角色" << endl;
-	int n;
-	cin >> n;
-	cout << "请输入用户名称" << endl;
-	string tmpName;
-	cin >> tmpName;
-	players* player = new players;
-	player->initial(tmpName);
-	switch (n) {
-	case 1: {
-		
-		break;
+void players::sort() {
+	for (int i = 0; i < randomNum-1; i++) {
+		for (int j = 0; j < randomNum - 1 - i; j++) {//冒泡排序
+			if (succeedNum[j] < succeedNum[j + 1]) {
+				int tmp1 = succeedNum[j];
+				succeedNum[j] = succeedNum[j + 1];
+				succeedNum[j + 1] = tmp1;
+				TIME tmp2 = totalTime[j];
+				totalTime[j] = totalTime[j + 1];
+				totalTime[j + 1] = tmp2;
+			}//交换
+			else if (succeedNum[j] == succeedNum[j + 1]) {
+				if (totalTime[j] > totalTime[j + 1]) {
+					int tmp1 = succeedNum[j];
+					succeedNum[j] = succeedNum[j + 1];
+					succeedNum[j + 1] = tmp1;
+					TIME tmp2 = totalTime[j];
+					totalTime[j] = totalTime[j + 1];
+					totalTime[j + 1] = tmp2;
+				}
+			}
+		}
 	}
-	case 2: {
-
-		break;
-	}
-	}
-	delete player;
+	maxNum = succeedNum[0];
+	maxTime = totalTime[0];
+}
+int players::getMaxNum() {
+	return maxNum;
+}
+TIME players::getMaxTime() {
+	return maxTime;
+}
+string players::getName() {
+	return name;
+}
+void players::winSolidMode(int num) {
+	solid[num] = true;
 }
 
 void allPlayers::getData() {
@@ -99,12 +131,40 @@ void allPlayers::addPlayers(players player) {
 	this->num++;
 	this->Players.push_back(player);
 }
+void allPlayers::sort() {//总排行榜，根据各个用户的最多通关数和时间排序
+	for (int i = 0; i < num++; i++) {
+		for (int j = 0; j < num - 1 - i; j++) {
+			if (Players[j].getMaxNum() < Players[j + 1].getMaxNum()) {
+				players tmp = Players[j];
+				Players[j] = Players[j + 1];
+				Players[j + 1] = tmp;
+			}
+			else if (Players[j].getMaxNum() == Players[j + 1].getMaxNum()) {
+				if (Players[j].getMaxTime() > Players[j + 1].getMaxTime()) {
+					players tmp = Players[j];
+					Players[j] = Players[j + 1];
+					Players[j + 1] = tmp;
+				}
+			}
+		}
+	}
+}
+
 void allPlayers::save() {
 	ofstream ofs;
 	ofs.open("players/allPlayers.txt", ios::out | ios::trunc);//目前想法是先删除所有数据再重新输入新的数据（为了修改用户数量）
 	ofs << this->num << endl;
 	for (int i = 0; i < this->num; i++) {
-		ofs << Players[i].name << endl;
+		ofs << Players[i].getName() << endl;
 	}
 	ofs.close();
+}
+
+players PlayersMenu() {
+	cout << "请输入用户名称" << endl;
+	string tmpName;
+	cin >> tmpName;
+	players player;
+	player.initial(tmpName);
+	return player;
 }
