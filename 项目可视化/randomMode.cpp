@@ -131,7 +131,7 @@ fflag:
 	delete[] visitB;
 	return total;
 }
-void Random(int n) {//n指的是步数
+void Random(int n,players player) {//n指的是步数
 	settextstyle(35, 0, "楷体");
 	setbkmode(TRANSPARENT);
 	setlinecolor(BLACK);
@@ -158,6 +158,7 @@ void Random(int n) {//n指的是步数
 	}
 	//上面是获取题目以及答案
 flag:
+	player.startRandom();
 	IMAGE mPlay;
 	loadimage(&mPlay, _T("背景.jpg"), 1500, 800);
 	putimage(0, 0, &mPlay);
@@ -189,7 +190,7 @@ flag:
 	drawRetreat();
 	while (1) {
 		BeginBatchDraw();
-		timer2(start);
+		int duringTime=timer2(start);
 		settextstyle(20, 0, "楷体");
 		settextcolor(BLACK);
 		ExMessage msg;
@@ -200,16 +201,25 @@ flag:
 			case WM_LBUTTONDOWN: {
 				if (int state=randomMsg(start,&msg, ans, realB, num, n)) {				
 					switch (state) {
-					case 1: {
+					case 1: {//继续
+						TIME time;
+						time.initial(duringTime);
+						player.winRandom(time);
 						freeMemory(n , A, realB, relativeB, total);
-						Random(n);//进行下一个随机关卡
+						Random(n,player);//进行下一个随机关卡
 						break;
 					}
-					case 2: {
+					case 2: {//退出
+						TIME time;
+						time.initial(duringTime);
+						player.endRandom(time);
 						freeMemory(n, A, realB, relativeB, total);
 						return;
 					}
 					case 9: {//失败
+						TIME time;
+						time.initial(duringTime);
+						player.endRandom(time);
 						int tmpState=lose(start);
 						switch (tmpState) {
 						case 1: {
@@ -230,7 +240,7 @@ flag:
 							goto flag;//重新开始当前的随机关卡
 							break;
 						}
-						case 3: {
+						case 3: {//退出
 							freeMemory(n, A, realB, relativeB, total);
 							return;
 						}
@@ -242,7 +252,8 @@ flag:
 				else if (inRetreat(msg)) {
 					retreat(num, ans, realB, 10, n, 40, 90, 480, 530);
 				}
-				else if (inReturn(msg)) {
+				else if (inReturn(msg)) {//游戏过程中退出，目前不保存信息
+					player.clean();
 					freeMemory(n , A, realB, relativeB, total);
 					return;
 				}

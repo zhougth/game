@@ -10,8 +10,10 @@ struct TIME {
 	int second;
 	void initial(int tmpTime);//tmpTime单位是毫秒
 	void addTime(TIME other);
+	bool ifZero();
 };
 bool operator> (TIME a,TIME b);
+TIME& operator +=(TIME &a, TIME b);
 
 class players {
 private:
@@ -23,6 +25,8 @@ private:
 	vector<TIME> totalTime;
 	int maxNum;
 	TIME maxTime;//不是最多的时间，指的是通关随机关卡最多且最快的时间
+	int randomTimes;//保存当次随机模式连续获胜的次数
+	bool state;//用来保存当前状态，是否在随机模式
 public:
 	void initial(string Name);//初始化
 	void save();//保存数据，目前是删除文件然后重新写一个
@@ -31,6 +35,10 @@ public:
 	TIME getMaxTime();
 	string getName();
 	void winSolidMode(int num);
+	void startRandom();
+	void winRandom(TIME time);
+	void endRandom(TIME time);
+	void clean();
 };
 
 class allPlayers {

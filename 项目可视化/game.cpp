@@ -75,7 +75,7 @@ int timer1() {
 	startTime = clock();
 	return startTime;
 }
-void timer2(int startTime) {
+int timer2(int startTime) {
 	settextstyle(35, 0, "¿¬Ìå");
 	int durTime = clock() - startTime;
 	int min = durTime / 1000 / 60;
@@ -100,6 +100,7 @@ void timer2(int startTime) {
 	else {
 		outtextxy(250 + 20 + 20 + 150, 570 + 50 + 10, buffers);
 	}
+	return durTime;
 }
 bool check(int **a, int **b, int n) {
 	for (int i = 0; i < n; i++) {
@@ -164,7 +165,7 @@ void menu(players& Player) {
 					SolidMode(Player);
 				}
 				if (checkIn(m1, 625, 500, 825, 580)) {
-					Random(10);
+					Random(10,Player);
 				}
 				if (checkIn(m1, 625, 600, 825, 680)) {
 					break;

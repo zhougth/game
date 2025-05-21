@@ -15,6 +15,12 @@ void TIME::addTime(TIME other) {
 	this->hours += this->mins / 60;
 	this->mins /= 60;
 }
+bool TIME::ifZero() {
+	if (hours + mins + second == 0) {
+		return true;
+	}
+	return false;
+}
 bool operator> (TIME a, TIME b) {
 	if (a.hours > b.hours) {
 		return true;
@@ -33,6 +39,16 @@ bool operator> (TIME a, TIME b) {
 	}
 	else return false;
 }
+TIME& operator +=(TIME& a, TIME b) {
+	a.hours += b.hours;
+	a.mins += b.mins;
+	a.second += b.second;
+	a.mins += a.second / 60;
+	a.second %= 60;
+	a.hours += a.mins / 60;
+	a.mins %= 60;
+	return a;
+}
 
 void players::initial(string Name) {
 	this->name = Name;
@@ -43,6 +59,10 @@ void players::initial(string Name) {
 		fs << name << ' ' << filePath << endl;
 		fs << 0 << " " << 0 << " "<<0 << " "<<0 << " "<<0 << " "<<0 << endl;//关卡模式的通关情况
 		fs << 0 << endl;//随机模式次数
+		for (int i = 0; i < 6; i++) {
+			solid[i] = false;
+		}
+		randomNum = 0;
 	}
 	else {//文件存在,则读取数据
 		fs >> name >> filePath;
@@ -61,6 +81,7 @@ void players::initial(string Name) {
 			totalTime[i].second= tmpTime.second;
 		}
 	}
+	state = false;
 	fs.close();
 }
 void players::save() {
@@ -113,6 +134,33 @@ string players::getName() {
 }
 void players::winSolidMode(int num) {
 	solid[num] = true;
+}
+void players::startRandom() {
+	if (!state) {
+		state = true;
+		randomTimes = 0;
+		TIME tmp;
+		tmp.initial(0);
+		totalTime[randomNum] = tmp;
+		succeedNum[randomNum] = 0;
+	}
+}
+void players::winRandom(TIME time) {
+	randomTimes++;
+	totalTime[randomNum] += time;
+}
+void players::endRandom(TIME time) {
+	succeedNum[randomNum] = randomTimes;
+	totalTime[randomNum]+= time;
+	randomNum++;
+	state = false;//退出这次随机
+}
+void players::clean() {
+	TIME tmp;
+	tmp.initial(0);
+	totalTime[randomNum] = tmp;
+	succeedNum[randomNum] = 0;
+	state = false;
 }
 
 void allPlayers::getData() {
