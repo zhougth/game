@@ -1,0 +1,5 @@
+test01 players/test01.txt
+1 0 0 0 0 0
+2
+2 0 1 33
+0 0 0 13

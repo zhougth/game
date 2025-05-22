@@ -74,11 +74,9 @@ void players::initial(string Name) {
 		TIME tmpTime;
 		for (int i = 0; i < randomNum; i++) {
 			fs >> tmpTotalNum;
-			succeedNum[i] = tmpTotalNum;
+			succeedNum.push_back( tmpTotalNum);
 			fs >> tmpTime.hours >> tmpTime.mins >> tmpTime.second;
-			totalTime[i].hours = tmpTime.hours;
-			totalTime[i].mins = tmpTime.mins;
-			totalTime[i].second= tmpTime.second;
+			totalTime.push_back(tmpTime);
 		}
 	}
 	state = false;
@@ -92,14 +90,18 @@ void players::save() {
 		ofs << solid[i] << (i == 5 ? '\n' : ' ');
 	}
 	ofs << randomNum << endl;
+	cout << "randomNum保存成功" << endl;
 	for (int i = 0; i < randomNum; i++) {
 		ofs << succeedNum[i] <<' ' << totalTime[i].hours<<' ' << totalTime[i].mins<<' ' << totalTime[i].second << endl;
+		cout << "第" << i << "次随机模式保存成功" << endl;
 	}
 	ofs.close();
 }
 void players::sort() {
-	for (int i = 0; i < randomNum-1; i++) {
-		for (int j = 0; j < randomNum - 1 - i; j++) {//冒泡排序
+	if (succeedNum.size() == 0)return;
+	if (this->randomNum == 0)return;
+	for (int i = 0; i < succeedNum.size() -1; i++) {
+		for (int j = 0; j < succeedNum.size() -1 - i; j++) {//冒泡排序
 			if (succeedNum[j] < succeedNum[j + 1]) {
 				int tmp1 = succeedNum[j];
 				succeedNum[j] = succeedNum[j + 1];
@@ -141,8 +143,8 @@ void players::startRandom() {
 		randomTimes = 0;
 		TIME tmp;
 		tmp.initial(0);
-		totalTime[randomNum] = tmp;
-		succeedNum[randomNum] = 0;
+		totalTime.push_back( tmp);
+		succeedNum.push_back( 0);
 	}
 }
 void players::winRandom(TIME time) {
@@ -153,26 +155,34 @@ void players::endRandom(TIME time) {
 	succeedNum[randomNum] = randomTimes;
 	totalTime[randomNum]+= time;
 	randomNum++;
+	cout << "randomNum==" << randomNum << endl;
 	state = false;//退出这次随机
 }
 void players::clean() {
 	TIME tmp;
 	tmp.initial(0);
-	totalTime[randomNum] = tmp;
-	succeedNum[randomNum] = 0;
+	totalTime.erase(totalTime.begin()+randomNum);
+	succeedNum.erase(succeedNum.begin() + randomNum);
 	state = false;
 }
 
 void allPlayers::getData() {
 	ifstream ifs;
 	ifs.open("players/allPlayers.txt", ios::in); 
-	string tmpName;
-	ifs >> this->num;
-	while (ifs >> tmpName) {
-		players player;
-		player.initial(tmpName);
-		Players.push_back(player);
+	if (ifs.eof()) {//如果打开是最后一行，则说明是刚刚创建
+		this->num=0;
+		return;
 	}
+	else {
+		string tmpName;
+		ifs >> this->num;
+		while (ifs >> tmpName) {
+			players player;
+			player.initial(tmpName);
+			Players.push_back(player);
+		}
+	}
+	
 	ifs.close();
 }
 void allPlayers::addPlayers(players player) {
@@ -180,7 +190,8 @@ void allPlayers::addPlayers(players player) {
 	this->Players.push_back(player);
 }
 void allPlayers::sort() {//总排行榜，根据各个用户的最多通关数和时间排序
-	for (int i = 0; i < num++; i++) {
+	cout << "排序开始" << endl;
+	for (int i = 0; i < num-1; i++) {
 		for (int j = 0; j < num - 1 - i; j++) {
 			if (Players[j].getMaxNum() < Players[j + 1].getMaxNum()) {
 				players tmp = Players[j];
@@ -194,8 +205,10 @@ void allPlayers::sort() {//总排行榜，根据各个用户的最多通关数和时间排序
 					Players[j + 1] = tmp;
 				}
 			}
+			cout << "排序中" << i << endl;
 		}
 	}
+	
 }
 
 void allPlayers::save() {

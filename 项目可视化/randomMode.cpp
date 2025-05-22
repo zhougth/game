@@ -131,7 +131,7 @@ fflag:
 	delete[] visitB;
 	return total;
 }
-void Random(int n,players player) {//n指的是步数
+void Random(int n,players& player) {//n指的是步数
 	settextstyle(35, 0, "楷体");
 	setbkmode(TRANSPARENT);
 	setlinecolor(BLACK);

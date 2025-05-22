@@ -1,0 +1,4 @@
+test04 players/test04.txt
+0 0 0 0 0 0
+1
+0 0 0 2
