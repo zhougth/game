@@ -11,6 +11,7 @@ struct TIME {
 	void initial(int tmpTime);//tmpTimeµ¥Î»ÊÇºÁÃë
 	void addTime(TIME other);
 	bool ifZero();
+	void show(int x,int y);
 };
 bool operator> (TIME a,TIME b);
 TIME& operator +=(TIME &a, TIME b);
@@ -50,6 +51,7 @@ public:
 	void addPlayers(players player);
 	void sort();
 	void save();
+	void showRank(players);
 };
 
 players PlayersMenu();

@@ -174,7 +174,7 @@ void menu(players& Player) {
 		}
 		if (checkIn(m,625,500,825,580)) {//规则
 			IMAGE rule;
-			loadimage(&rule, _T("规则.png"), 1500, 800);
+			loadimage(&rule, _T("规则.jpg"), 1500, 800);
 			putimage(0, 0, &rule);
 			IMAGE bk;
 			loadimage(&bk,_T("返回.png"),180,80);

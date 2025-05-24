@@ -1,4 +1,6 @@
 #include"players.h"
+#include<graphics.h>
+#include<conio.h>
 void TIME::initial(int tmpTime) {
 	tmpTime /= 1000;//转化为秒
 	this->hours = tmpTime / 3600;
@@ -20,6 +22,29 @@ bool TIME::ifZero() {
 		return true;
 	}
 	return false;
+}
+void TIME::show(int x,int y) {
+
+	settextcolor(RGB(230, 180, 85));
+	char bufferm[20];
+	char buffers[20];
+	snprintf(bufferm, sizeof(bufferm), "%d", mins);
+	snprintf(buffers, sizeof(buffers), "%d", second);
+	if (mins < 10) {
+		outtextxy(x, y, "0");
+		outtextxy(x+20, y, bufferm);
+	}
+	else {
+		outtextxy(x , y, bufferm);
+	}
+	outtextxy(x+40, y, ":");
+	if (second < 10) {
+		outtextxy(x+60, y, "0");
+		outtextxy(x+60+20, y, buffers);
+	}
+	else {
+		outtextxy(x+60, y, buffers);
+	}
 }
 bool operator> (TIME a, TIME b) {
 	if (a.hours > b.hours) {
@@ -190,6 +215,9 @@ void allPlayers::addPlayers(players player) {
 	this->Players.push_back(player);
 }
 void allPlayers::sort() {//总排行榜，根据各个用户的最多通关数和时间排序
+	if (this->num != Players.size()) {
+		this->num = Players.size();
+	}
 	cout << "排序开始" << endl;
 	for (int i = 0; i < num-1; i++) {
 		for (int j = 0; j < num - 1 - i; j++) {
@@ -212,6 +240,9 @@ void allPlayers::sort() {//总排行榜，根据各个用户的最多通关数和时间排序
 }
 
 void allPlayers::save() {
+	if (this->num != Players.size()) {
+		this->num = Players.size();
+	}
 	ofstream ofs;
 	ofs.open("players/allPlayers.txt", ios::out | ios::trunc);//目前想法是先删除所有数据再重新输入新的数据（为了修改用户数量）
 	ofs << this->num << endl;
@@ -220,12 +251,49 @@ void allPlayers::save() {
 	}
 	ofs.close();
 }
+void allPlayers::showRank(players P) {
+	this->sort();
+	IMAGE rank;
+	loadimage(&rank, _T("排行榜.png"), 1500, 800);
+	putimage(0, 0, &rank);
+	settextcolor(RGB(230, 180, 85));
+	settextstyle(25, 0, "楷体");
+	setbkmode(TRANSPARENT);
+	if (this->num >= 5) {
+		//500 360   x710  x870    ywidth60
+		for (int i = 0; i < 5; i++) {
+			outtextxy(500, 360 + i * 60, Players[i].getName().c_str());
+			int tmp = Players[i].getMaxNum();
+			char buffer[20];
+			snprintf(buffer, sizeof(buffer), "%d", tmp);
+			outtextxy(710, 360 + i * 60, buffer);
+			Players[i].getMaxTime().show(870, 360 + i * 60);
+		}
+	}
+	else {
+		for (int i = 0; i < this->num; i++) {
+			outtextxy(500, 360 + i * 60, Players[i].getName().c_str());
+			int tmp = Players[i].getMaxNum();
+			char buffer[20];
+			snprintf(buffer, sizeof(buffer), "%d", tmp);
+			outtextxy(710, 360 + i * 60, buffer);
+			Players[i].getMaxTime().show(870, 360 + i * 60);
+		}
+	}
+	string tmpName = P.getName() + "(你)";
+	outtextxy(500, 360 + 5 * 60, tmpName.c_str());
+	char buffer[20];
+	snprintf(buffer, sizeof(buffer), "%d", P.getMaxNum());
+	outtextxy(710, 360 + 5 * 60, buffer);
+	P.getMaxTime().show(870, 360 + 5 * 60);
+}
 
 players PlayersMenu() {
-	cout << "请输入用户名称" << endl;
-	string tmpName;
-	cin >> tmpName;
 	players player;
-	player.initial(tmpName);
+	initgraph(640, 480);
+	char username[256] = { 0 };
+	// 调用InputBox函数弹出输入框
+	InputBox(username, 256, "请输入用户名：", "用户登录", NULL, 0, 0, false);	
+	player.initial(username);
 	return player;
 }

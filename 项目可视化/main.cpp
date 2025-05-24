@@ -1,6 +1,7 @@
 #include<iostream>
 #include "game.h"
 #include"players.h"
+#include<conio.h>
 using namespace std;
 int main() {
 	srand((unsigned int)time(NULL));
@@ -13,5 +14,9 @@ int main() {
 	allplayers.addPlayers(Player);
 	allplayers.sort();
 	allplayers.save();
+	initgraph(1500, 800);
+	allplayers.showRank(Player);
+	system("pause");
+	closegraph();
 	return 0;
 }
