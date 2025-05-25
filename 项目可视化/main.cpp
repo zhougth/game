@@ -8,15 +8,12 @@ int main() {
 	allPlayers allplayers;
 	allplayers.getData();
 	players Player=PlayersMenu();
-	menu(Player);
+	menu(Player,allplayers);
 	Player.sort();
 	Player.save();
 	allplayers.addPlayers(Player);
 	allplayers.sort();
 	allplayers.save();
-	initgraph(1500, 800);
 	allplayers.showRank(Player);
-	system("pause");
-	closegraph();
 	return 0;
 }

@@ -126,7 +126,7 @@ bool checkIn(MOUSEMSG m,int x1,int y1,int x2,int y2) {
 	}
 	return false;
 }
-void menu(players& Player) {
+void menu(players& Player,allPlayers allplayers) {
 	initgraph(1500, 800);
 	IMAGE mm;
 	loadimage(&mm, _T("脑力航迹.jpg"), 1500, 800);
@@ -137,7 +137,7 @@ void menu(players& Player) {
 	loadimage(&Re, _T("退出游戏.png"), 200, 80);
 	IMAGE Solid, Ra, Bk;
 	loadimage(&Solid, _T("关卡模式.png"), 200, 80);
-	loadimage(&Ra, _T("随机模式.png"), 200, 80);
+	loadimage(&Ra, _T("挑战模式.png"), 200, 80);
 	loadimage(&Bk, _T("返回.png"), 200, 80);
 	IMAGE mPlay;
 	loadimage(&mPlay, _T("脑力航迹.jpg"), 1500, 800);

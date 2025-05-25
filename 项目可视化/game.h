@@ -31,7 +31,7 @@ private:
 	int num = 0;
 };
 bool check(int **a, int **b, int n);
-void menu(players& Player);
+void menu(players& Player,allPlayers allplayers);
 int timer1();
 int timer2(int);
 void retreat(int& n, int** ans, int** realB, int size, int stepNum, int x1, int y1, int x2, int y2);

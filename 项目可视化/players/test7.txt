@@ -1,4 +1,0 @@
-test7 players/test7.txt
-0 0 0 0 0 0
-1
-0 0 0 2

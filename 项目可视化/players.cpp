@@ -25,25 +25,25 @@ bool TIME::ifZero() {
 }
 void TIME::show(int x,int y) {
 
-	settextcolor(RGB(230, 180, 85));
+	settextcolor(BLACK);
 	char bufferm[20];
 	char buffers[20];
 	snprintf(bufferm, sizeof(bufferm), "%d", mins);
 	snprintf(buffers, sizeof(buffers), "%d", second);
 	if (mins < 10) {
-		outtextxy(x, y, "0");
-		outtextxy(x+20, y, bufferm);
+		outtextxy(x+10, y, "0");
+		outtextxy(x+10+10, y, bufferm);
 	}
 	else {
-		outtextxy(x , y, bufferm);
+		outtextxy(x+10 , y, bufferm);
 	}
 	outtextxy(x+40, y, ":");
 	if (second < 10) {
-		outtextxy(x+60, y, "0");
-		outtextxy(x+60+20, y, buffers);
+		outtextxy(x+60-10, y, "0");
+		outtextxy(x+60+10-10, y, buffers);
 	}
 	else {
-		outtextxy(x+60, y, buffers);
+		outtextxy(x+60-10, y, buffers);
 	}
 }
 bool operator> (TIME a, TIME b) {
@@ -151,10 +151,19 @@ void players::sort() {
 	maxTime = totalTime[0];
 }
 int players::getMaxNum() {
-	return maxNum;
+	if (this->randomNum == 0) {
+		return 0;
+	}
+	else
+	return this->succeedNum[0];
 }
 TIME players::getMaxTime() {
-	return maxTime;
+	if (this->randomNum == 0) {
+		TIME tmp;
+		tmp.initial(0);
+		return tmp;
+	}
+	else return this->totalTime[0];
 }
 string players::getName() {
 	return name;
@@ -184,8 +193,6 @@ void players::endRandom(TIME time) {
 	state = false;//退出这次随机
 }
 void players::clean() {
-	TIME tmp;
-	tmp.initial(0);
 	totalTime.erase(totalTime.begin()+randomNum);
 	succeedNum.erase(succeedNum.begin() + randomNum);
 	state = false;
@@ -219,6 +226,7 @@ void allPlayers::sort() {//总排行榜，根据各个用户的最多通关数和时间排序
 		this->num = Players.size();
 	}
 	cout << "排序开始" << endl;
+	cout << "num==" << num << endl;
 	for (int i = 0; i < num-1; i++) {
 		for (int j = 0; j < num - 1 - i; j++) {
 			if (Players[j].getMaxNum() < Players[j + 1].getMaxNum()) {
@@ -234,6 +242,7 @@ void allPlayers::sort() {//总排行榜，根据各个用户的最多通关数和时间排序
 				}
 			}
 			cout << "排序中" << i << endl;
+			cout << "j+1==" << j + 1 << endl;
 		}
 	}
 	
@@ -256,28 +265,28 @@ void allPlayers::showRank(players P) {
 	IMAGE rank;
 	loadimage(&rank, _T("排行榜.png"), 1500, 800);
 	putimage(0, 0, &rank);
-	settextcolor(RGB(230, 180, 85));
-	settextstyle(25, 0, "楷体");
+	settextcolor(BLACK);
+	settextstyle(30, 0, "微软雅黑");
 	setbkmode(TRANSPARENT);
 	if (this->num >= 5) {
 		//500 360   x710  x870    ywidth60
 		for (int i = 0; i < 5; i++) {
-			outtextxy(500, 360 + i * 60, Players[i].getName().c_str());
+			outtextxy(500, 360 + i * 60-10, Players[i].getName().c_str());
 			int tmp = Players[i].getMaxNum();
 			char buffer[20];
 			snprintf(buffer, sizeof(buffer), "%d", tmp);
-			outtextxy(710, 360 + i * 60, buffer);
-			Players[i].getMaxTime().show(870, 360 + i * 60);
+			outtextxy(710, 360 + i * 60-10, buffer);
+			Players[i].getMaxTime().show(870, 360-10 + i * 60);
 		}
 	}
 	else {
 		for (int i = 0; i < this->num; i++) {
-			outtextxy(500, 360 + i * 60, Players[i].getName().c_str());
+			outtextxy(500, 360 + i * 60-10, Players[i].getName().c_str());
 			int tmp = Players[i].getMaxNum();
 			char buffer[20];
 			snprintf(buffer, sizeof(buffer), "%d", tmp);
-			outtextxy(710, 360 + i * 60, buffer);
-			Players[i].getMaxTime().show(870, 360 + i * 60);
+			outtextxy(710, 360 + i * 60-10, buffer);
+			Players[i].getMaxTime().show(870, 360-10 + i * 60);
 		}
 	}
 	string tmpName = P.getName() + "(你)";
@@ -286,14 +295,26 @@ void allPlayers::showRank(players P) {
 	snprintf(buffer, sizeof(buffer), "%d", P.getMaxNum());
 	outtextxy(710, 360 + 5 * 60, buffer);
 	P.getMaxTime().show(870, 360 + 5 * 60);
+	IMAGE back;
+	loadimage(&back, _T("返回菜单.png"), 200, 80);
+	putimage(1080, 710, &back);
+	while (1) {
+		MOUSEMSG m = GetMouseMsg();
+		if (m.x >= 1080 && m.x <= 1280 && m.y >= 710 && m.y <= 790 && m.uMsg == WM_LBUTTONDOWN) {
+			return;
+		}
+	}
 }
 
 players PlayersMenu() {
 	players player;
-	initgraph(640, 480);
-	char username[256] = { 0 };
+	initgraph(1500,800);
+	IMAGE bk;
+	loadimage(&bk, "脑力航迹.jpg", 1500, 800);
+	putimage(0, 0, &bk);
+	char username[9] = { 0 };
 	// 调用InputBox函数弹出输入框
-	InputBox(username, 256, "请输入用户名：", "用户登录", NULL, 0, 0, false);	
+	InputBox(username, 9, "请输入用户名（限制8个字符以内）：", "用户登录", NULL, 0, 0, false);	
 	player.initial(username);
 	return player;
 }

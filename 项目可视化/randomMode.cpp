@@ -253,7 +253,9 @@ flag:
 					retreat(num, ans, realB, 10, n, 40, 90, 480, 530);
 				}
 				else if (inReturn(msg)) {//游戏过程中退出，目前不保存信息
-					player.clean();
+					TIME time;
+					time.initial(duringTime);
+					player.endRandom(time);
 					freeMemory(n , A, realB, relativeB, total);
 					return;
 				}
