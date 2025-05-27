@@ -9,11 +9,7 @@ int main() {
 	allplayers.getData();
 	players Player=PlayersMenu();
 	menu(Player,allplayers);
-	Player.sort();
 	Player.save();
-	allplayers.addPlayers(Player);
-	allplayers.sort();
 	allplayers.save();
-	allplayers.showRank(Player);
 	return 0;
 }

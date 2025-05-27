@@ -127,6 +127,7 @@ bool checkIn(MOUSEMSG m,int x1,int y1,int x2,int y2) {
 	return false;
 }
 void menu(players& Player,allPlayers allplayers) {
+	allplayers.addPlayers(Player);
 	initgraph(1500, 800);
 	IMAGE mm;
 	loadimage(&mm, _T("脑力航迹.jpg"), 1500, 800);
@@ -141,8 +142,8 @@ void menu(players& Player,allPlayers allplayers) {
 	loadimage(&Bk, _T("返回.png"), 200, 80);
 	IMAGE mPlay;
 	loadimage(&mPlay, _T("脑力航迹.jpg"), 1500, 800);
-	IMAGE mPlay2;
-	loadimage(&mPlay2, _T("脑力航迹.jpg"), 1500, 800);
+	IMAGE rank;
+	loadimage(&rank, _T("查看排名.png"), 80, 80);
 	while (1) {
 		BeginBatchDraw();
 		putimage(0, 0, &mm);
@@ -153,12 +154,12 @@ void menu(players& Player,allPlayers allplayers) {
 		MOUSEMSG m = GetMouseMsg();	
 		if (checkIn(m,625,400,825,480)) {			
 			while(1){		
-				putimage(0, 0, &mPlay);
-				putimage(0, 0, &mPlay2);
 				BeginBatchDraw();
+				putimage(0, 0, &mPlay);
 				putimage(625, 400, &Solid);
 				putimage(625, 500, &Ra);
 				putimage(625, 600, &Bk);
+				putimage(845, 500, &rank);
 				EndBatchDraw();
 				MOUSEMSG m1 = GetMouseMsg();
 				if (checkIn(m1, 625, 400, 825, 480)) {
@@ -166,6 +167,14 @@ void menu(players& Player,allPlayers allplayers) {
 				}
 				if (checkIn(m1, 625, 500, 825, 580)) {
 					Random(10,Player);
+				}
+				if (checkIn(m1, 845, 500, 925, 580)) {
+					Player.sort();
+					Player.save();
+					allplayers.refresh(Player);
+					allplayers.sort();
+					allplayers.save();
+					allplayers.showRank(Player);
 				}
 				if (checkIn(m1, 625, 600, 825, 680)) {
 					break;

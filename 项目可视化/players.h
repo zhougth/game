@@ -51,7 +51,8 @@ public:
 	void addPlayers(players player);
 	void sort();
 	void save();
-	void showRank(players);
+	void showRank(players&);
+	void refresh(players& Player);
 };
 
 players PlayersMenu();

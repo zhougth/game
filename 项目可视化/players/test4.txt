@@ -1,3 +1,0 @@
-test4 players/test4.txt
-0 0 0 0 0 0
-0

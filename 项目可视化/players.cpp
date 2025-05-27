@@ -32,18 +32,18 @@ void TIME::show(int x,int y) {
 	snprintf(buffers, sizeof(buffers), "%d", second);
 	if (mins < 10) {
 		outtextxy(x+10, y, "0");
-		outtextxy(x+10+10, y, bufferm);
+		outtextxy(x+10+10+2, y, bufferm);
 	}
 	else {
 		outtextxy(x+10 , y, bufferm);
 	}
-	outtextxy(x+40, y, ":");
+	outtextxy(x+40+2, y, ":");
 	if (second < 10) {
-		outtextxy(x+60-10, y, "0");
-		outtextxy(x+60+10-10, y, buffers);
+		outtextxy(x+60-10+2, y, "0");
+		outtextxy(x+60+10-10+2+2, y, buffers);
 	}
 	else {
-		outtextxy(x+60-10, y, buffers);
+		outtextxy(x+60-10+2, y, buffers);
 	}
 }
 bool operator> (TIME a, TIME b) {
@@ -115,18 +115,18 @@ void players::save() {
 		ofs << solid[i] << (i == 5 ? '\n' : ' ');
 	}
 	ofs << randomNum << endl;
-	cout << "randomNum保存成功" << endl;
 	for (int i = 0; i < randomNum; i++) {
 		ofs << succeedNum[i] <<' ' << totalTime[i].hours<<' ' << totalTime[i].mins<<' ' << totalTime[i].second << endl;
-		cout << "第" << i << "次随机模式保存成功" << endl;
 	}
 	ofs.close();
 }
 void players::sort() {
 	if (succeedNum.size() == 0)return;
 	if (this->randomNum == 0)return;
+	cout << "玩家" << this->getName() << "正在排序" << endl;
 	for (int i = 0; i < succeedNum.size() -1; i++) {
 		for (int j = 0; j < succeedNum.size() -1 - i; j++) {//冒泡排序
+			cout << "排序中...." << endl;
 			if (succeedNum[j] < succeedNum[j + 1]) {
 				int tmp1 = succeedNum[j];
 				succeedNum[j] = succeedNum[j + 1];
@@ -147,6 +147,7 @@ void players::sort() {
 			}
 		}
 	}
+	cout << "排序完成" << endl;
 	maxNum = succeedNum[0];
 	maxTime = totalTime[0];
 }
@@ -217,7 +218,14 @@ void allPlayers::getData() {
 	
 	ifs.close();
 }
+
 void allPlayers::addPlayers(players player) {
+	for (int i = 0; i < this->Players.size(); i++) {
+		if (Players[i].getName() == player.getName()) {
+			cout << "该用户已出现" << endl;
+			return;
+		}
+	}//先搜索看该用户之前是否有游玩过
 	this->num++;
 	this->Players.push_back(player);
 }
@@ -260,7 +268,21 @@ void allPlayers::save() {
 	}
 	ofs.close();
 }
-void allPlayers::showRank(players P) {
+void allPlayers::refresh(players& Player) {
+	if (this->Players.size() == 0) {
+		return;
+	}
+	
+	this->num = Players.size();
+	for (int i = 0; i < Players.size(); i++) {
+		if (Players[i].getName() == Player.getName()) {
+			Players[i] = Player;
+		}
+		Players[i].initial(Players[i].getName());
+	}
+}
+void allPlayers::showRank(players &P) {
+	P.initial(P.getName());
 	this->sort();
 	IMAGE rank;
 	loadimage(&rank, _T("排行榜.png"), 1500, 800);
