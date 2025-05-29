@@ -198,6 +198,9 @@ void players::clean() {
 	succeedNum.erase(succeedNum.begin() + randomNum);
 	state = false;
 }
+int players::getRandomTimes() {
+	return randomTimes;
+}
 
 void allPlayers::getData() {
 	ifstream ifs;

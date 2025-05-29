@@ -6,9 +6,9 @@ fflag:
 	int directionx[4] = { -1,0,1,0 };
 	int directiony[4] = { 0,1,0,-1 };
 	for (int i = 0; i < n; i++) {
-		A[i] = new int[2];
-		realB[i] = new int[2];
-		relativeB[i] = new int[2];
+		A[i] = new int[2] {0,0};
+		realB[i] = new int[2] {0, 0};
+		relativeB[i] = new int[2] {0, 0};
 	}//创建航迹
 	int** visitA = new int* [10];
 	int** visitB = new int* [10];
@@ -131,7 +131,17 @@ fflag:
 	delete[] visitB;
 	return total;
 }
-void Random(int n,players& player) {//n指的是步数
+void Random(players& player) {//n指的是步数
+	int n;
+	if (player.getRandomTimes() >= 0 && player.getRandomTimes() <= 1) {
+		n = 5;
+	}
+	else if (player.getRandomTimes() >= 2 && player.getRandomTimes() <= 3) {
+		n = 7;
+	}
+	else {
+		n = 10;
+	}
 	settextstyle(35, 0, "楷体");
 	setbkmode(TRANSPARENT);
 	setlinecolor(BLACK);
@@ -180,7 +190,7 @@ flag:
 		snprintf(buffer, sizeof(buffer), "%d", i + 1);
 		outtextxy( 520 + total[0][i][1] * 44 + 10, 90 + 44 * total[0][i][0] + 10, buffer);//A的实际轨迹
 	}
-	showRelativeB(total[1], 10, 10);
+	showRelativeB(total[1], 10, n);
 	int** ans = new int* [n];
 	for (int i = 0; i < n; i++) {
 		ans[i] = new int[2];
@@ -206,7 +216,7 @@ flag:
 						time.initial(duringTime);
 						player.winRandom(time);
 						freeMemory(n , A, realB, relativeB, total);
-						Random(n,player);//进行下一个随机关卡
+						Random(player);//进行下一个随机关卡
 						break;
 					}
 					case 2: {//退出

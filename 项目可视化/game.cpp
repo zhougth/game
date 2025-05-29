@@ -166,7 +166,7 @@ void menu(players& Player,allPlayers &allplayers) {
 					SolidMode(Player);
 				}
 				if (checkIn(m1, 625, 500, 825, 580)) {
-					Random(10,Player);
+					Random(Player);
 				}
 				if (checkIn(m1, 845, 500, 925, 580)) {
 					Player.sort();

@@ -40,6 +40,7 @@ public:
 	void winRandom(TIME time);
 	void endRandom(TIME time);
 	void clean();
+	int getRandomTimes();
 };
 
 class allPlayers {
