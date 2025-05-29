@@ -212,6 +212,7 @@ flag:
 					case 2: {//ÍË³ö
 						TIME time;
 						time.initial(duringTime);
+						player.winRandom(time);
 						player.endRandom(time);
 						freeMemory(n, A, realB, relativeB, total);
 						return;

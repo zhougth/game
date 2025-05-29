@@ -290,6 +290,11 @@ void allPlayers::showRank(players &P) {
 	settextcolor(BLACK);
 	settextstyle(30, 0, "Î¢ÈíÑÅºÚ");
 	setbkmode(TRANSPARENT);
+	for (int i = 0; i < 5; i++) {
+		char tempNum[20];
+		snprintf(tempNum, sizeof(tempNum), "%d", i + 1);
+		outtextxy(430, 360 + i * 60 - 10, tempNum);
+	}
 	if (this->num >= 5) {
 		//500 360   x710  x870    ywidth60
 		for (int i = 0; i < 5; i++) {
@@ -309,6 +314,14 @@ void allPlayers::showRank(players &P) {
 			snprintf(buffer, sizeof(buffer), "%d", tmp);
 			outtextxy(710, 360 + i * 60-10, buffer);
 			Players[i].getMaxTime().show(870, 360-10 + i * 60);
+		}
+	}
+	for (int i = 0; i < Players.size(); i++) {
+		if (Players[i].getName() == P.getName()) {
+			char tempNum[20];
+			snprintf(tempNum, sizeof(tempNum), "%d", i + 1);
+			outtextxy(430, 360 + 5 * 60, tempNum);
+			break;
 		}
 	}
 	string tmpName = P.getName() + "(Äã)";

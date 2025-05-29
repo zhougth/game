@@ -126,7 +126,7 @@ bool checkIn(MOUSEMSG m,int x1,int y1,int x2,int y2) {
 	}
 	return false;
 }
-void menu(players& Player,allPlayers allplayers) {
+void menu(players& Player,allPlayers &allplayers) {
 	allplayers.addPlayers(Player);
 	initgraph(1500, 800);
 	IMAGE mm;
@@ -177,6 +177,11 @@ void menu(players& Player,allPlayers allplayers) {
 					allplayers.showRank(Player);
 				}
 				if (checkIn(m1, 625, 600, 825, 680)) {
+					Player.sort();
+					Player.save();
+					allplayers.refresh(Player);
+					allplayers.sort();
+					allplayers.save();
 					break;
 				}
 			}
