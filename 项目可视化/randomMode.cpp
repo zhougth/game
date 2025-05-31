@@ -97,7 +97,13 @@ fflag:
 			else continue;
 		}
 	}
-	
+	for (int i = 0; i < n - 1; i++) {
+		int temp = (A[i][0] - A[i + 1][0]) * (A[i][0] - A[i + 1][0]) + (A[i][1] - A[i + 1][1]) * (A[i][1] - A[i + 1][1]);
+		if (temp == 1 || temp == 2) {
+			continue;
+		}
+		else goto fflag;
+	}
 	relativeB[0][0] = realB[0][0];
 	relativeB[0][1] = realB[0][1];
 	for (int i = 1; i < n ; i++) {

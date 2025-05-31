@@ -89,6 +89,23 @@ int*** solidTopic::getTopic(int num) {
 		}
 		return total;
 	}
+	case 6: {
+		total = new int** [3];
+		for (int i = 0; i < 3; i++) {
+			total[i] = new int* [10];
+			for (int j = 0; j < 10; j++) {
+				total[i][j] = new int[2];
+			}
+		}
+		for (int i = 0; i < 10; i++) {
+			for (int j = 0; j < 2; j++) {
+				total[0][i][j] = A6[i][j];
+				total[1][i][j] = relativeB6[i][j];
+				total[2][i][j] = realB6[i][j];
+			}
+		}
+		return total;
+	}
 	}
 }
 void solidTopic::freeMemory(int n) {
@@ -123,8 +140,8 @@ void solidTopic::freeMemory(int n) {
 	delete[] total;
 	total = NULL;
 }
-void game(int stepNum, int size, int level,players& Player) {
-	settextstyle(35, 0, "楷体"); 
+void game(int stepNum, int size, int level, players& Player) {
+	settextstyle(35, 0, "楷体");
 	setbkmode(TRANSPARENT);
 	setlinecolor(BLACK);
 	settextcolor(BLACK);
@@ -185,8 +202,8 @@ void game(int stepNum, int size, int level,players& Player) {
 			while (peekmessage(&msg, EM_MOUSE)) {
 				switch (msg.message) {
 				case WM_LBUTTONDOWN: {
-					if (int state=mouseMsg(start,&msg, num, ans, total[2], 3, 3, 50 + 180, 100, 180 + 350, 400)) {
-						
+					if (int state = mouseMsg(start, &msg, num, ans, total[2], 3, 3, 50 + 180, 100, 180 + 350, 400)) {
+
 						switch (state) {
 						case 1: {
 							Player.winSolidMode(level);
@@ -204,7 +221,7 @@ void game(int stepNum, int size, int level,players& Player) {
 							switch (tmpState) {
 							case 1: {
 								//查看答案
-								int tp=showAns(3, 3, total);
+								int tp = showAns(3, 3, total);
 								if (tp == 1) {
 									//返回菜单
 									solidtopic.freeMemory(1);
@@ -289,8 +306,8 @@ void game(int stepNum, int size, int level,players& Player) {
 			while (peekmessage(&msg, EM_MOUSE)) {
 				switch (msg.message) {
 				case WM_LBUTTONDOWN: {
-					if (int state=mouseMsg(start,&msg, num, ans, total[2], 5, 5, 150, 100, 450, 400)) {
-						
+					if (int state = mouseMsg(start, &msg, num, ans, total[2], 5, 5, 150, 100, 450, 400)) {
+
 						switch (state) {
 						case 1: {
 							Player.winSolidMode(level);
@@ -354,31 +371,31 @@ void game(int stepNum, int size, int level,players& Player) {
 		break;
 	}
 	case 3:
-	case 4:{
+	case 4: {
 		loadimage(&ON, _T("on.png"), 44, 44);
 		loadimage(&OFF, _T("off.png"), 44, 44);
-		int*** total = solidtopic.getTopic(level+1);
+		int*** total = solidtopic.getTopic(level + 1);
 		for (int i = 0; i < 10; i++) {
 			for (int j = 0; j < 10; j++) {
-				putimage( 40 + j * 44, 90 + 44 * i, &OFF);
-				putimage( 520 + j * 44, 90 + 44 * i, &OFF);
-				putimage( 60 + 940 + j * 44, 90 + 44 * i, &OFF);
+				putimage(40 + j * 44, 90 + 44 * i, &OFF);
+				putimage(520 + j * 44, 90 + 44 * i, &OFF);
+				putimage(60 + 940 + j * 44, 90 + 44 * i, &OFF);
 			}
 		}
 		for (int i = 0; i < stepNum; i++) {
-			putimage( 520 + total[0][i][1] * 44, 90 + 44 * total[0][i][0], &ON);
-		    settextstyle(20, 0, "楷体");
-		    char buffer[20];
-		    snprintf(buffer, sizeof(buffer), "%d", i + 1);
-		    outtextxy( 520 + total[0][i][1] * 44 + 10, 90 + 44 * total[0][i][0] + 10, buffer);//A的实际轨迹
-		    if (i > 0) {
-			    if (total[1][i][0] == total[1][i - 1][0] && total[1][i][1] == total[1][i - 1][1]) {
-				settextcolor(RED);
-			    }
-		    }
-		    putimage( 60 + 940 + total[1][i][1] * 44, 90 + 44 * total[1][i][0], &ON);
-		    outtextxy( 60 + 940 + total[1][i][1] * 44 + 10, 90 + 44 * total[1][i][0] + 10, buffer);
-		    settextcolor(BLACK);
+			putimage(520 + total[0][i][1] * 44, 90 + 44 * total[0][i][0], &ON);
+			settextstyle(20, 0, "楷体");
+			char buffer[20];
+			snprintf(buffer, sizeof(buffer), "%d", i + 1);
+			outtextxy(520 + total[0][i][1] * 44 + 10, 90 + 44 * total[0][i][0] + 10, buffer);//A的实际轨迹
+			if (i > 0) {
+				if (total[1][i][0] == total[1][i - 1][0] && total[1][i][1] == total[1][i - 1][1]) {
+					settextcolor(RED);
+				}
+			}
+			putimage(60 + 940 + total[1][i][1] * 44, 90 + 44 * total[1][i][0], &ON);
+			outtextxy(60 + 940 + total[1][i][1] * 44 + 10, 90 + 44 * total[1][i][0] + 10, buffer);
+			settextcolor(BLACK);
 		}
 		int num = 1;
 		drawRetreat();
@@ -403,13 +420,13 @@ void game(int stepNum, int size, int level,players& Player) {
 						switch (state) {
 						case 1: {
 							Player.winSolidMode(level);
-							solidtopic.freeMemory(level+1);
-							game(7, 10, level+1, Player);
+							solidtopic.freeMemory(level + 1);
+							game(7, 10, level + 1, Player);
 							break;
 						}
 						case 2: {
 							Player.winSolidMode(level);
-							solidtopic.freeMemory(level+1);
+							solidtopic.freeMemory(level + 1);
 							return;
 						}
 						case 9: {//游戏失败
@@ -420,11 +437,11 @@ void game(int stepNum, int size, int level,players& Player) {
 								int tp = showAns(7, 10, total);
 								if (tp == 1) {
 									//返回菜单
-									solidtopic.freeMemory(level+1);
+									solidtopic.freeMemory(level + 1);
 									return;
 								}
 								else if (tp == 2) {//重新开始
-									solidtopic.freeMemory(level+1);
+									solidtopic.freeMemory(level + 1);
 									game(7, 10, level, Player);
 									break;
 								}
@@ -432,13 +449,13 @@ void game(int stepNum, int size, int level,players& Player) {
 							}
 							case 2: {
 								//重新开始
-								solidtopic.freeMemory(level+1);
+								solidtopic.freeMemory(level + 1);
 								game(7, 10, level, Player);
 								break;
 							}
 							case 3: {
 								//返回菜单
-								solidtopic.freeMemory(level+1);
+								solidtopic.freeMemory(level + 1);
 								return;
 							}
 							}
@@ -459,6 +476,107 @@ void game(int stepNum, int size, int level,players& Player) {
 			}
 		}
 		break;
+	}
+	case 5: {
+		loadimage(&ON, _T("on.png"), 44, 44);
+		loadimage(&OFF, _T("off.png"), 44, 44);
+		int*** total = solidtopic.getTopic(level + 1);
+		for (int i = 0; i < 10; i++) {
+			for (int j = 0; j < 10; j++) {
+				putimage(40 + j * 44, 90 + 44 * i, &OFF);
+				putimage(520 + j * 44, 90 + 44 * i, &OFF);
+				putimage(60 + 940 + j * 44, 90 + 44 * i, &OFF);
+			}
+		}
+		for (int i = 0; i < stepNum; i++) {
+			putimage(520 + total[0][i][1] * 44, 90 + 44 * total[0][i][0], &ON);
+			settextstyle(20, 0, "楷体");
+			char buffer[20];
+			snprintf(buffer, sizeof(buffer), "%d", i + 1);
+			outtextxy(520 + total[0][i][1] * 44 + 10, 90 + 44 * total[0][i][0] + 10, buffer);//A的实际轨迹
+			showRelativeB(total[1], 10, 10);
+			settextcolor(BLACK);
+		}
+		int num = 1;
+		drawRetreat();
+		//撤回
+		int start = timer1();
+		while (1) {
+			BeginBatchDraw();
+			timer2(start);
+			settextstyle(20, 0, "楷体");
+			settextcolor(BLACK);
+			ExMessage msg;
+			int** step = new int* [stepNum];
+			for (int i = 0; i < stepNum; i++) {
+				step[i] = new int[2];
+			}
+			EndBatchDraw();
+			drawReturn();
+			while (peekmessage(&msg, EM_MOUSE)) {
+				switch (msg.message) {
+				case WM_LBUTTONDOWN: {
+					if (int state = mouseMsg(start, &msg, num, ans, total[2], 10, 10, 40, 90, 480, 530)) {
+						switch (state) {
+						case 1: {
+							Player.winSolidMode(level);
+							solidtopic.freeMemory(level + 1);
+							game(10, 10, level + 1, Player);
+							break;
+						}
+						case 2: {
+							Player.winSolidMode(level);
+							solidtopic.freeMemory(level + 1);
+							return;
+						}
+						case 9: {//游戏失败
+							int tmpState = lose(start);
+							switch (tmpState) {
+							case 1: {
+								//查看答案
+								int tp = showAns(10, 10, total);
+								if (tp == 1) {
+									//返回菜单
+									solidtopic.freeMemory(level + 1);
+									return;
+								}
+								else if (tp == 2) {//重新开始
+									solidtopic.freeMemory(level + 1);
+									game(10, 10, level, Player);
+									break;
+								}
+								break;
+							}
+							case 2: {
+								//重新开始
+								solidtopic.freeMemory(level + 1);
+								game(10, 10, level, Player);
+								break;
+							}
+							case 3: {
+								//返回菜单
+								solidtopic.freeMemory(level + 1);
+								return;
+							}
+							}
+						}
+						}
+						return;
+					}
+					else if (inRetreat(msg)) {
+						retreat(num, ans, total[2], 10, 10, 40, 90, 480, 530);
+					}
+					else if (inReturn(msg)) {
+						solidtopic.freeMemory(level + 1);
+						return;
+					}
+					break;
+				}
+				}
+			}
+		}
+		break;
+
 	}
 	}
 }
@@ -519,7 +637,6 @@ void SolidMode(players& Player) {
 		}
 		if (checkIn(m, 625, 250, 825, 450)) {
 			game(5, 5, 1, Player);
-			
 		}
 		if (checkIn(m, 925, 250, 1125, 450)) {
 			game(5, 5, 2, Player);
@@ -529,6 +646,9 @@ void SolidMode(players& Player) {
 		}
 		if (checkIn(m, 625, 550, 825, 750)) {
 			game(7, 10, 4, Player);
+		}
+		if (checkIn(m, 925, 550, 1125, 750)) {
+			game(10, 10, 5, Player);
 		}
 		if (checkIn(m,1200,625,1425,725)) {
 			return;
