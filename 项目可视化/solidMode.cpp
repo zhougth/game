@@ -3,110 +3,52 @@
 #include "players.h"
 using namespace std;
 int*** solidTopic::getTopic(int num) {
+	total = new int** [3];
+	int tmp;
 	switch (num) {
 	case 1: {
-		total = new int** [3];
-		for (int i = 0; i < 3; i++) {
-			total[i] = new int* [3];
-			for (int j = 0; j < 3; j++) {
-				total[i][j] = new int[2];
-			}
-		}
-		for (int i = 0; i < 3; i++) {
-			for (int j = 0; j < 2; j++) {
-				total[0][i][j] = A1[i][j];
-				total[1][i][j] = relativeB1[i][j];
-				total[2][i][j] = realB1[i][j];
-			}
-		}
-		return total;
+		tmp = 3;
+		break;
 	}
 	case 2: {
-		total = new int** [3];
-		for (int i = 0; i < 3; i++) {
-			total[i] = new int* [5];
-			for (int j = 0; j < 5; j++) {
-				total[i][j] = new int[2];
-			}
-		}
-		for (int i = 0; i < 5; i++) {
-			for (int j = 0; j < 2; j++) {
-				total[0][i][j] = A2[i][j];
-				total[1][i][j] = relativeB2[i][j];
-				total[2][i][j] = realB2[i][j];
-			}
-		}
-		return total;
+		tmp = 5;
+		break;
 	}
-	case 3: {
-		total = new int** [3];
-		for (int i = 0; i < 3; i++) {
-			total[i] = new int* [5];
-			for (int j = 0; j < 5; j++) {
-				total[i][j] = new int[2];
-			}
-		}
-		for (int i = 0; i < 5; i++) {
-			for (int j = 0; j < 2; j++) {
-				total[0][i][j] = A3[i][j];
-				total[1][i][j] = relativeB3[i][j];
-				total[2][i][j] = realB3[i][j];
-			}
-		}
-		return total;
+	case 3:
+	{
+		tmp = 5;
+		break;
 	}
-	case 4: {
-		total = new int** [3];
-		for (int i = 0; i < 3; i++) {
-			total[i] = new int* [7];
-			for (int j = 0; j <7; j++) {
-				total[i][j] = new int[2];
-			}
-		}
-		for (int i = 0; i < 7; i++) {
-			for (int j = 0; j < 2; j++) {
-				total[0][i][j] = A4[i][j];
-				total[1][i][j] = relativeB4[i][j];
-				total[2][i][j] = realB4[i][j];
-			}
-		}
-		return total;
-	}
+	case 4:
 	case 5: {
-		total = new int** [3];
-		for (int i = 0; i < 3; i++) {
-			total[i] = new int* [7];
-			for (int j = 0; j < 7; j++) {
-				total[i][j] = new int[2];
-			}
-		}
-		for (int i = 0; i < 7; i++) {
-			for (int j = 0; j < 2; j++) {
-				total[0][i][j] = A5[i][j];
-				total[1][i][j] = relativeB5[i][j];
-				total[2][i][j] = realB5[i][j];
-			}
-		}
-		return total;
+		tmp = 7;
+		break;
 	}
 	case 6: {
-		total = new int** [3];
-		for (int i = 0; i < 3; i++) {
-			total[i] = new int* [10];
-			for (int j = 0; j < 10; j++) {
-				total[i][j] = new int[2];
-			}
-		}
-		for (int i = 0; i < 10; i++) {
-			for (int j = 0; j < 2; j++) {
-				total[0][i][j] = A6[i][j];
-				total[1][i][j] = relativeB6[i][j];
-				total[2][i][j] = realB6[i][j];
-			}
-		}
-		return total;
+		tmp = 10;
+		break;
 	}
 	}
+	
+	for (int i = 0; i < 3; i++) {
+		total[i] = new int* [tmp];
+		for (int j = 0; j < tmp; j++) {
+			total[i][j] = new int[2];
+		}
+	}
+	string n = to_string(num);
+	string fileName = "topicAndAnswer/"+n + ".txt";
+	cout << fileName << endl;
+	ifstream ifs;
+	ifs.open(fileName, ios::in);
+	for (int i = 0; i < 3; i++) {
+		for (int j = 0; j < tmp; j++) {
+			ifs >> total[i][j][0] >> total[i][j][1];
+		}
+	}
+	cout << "成功提供题目" << endl;
+	if (total == NULL)cout << "题目为空" << endl;
+	return total;
 }
 void solidTopic::freeMemory(int n) {
 	// 释放内存
@@ -276,7 +218,7 @@ void game(int stepNum, int size, int level, players& Player) {
 				putimage(150 + 400 + 400 + j * 60, 100 + 60 * i, &OFF);
 			}
 		}
-		for (int i = 0; i < size; i++) {
+		for (int i = 0; i < stepNum; i++) {
 			char buffera[20];
 			char bufferb[20];
 			snprintf(buffera, sizeof(buffera), "%d", a + 1);
@@ -288,8 +230,8 @@ void game(int stepNum, int size, int level, players& Player) {
 			a++;
 			b++;
 		}
-		for (int i = 0; i < size; i++) {
-			for (int j = 0; j < size; j++) {
+		for (int i = 0; i < stepNum; i++) {
+			for (int j = 0; j < stepNum; j++) {
 				putimage(150 + j * 60, 100 + 60 * i, &OFF);
 			}
 		}//答题区域

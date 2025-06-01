@@ -1,4 +1,0 @@
-test02 players/test02.txt
-0 0 0 0 0 0
-1
-2 0 0 18

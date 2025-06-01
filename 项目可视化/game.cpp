@@ -3,73 +3,6 @@
 #include"randomMode.h"
 #include"players.h"
 using namespace std;
-void button::setColor(COLORREF colorr) {
-	color = colorr;
-}
-void button::setNum(int numm) {
-	num = numm;
-}
-void button::creatButtom(int x, int y, int width, int heigth, COLORREF color, string pText, int num) {
-	this->x = x;
-	this->y = y;
-	this->width = width;
-	this->heigth = heigth;
-	this->color = color;
-	this->pText = pText;
-	this->num = num;
-}
-void button::drawButtom(int size=35) {
-	setfillcolor(this->color);
-	settextstyle(size, 0, "楷体");
-	setlinecolor(BLACK);
-	settextcolor(BLACK);
-	setbkmode(TRANSPARENT);
-	fillrectangle(this->x, this->y, this->x + this->width, this->y + this->heigth);
-	outtextxy(this->x + 20, this->y + 10, this->pText.c_str());
-}
-void button::drawGameButtom(int size=35) {//35
-	setfillcolor(this->color);
-	settextstyle(size, 0, "楷体");
-	setlinecolor(BLACK);
-	settextcolor(BLACK);
-	setbkmode(TRANSPARENT);
-	fillrectangle(this->x, this->y, this->x + this->width, this->y + this->heigth);
-	char buffer[20];
-	snprintf(buffer, sizeof(buffer), "%d", num);
-	if(num!=0)outtextxy(this->x + this->width/2-size/2, this->y + this->heigth/2-size/2, buffer);
-}
-void button::drawOverButtom() {
-	setfillcolor(this->color);
-	settextstyle(40, 0, "楷体");
-	setlinecolor(BLACK);
-	settextcolor(BLACK);
-	setbkmode(TRANSPARENT);
-	fillrectangle(this->x, this->y, this->x + this->width, this->y + this->heigth);
-	outtextxy(this->x + 75, this->y + 60, this->pText.c_str());
-	settextstyle(30, 0, "楷体");
-	outtextxy(this->x + 20, this->y + 110, "（请按此按钮返回）");
-}
-int button::mouseInButtom(MOUSEMSG m) {
-	if (this->x <= m.x && this->x + this->width >= m.x && this->y <= m.y && this->y + this->heigth >= m.y) {
-		this->color = RED;
-		return 1;
-	}
-	this->color = YELLOW;
-	return 0;
-}
-void button::gameButton(MOUSEMSG m, string str) {
-	if (this->x <= m.x && this->x + this->width >= m.x && this->y <= m.y && this->y + this->heigth >= m.y && m.uMsg == WM_LBUTTONDOWN) {
-		this->color = RED;
-		this->pText = str;
-		return;
-	}
-}
-int button::clickButtom(MOUSEMSG m) {
-	if (mouseInButtom(m) && m.uMsg == WM_LBUTTONDOWN) {
-    return 1;
-    }
-	return 0;
-}
 int timer1() {
 	int startTime = 0;
 	startTime = clock();
@@ -437,4 +370,14 @@ int showAns(int stepNum, int size, int*** total) {
 			}
 		}
 	}
+}
+void game() {
+	srand((unsigned int)time(NULL));
+	allPlayers allplayers;
+	allplayers.getData();
+	players Player = PlayersMenu();
+	menu(Player, allplayers);
+	Player.save();
+	allplayers.save();
+	return;
 }

@@ -1,3 +1,0 @@
-gggth players/gggth.txt
-0 0 0 0 0 0
-0

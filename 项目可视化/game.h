@@ -9,27 +9,6 @@
 #include"randomMode.h"
 #include"players.h"
 using namespace std;
-class button {
-public:
-	void setColor(COLORREF);
-	void setNum(int);
-	void creatButtom(int x, int y, int width, int heigth, COLORREF color, string pText = "", int num = 0);
-	void drawButtom(int);
-	int mouseInButtom(MOUSEMSG m);
-	void gameButton(MOUSEMSG m, string str);
-	int clickButtom(MOUSEMSG m);
-	void drawGameButtom(int size);
-	void drawOverButtom();
-	friend int mouseMsg(int start,ExMessage* msg, int& n, int** ans, int** realB, int size , int stepNum , int x1, int y1, int x2, int y2);
-private:
-	int x;
-	int y;
-	int width;
-	int heigth;
-	COLORREF color;
-	string pText;
-	int num = 0;
-};
 bool check(int **a, int **b, int n);
 void menu(players& Player,allPlayers &allplayers);
 int timer1();
@@ -50,3 +29,4 @@ int success(int );
 int lose(int);
 void showTime(int start);
 int showAns(int stepNum, int size, int*** total);
+void game();
