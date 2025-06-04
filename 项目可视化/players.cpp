@@ -201,6 +201,9 @@ void players::clean() {
 int players::getRandomTimes() {
 	return randomTimes;
 }
+bool players::getSolidMode(int level) {
+	return solid[level];
+}
 
 void allPlayers::getData() {
 	ifstream ifs;

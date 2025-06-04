@@ -41,6 +41,7 @@ public:
 	void endRandom(TIME time);
 	void clean();
 	int getRandomTimes();
+	bool getSolidMode(int level);
 };
 
 class allPlayers {

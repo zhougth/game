@@ -560,39 +560,60 @@ void SolidMode(players& Player) {
 	loadimage(&five, _T("5.png"), 200, 200);
 	loadimage(&six, _T("6.png"), 200, 200);
 	IMAGE bk;
+	IMAGE lock;
+	loadimage(&lock, _T("off.png"), 200, 200);
 	loadimage(&bk, _T("·µ»Ø.png"), 225, 100);
 	
 	while (1) {
 		BeginBatchDraw();
 		putimage(0, 0, &mm);
 		putimage(325, 250, &one);
-		putimage(625, 250, &two);
-		putimage(925, 250, &three);
-		putimage(325, 550, &four);
-		putimage(625, 550, &five);
-		putimage(925, 550, &six);
+		if (Player.getSolidMode(0)) {
+			putimage(625, 250, &two);
+		}
+		else putimage(625, 250, &lock);
+
+		if (Player.getSolidMode(1)) {
+			putimage(925, 250, &three);
+		}
+		else putimage(925, 250, &lock);
+
+		if (Player.getSolidMode(2)) {
+			putimage(325, 550, &four);
+		}
+		else putimage(325, 550, &lock);
+
+		if (Player.getSolidMode(3)) {
+			putimage(625, 550, &five);
+		}
+		else putimage(625, 550, &lock);
+
+		if (Player.getSolidMode(4)) {
+			putimage(925, 550, &six);
+		}
+		else putimage(925, 550, &lock);
 		putimage(1200, 625, &bk);
 		EndBatchDraw();
 		MOUSEMSG m = GetMouseMsg();
 		if (checkIn(m,325,250,525,450)) {
 			game(3, 3, 0,Player);
 		}
-		if (checkIn(m, 625, 250, 825, 450)) {
+		else if (checkIn(m, 625, 250, 825, 450)&&Player.getSolidMode(0)) {
 			game(5, 5, 1, Player);
 		}
-		if (checkIn(m, 925, 250, 1125, 450)) {
+		else if (checkIn(m, 925, 250, 1125, 450) && Player.getSolidMode(1)) {
 			game(5, 5, 2, Player);
 		}
-		if (checkIn(m, 325, 550, 525, 750)) {
+		else if (checkIn(m, 325, 550, 525, 750) && Player.getSolidMode(2)) {
 			game(7, 10, 3, Player);
 		}
-		if (checkIn(m, 625, 550, 825, 750)) {
+		else if (checkIn(m, 625, 550, 825, 750) && Player.getSolidMode(3)) {
 			game(7, 10, 4, Player);
 		}
-		if (checkIn(m, 925, 550, 1125, 750)) {
+		else if (checkIn(m, 925, 550, 1125, 750) && Player.getSolidMode(4)) {
 			game(10, 10, 5, Player);
 		}
-		if (checkIn(m,1200,625,1425,725)) {
+		else if (checkIn(m,1200,625,1425,725)) {
 			return;
 		}
 	}
