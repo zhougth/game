@@ -288,38 +288,48 @@ void allPlayers::refresh(players& Player) {
 	}
 }
 void allPlayers::showRank(players &P) {
+	int page = 1;
 	P.initial(P.getName());
 	this->sort();
 	IMAGE rank;
 	loadimage(&rank, _T("≈≈––∞Ò.png"), 1500, 800);
-	putimage(0, 0, &rank);
 	settextcolor(BLACK);
 	settextstyle(30, 0, "Œ¢»Ì—≈∫⁄");
 	setbkmode(TRANSPARENT);
-	for (int i = 0; i < 5; i++) {
+ffflag:
+	BeginBatchDraw();
+	putimage(0, 0, &rank);
+	EndBatchDraw();
+	int j = 0;
+	for (int i = 5 * (page - 1); i < 5 * page; i++) {
 		char tempNum[20];
 		snprintf(tempNum, sizeof(tempNum), "%d", i + 1);
-		outtextxy(430, 360 + i * 60 - 10, tempNum);
+		outtextxy(430, 360 + j * 60 - 10, tempNum);
+		j++;
 	}
-	if (this->num >= 5) {
+	j = 0;
+	if (this->num >= 5*page) {
 		//500 360   x710  x870    ywidth60
-		for (int i = 0; i < 5; i++) {
-			outtextxy(500, 360 + i * 60-10, Players[i].getName().c_str());
+		
+		for (int i = 5*(page-1); i < 5*page; i++) {
+			outtextxy(500, 360 + j * 60-10, Players[i].getName().c_str());
 			int tmp = Players[i].getMaxNum();
 			char buffer[20];
 			snprintf(buffer, sizeof(buffer), "%d", tmp);
-			outtextxy(710, 360 + i * 60-10, buffer);
-			Players[i].getMaxTime().show(870, 360-10 + i * 60);
+			outtextxy(710, 360 + j * 60-10, buffer);
+			Players[i].getMaxTime().show(870, 360-10 + j * 60);
+			j++;
 		}
 	}
 	else {
-		for (int i = 0; i < this->num; i++) {
-			outtextxy(500, 360 + i * 60-10, Players[i].getName().c_str());
+		for (int i = 5 * (page - 1); i < this->num; i++) {
+			outtextxy(500, 360 + j * 60-10, Players[i].getName().c_str());
 			int tmp = Players[i].getMaxNum();
 			char buffer[20];
 			snprintf(buffer, sizeof(buffer), "%d", tmp);
-			outtextxy(710, 360 + i * 60-10, buffer);
-			Players[i].getMaxTime().show(870, 360-10 + i * 60);
+			outtextxy(710, 360 + j * 60-10, buffer);
+			Players[i].getMaxTime().show(870, 360-10 + j * 60);
+			++j;
 		}
 	}
 	for (int i = 0; i < Players.size(); i++) {
@@ -336,13 +346,35 @@ void allPlayers::showRank(players &P) {
 	snprintf(buffer, sizeof(buffer), "%d", P.getMaxNum());
 	outtextxy(710, 360 + 5 * 60, buffer);
 	P.getMaxTime().show(870, 360 + 5 * 60);
+	//1030 640 60
+	IMAGE left, right;
+	loadimage(&left, _T("left.png"), 60, 60);
+	loadimage(&right, _T("right.png"), 60, 60);
+	putimage(1030, 640, &left);
+	putimage(1100,640,& right);
 	IMAGE back;
 	loadimage(&back, _T("∑µªÿ≤Àµ•.png"), 200, 80);
 	putimage(1080, 710, &back);
+	
 	while (1) {
 		MOUSEMSG m = GetMouseMsg();
 		if (m.x >= 1080 && m.x <= 1280 && m.y >= 710 && m.y <= 790 && m.uMsg == WM_LBUTTONDOWN) {
 			return;
+		}
+		else if (m.x >= 1030 && m.x <= 1090 && m.y >= 640 && m.y <= 700 && m.uMsg == WM_LBUTTONDOWN) {
+			if (page > 1) {
+				--page;
+				goto ffflag;
+			}
+		}
+		else if (m.x >= 1100 && m.x <= 1160 && m.y >= 640 && m.y <= 700 && m.uMsg == WM_LBUTTONDOWN) {
+			if ((page) * 5 > Players.size()) {
+				continue;
+			}
+			else {
+				++page;
+				goto ffflag;
+			}
 		}
 	}
 }
