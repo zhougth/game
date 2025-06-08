@@ -1,27 +1,28 @@
 #include"randomMode.h"
 #include"game.h"
 #include<vector>
-int*** random(int n, int** A, int** realB, int** relativeB, int*** total) {//n步
+int*** random(int n, int** A, int** realB, int** relativeB, int*** total) {//n为步数
 fflag:
 	int directionx[4] = { -1,0,1,0 };
 	int directiony[4] = { 0,1,0,-1 };
+	//各个方向对应的坐标增量 左上右下
 	for (int i = 0; i < n; i++) {
 		A[i] = new int[2] {0,0};
 		realB[i] = new int[2] {0, 0};
 		relativeB[i] = new int[2] {0, 0};
 	}//创建航迹
+	//以下是保存a和b在表格中经过的地方的数组
 	int** visitA = new int* [10];
 	int** visitB = new int* [10];
 	for (int i = 0; i < 10; i++) {
 		visitA[i] = new int[10];
 		visitB[i] = new int[10];
-	}
-	for (int i = 0; i < 10; i++) {
 		for (int j = 0; j < 10; j++) {
 			visitA[i][j] = 0;
 			visitB[i][j] = 0;
 		}
 	}
+	//随机是从终点往起点进行随机，保证a和b的轨迹终点相同
 	int startx = 3+(rand() % 4);
 	int starty =3+ (rand() % 4);
 	A[n  - 1][0] = startx;
@@ -42,7 +43,7 @@ fflag:
 			foundValidPathA = false;
 			foundValidPathB = false;
 			// 生成 A 的方向，排除与上一次相反的方向
-			int countA = 0;
+			int countA = 0;//计数器，若超过三十次没有解决问题则重新规划路径
 			do {
 				countA++;
 				if (countA > 30) {
@@ -51,9 +52,9 @@ fflag:
 				Adir[i] = rand() % 4;
 				nextAx = A[i + 1][0] + directionx[Adir[i]];
 				nextAy = A[i + 1][1] + directiony[Adir[i]];
-			} while (!judgeIn(10, 10, nextAx, nextAy) || (prevAdir != -1 && (Adir[i] + 2) % 4 == prevAdir));
+			} while (!judgeIn(10, 10, nextAx, nextAy) || (prevAdir != -1 && (Adir[i] + 2) % 4 == prevAdir));//找到一个不与上次方向相反且有效的方向进行位移
 			// 更新 A 的位置	
-			if (judgeIn(10, 10, nextAx, nextAy) && !visitA[nextAx][nextAy]) {
+			if (judgeIn(10, 10, nextAx, nextAy) && !visitA[nextAx][nextAy]) {//位移有效且该点没有被自己经历过
 				A[i][0] = nextAx;
 				A[i][1] = nextAy;
 				visitA[nextAx][nextAy] = 1;
@@ -97,7 +98,7 @@ fflag:
 			else continue;
 		}
 	}
-	for (int i = 0; i < n - 1; i++) {
+	for (int i = 0; i < n - 1; i++) {//判断a的轨迹是否流畅连续，若不连续则重新规划路线
 		int temp = (A[i][0] - A[i + 1][0]) * (A[i][0] - A[i + 1][0]) + (A[i][1] - A[i + 1][1]) * (A[i][1] - A[i + 1][1]);
 		if (temp == 1 || temp == 2) {
 			continue;
@@ -127,6 +128,7 @@ fflag:
 	total[0] = A;
 	total[1] = relativeB;
 	total[2] = realB;
+	//释放内存
 	delete[]Adir;
 	delete[]Bdir;
 	for (int i = 0; i < 10; i++) {
@@ -160,7 +162,7 @@ void Random(players& player) {//n指的是步数
 		total[i] = nullptr;
 	}
 	total = random(n, A, realB, relativeB, total);
-	cout << "A" << endl;
+	/*cout << "A" << endl;
 	for (int i = 0; i < n; i++) {
 		cout << total[0][i][0] + 1 << "  " << total[0][i][1] + 1 << endl;
 	}
@@ -172,6 +174,7 @@ void Random(players& player) {//n指的是步数
 	for (int i = 0; i < n; i++) {
 		cout << total[2][i][0] + 1 << "  " << total[2][i][1] + 1 << endl;
 	}
+	*/
 	//上面是获取题目以及答案
 flag:
 	player.startRandom();
@@ -196,7 +199,7 @@ flag:
 		snprintf(buffer, sizeof(buffer), "%d", i + 1);
 		outtextxy( 520 + total[0][i][1] * 44 + 10, 90 + 44 * total[0][i][0] + 10, buffer);//A的实际轨迹
 	}
-	showRelativeB(total[1], 10, n);
+	showRelativeB(total[1], 10, n);//由于b的相对轨迹可能出现某几步在同一个点处的情况，故调用该函数
 	int** ans = new int* [n];
 	for (int i = 0; i < n; i++) {
 		ans[i] = new int[2];
@@ -204,6 +207,7 @@ flag:
 	int num = 1;
 	int start = timer1();
 	drawRetreat();
+	drawReturn();
 	while (1) {
 		BeginBatchDraw();
 		int duringTime=timer2(start);
@@ -211,7 +215,6 @@ flag:
 		settextcolor(BLACK);
 		ExMessage msg;
 		EndBatchDraw();
-		drawReturn();
 		while (peekmessage(&msg, EM_MOUSE)) {
 			switch (msg.message) {
 			case WM_LBUTTONDOWN: {
@@ -269,7 +272,7 @@ flag:
 				else if (inRetreat(msg)) {
 					retreat(num, ans, realB, 10, n, 40, 90, 480, 530);
 				}
-				else if (inReturn(msg)) {//游戏过程中退出，目前不保存信息
+				else if (inReturn(msg)) {//游戏过程中退出
 					TIME time;
 					time.initial(duringTime);
 					player.endRandom(time);
@@ -285,12 +288,12 @@ flag:
 int randomMsg(int start,ExMessage* msg, int** ans, int** realB, int& n, int stepNum) {
 	if ((msg->x < 40) || (msg->x) > ( 40 + 10 * 44) || (msg->y) > (90 + 44 * 10 ) || (msg->y < 90)) {
 		return false;
-	}
-	cout << msg->x << "  " << msg->y << endl;
+	}//判断是否在答题表格内
+	//cout << msg->x << "  " << msg->y << endl;
 	int j = (msg->x -40) / 44;//列
 	int i = (msg->y - 90) / 44;//行
 	if (ifOpen(ans, n - 1, i, j))return false;
-	cout << "i=" << i << "  " << "j=" << j << endl;
+	//cout << "i=" << i << "  " << "j=" << j << endl;
 	ans[n - 1][0] = i;
 	ans[n - 1][1] = j;
 	IMAGE ON;
@@ -372,14 +375,14 @@ void showRelativeB(int** relativeB, int size, int stepNum) {
 			numB.push_back({ i });//
 		}
 	}
-	cout << "去重后共" << tmp << endl;
+	/*cout << "去重后共" << tmp << endl;
 	for (int i = 0; i < tmp; i++) {
 		cout << uniqueBx[i] + 1 << "," << uniqueBy[i] + 1 << "   经过" << uniqueBn[i] << "次" << endl;
 		cout << "分别是" << endl;
 		for (int j = 0; j < uniqueBn[i]; j++) {
 			cout << "i=="<<i<<"    j=="<<j<<"  "<<numB[i][j] << endl;
 		}
-	}
+	}*/
 	IMAGE ON;
 	loadimage(&ON, _T("on.png"), 44, 44);
 	for (int i = 0; i < tmp; i++) {
@@ -426,7 +429,5 @@ void showRelativeB(int** relativeB, int size, int stepNum) {
 			break;
 		}
 		}
-		
-		
 	}
 }

@@ -4,7 +4,7 @@
 using namespace std;
 int*** solidTopic::getTopic(int num) {
 	total = new int** [3];
-	int tmp;
+	int tmp=0;
 	switch (num) {
 	case 1: {
 		tmp = 3;
@@ -38,7 +38,7 @@ int*** solidTopic::getTopic(int num) {
 	}
 	string n = to_string(num);
 	string fileName = "topicAndAnswer/"+n + ".txt";
-	cout << fileName << endl;
+	//cout << fileName << endl;
 	ifstream ifs;
 	ifs.open(fileName, ios::in);
 	for (int i = 0; i < 3; i++) {
@@ -46,8 +46,8 @@ int*** solidTopic::getTopic(int num) {
 			ifs >> total[i][j][0] >> total[i][j][1];
 		}
 	}
-	cout << "成功提供题目" << endl;
-	if (total == NULL)cout << "题目为空" << endl;
+	//cout << "成功提供题目" << endl;
+	//if (total == NULL)cout << "题目为空" << endl;
 	return total;
 }
 void solidTopic::freeMemory(int n) {
@@ -84,13 +84,14 @@ void solidTopic::freeMemory(int n) {
 }
 void game(int stepNum, int size, int level, players& Player) {
 	settextstyle(35, 0, "楷体");
-	setbkmode(TRANSPARENT);
+	setbkmode(TRANSPARENT);//设置字体背景为透明
 	setlinecolor(BLACK);
 	settextcolor(BLACK);
 	IMAGE mPlay;
 	loadimage(&mPlay, _T("背景.jpg"), 1500, 800);
 	putimage(0, 0, &mPlay);
 	solidTopic solidtopic;
+	//存放玩家点击的答案的数组
 	int** ans = new int* [stepNum];
 	for (int i = 0; i < stepNum; i++) {
 		ans[i] = new int[2];
@@ -212,12 +213,15 @@ void game(int stepNum, int size, int level, players& Player) {
 		loadimage(&OFF, _T("off.png"), 60, 60);
 		int*** total = solidtopic.getTopic(2);
 		if (level == 2)total = solidtopic.getTopic(3);
+		//绘制三个表格
 		for (int i = 0; i < size; i++) {
 			for (int j = 0; j < size; j++) {
+				putimage(150 + j * 60, 100 + 60 * i, &OFF);
 				putimage(150 + 400 + j * 60, 100 + 60 * i, &OFF);
 				putimage(150 + 400 + 400 + j * 60, 100 + 60 * i, &OFF);
 			}
 		}
+		//绘制第二和第三个表格的轨迹
 		for (int i = 0; i < stepNum; i++) {
 			char buffera[20];
 			char bufferb[20];
@@ -230,28 +234,23 @@ void game(int stepNum, int size, int level, players& Player) {
 			a++;
 			b++;
 		}
-		for (int i = 0; i < stepNum; i++) {
-			for (int j = 0; j < stepNum; j++) {
-				putimage(150 + j * 60, 100 + 60 * i, &OFF);
-			}
-		}//答题区域
-		int num = 1;
-		drawRetreat();
-		int start = timer1();
-		drawReturn();
+		int num = 1;//当前步数
+		drawRetreat();//绘制撤回按钮
+		int start = timer1();//开始计时
+		drawReturn();//绘制返回按钮
 		while (1) {
+			//游戏主循环
 			BeginBatchDraw();
 			timer2(start);
 			settextcolor(BLACK);
 			ExMessage msg;
 			EndBatchDraw();
-			while (peekmessage(&msg, EM_MOUSE)) {
+			while (peekmessage(&msg, EM_MOUSE)) {//获取玩家鼠标信息
 				switch (msg.message) {
 				case WM_LBUTTONDOWN: {
 					if (int state = mouseMsg(start, &msg, num, ans, total[2], 5, 5, 150, 100, 450, 400)) {
-
 						switch (state) {
-						case 1: {
+						case 1: {//游戏胜利且选择了继续
 							Player.winSolidMode(level);
 							solidtopic.freeMemory(2);
 							if (level == 1)
@@ -260,7 +259,7 @@ void game(int stepNum, int size, int level, players& Player) {
 								game(7, 10, 3, Player);
 							break;
 						}
-						case 2: {
+						case 2: {//游戏胜利后选择退出
 							Player.winSolidMode(level);
 							solidtopic.freeMemory(2);
 							return;
@@ -317,8 +316,8 @@ void game(int stepNum, int size, int level, players& Player) {
 		loadimage(&ON, _T("on.png"), 44, 44);
 		loadimage(&OFF, _T("off.png"), 44, 44);
 		int*** total = solidtopic.getTopic(level + 1);
-		for (int i = 0; i < 10; i++) {
-			for (int j = 0; j < 10; j++) {
+		for (int i = 0; i < size; i++) {
+			for (int j = 0; j < size; j++) {
 				putimage(40 + j * 44, 90 + 44 * i, &OFF);
 				putimage(520 + j * 44, 90 + 44 * i, &OFF);
 				putimage(60 + 940 + j * 44, 90 + 44 * i, &OFF);
@@ -330,11 +329,6 @@ void game(int stepNum, int size, int level, players& Player) {
 			char buffer[20];
 			snprintf(buffer, sizeof(buffer), "%d", i + 1);
 			outtextxy(520 + total[0][i][1] * 44 + 10, 90 + 44 * total[0][i][0] + 10, buffer);//A的实际轨迹
-			if (i > 0) {
-				if (total[1][i][0] == total[1][i - 1][0] && total[1][i][1] == total[1][i - 1][1]) {
-					settextcolor(RED);
-				}
-			}
 			putimage(60 + 940 + total[1][i][1] * 44, 90 + 44 * total[1][i][0], &ON);
 			outtextxy(60 + 940 + total[1][i][1] * 44 + 10, 90 + 44 * total[1][i][0] + 10, buffer);
 			settextcolor(BLACK);
@@ -342,6 +336,7 @@ void game(int stepNum, int size, int level, players& Player) {
 		int num = 1;
 		drawRetreat();
 		//撤回
+		drawReturn();//返回
 		int start = timer1();
 		while (1) {
 			BeginBatchDraw();
@@ -354,7 +349,6 @@ void game(int stepNum, int size, int level, players& Player) {
 				step[i] = new int[2];
 			}
 			EndBatchDraw();
-			drawReturn();
 			while (peekmessage(&msg, EM_MOUSE)) {
 				switch (msg.message) {
 				case WM_LBUTTONDOWN: {
@@ -363,7 +357,10 @@ void game(int stepNum, int size, int level, players& Player) {
 						case 1: {
 							Player.winSolidMode(level);
 							solidtopic.freeMemory(level + 1);
-							game(7, 10, level + 1, Player);
+							if (level == 3)
+								game(7, 10, level + 1, Player);
+							else if (level == 4)
+								game(10, 10, level + 1, Player);
 							break;
 						}
 						case 2: {
@@ -423,8 +420,8 @@ void game(int stepNum, int size, int level, players& Player) {
 		loadimage(&ON, _T("on.png"), 44, 44);
 		loadimage(&OFF, _T("off.png"), 44, 44);
 		int*** total = solidtopic.getTopic(level + 1);
-		for (int i = 0; i < 10; i++) {
-			for (int j = 0; j < 10; j++) {
+		for (int i = 0; i < size; i++) {
+			for (int j = 0; j < size; j++) {
 				putimage(40 + j * 44, 90 + 44 * i, &OFF);
 				putimage(520 + j * 44, 90 + 44 * i, &OFF);
 				putimage(60 + 940 + j * 44, 90 + 44 * i, &OFF);
@@ -442,6 +439,7 @@ void game(int stepNum, int size, int level, players& Player) {
 		int num = 1;
 		drawRetreat();
 		//撤回
+		drawReturn();
 		int start = timer1();
 		while (1) {
 			BeginBatchDraw();
@@ -454,18 +452,12 @@ void game(int stepNum, int size, int level, players& Player) {
 				step[i] = new int[2];
 			}
 			EndBatchDraw();
-			drawReturn();
 			while (peekmessage(&msg, EM_MOUSE)) {
 				switch (msg.message) {
 				case WM_LBUTTONDOWN: {
 					if (int state = mouseMsg(start, &msg, num, ans, total[2], 10, 10, 40, 90, 480, 530)) {
 						switch (state) {
-						case 1: {
-							Player.winSolidMode(level);
-							solidtopic.freeMemory(level + 1);
-							game(10, 10, level + 1, Player);
-							break;
-						}
+						case 1:
 						case 2: {
 							Player.winSolidMode(level);
 							solidtopic.freeMemory(level + 1);
@@ -538,7 +530,12 @@ int mouseMsg(int start,ExMessage* msg, int& n, int** ans, int** realB, int size,
 	putimage(x1 + j * ((x2 - x1) / (size)), y1 + ((x2 - x1) / (size)) * i, &ON);
 	char buffer[20];
 	snprintf(buffer, sizeof(buffer), "%d", n);
-	outtextxy(x1 + j * ((x2 - x1) / (size)) + ((x2 - x1) / (size)) / 2 - 18, y1 + ((x2 - x1) / (size)) * i + ((x2 - x1) / (size)) / 2 - 18, buffer);
+	if (size == 3) {
+		outtextxy(x1 + j * ((x2 - x1) / (size)) + ((x2 - x1) / (size)) / 3+10, y1 + ((x2 - x1) / (size)) * i + ((x2 - x1) / (size)) / 4+5, buffer);
+	}
+	else {
+		outtextxy(x1 + j * ((x2 - x1) / (size)) + ((x2 - x1) / (size)) / 3, y1 + ((x2 - x1) / (size)) * i + ((x2 - x1) / (size)) / 4, buffer);
+	}
 	n++;
 	if (check(ans, realB, stepNum)) {
 		int state = success(start);
@@ -549,7 +546,7 @@ int mouseMsg(int start,ExMessage* msg, int& n, int** ans, int** realB, int size,
 	}
 	else return 0;
 }
-void SolidMode(players& Player) {
+void SolidMode(players& Player) {//关卡模式 选择关卡界面
 	IMAGE mm;
 	loadimage(&mm, _T("关卡模式背景.jpg"), 1500, 800);
 	IMAGE one, two, three, four, five, six;
@@ -567,6 +564,7 @@ void SolidMode(players& Player) {
 	while (1) {
 		BeginBatchDraw();
 		putimage(0, 0, &mm);
+		//根据用户的通关情况判断是否绘制关卡图标
 		putimage(325, 250, &one);
 		if (Player.getSolidMode(0)) {
 			putimage(625, 250, &two);
@@ -592,9 +590,11 @@ void SolidMode(players& Player) {
 			putimage(925, 550, &six);
 		}
 		else putimage(925, 550, &lock);
-		putimage(1200, 625, &bk);
+
+		putimage(1200, 625, &bk);//返回按钮
 		EndBatchDraw();
 		MOUSEMSG m = GetMouseMsg();
+		//获取鼠标信息，进入玩家可以游玩且点击的关卡
 		if (checkIn(m,325,250,525,450)) {
 			game(3, 3, 0,Player);
 		}

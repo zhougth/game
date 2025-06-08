@@ -1,9 +1,9 @@
 ﻿  game.cpp
   main.cpp
   players.cpp
-D:\vs\project\项目可视化\项目可视化\players.cpp(240,27): warning C4267: “=”: 从“size_t”转换到“int”，可能丢失数据
-D:\vs\project\项目可视化\项目可视化\players.cpp(267,27): warning C4267: “=”: 从“size_t”转换到“int”，可能丢失数据
-D:\vs\project\项目可视化\项目可视化\players.cpp(282,26): warning C4267: “=”: 从“size_t”转换到“int”，可能丢失数据
+D:\vs\project\项目可视化\项目可视化\players.cpp(239,27): warning C4267: “=”: 从“size_t”转换到“int”，可能丢失数据
+D:\vs\project\项目可视化\项目可视化\players.cpp(266,27): warning C4267: “=”: 从“size_t”转换到“int”，可能丢失数据
+D:\vs\project\项目可视化\项目可视化\players.cpp(281,26): warning C4267: “=”: 从“size_t”转换到“int”，可能丢失数据
   randomMode.cpp
   solidMode.cpp
   正在生成代码...

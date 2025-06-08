@@ -123,10 +123,10 @@ void players::save() {
 void players::sort() {
 	if (succeedNum.size() == 0)return;
 	if (this->randomNum == 0)return;
-	cout << "玩家" << this->getName() << "正在排序" << endl;
+//	cout << "玩家" << this->getName() << "正在排序" << endl;
 	for (int i = 0; i < succeedNum.size() -1; i++) {
 		for (int j = 0; j < succeedNum.size() -1 - i; j++) {//冒泡排序
-			cout << "排序中...." << endl;
+//			cout << "排序中...." << endl;
 			if (succeedNum[j] < succeedNum[j + 1]) {
 				int tmp1 = succeedNum[j];
 				succeedNum[j] = succeedNum[j + 1];
@@ -147,7 +147,7 @@ void players::sort() {
 			}
 		}
 	}
-	cout << "排序完成" << endl;
+//	cout << "排序完成" << endl;
 	maxNum = succeedNum[0];
 	maxTime = totalTime[0];
 }
@@ -190,7 +190,7 @@ void players::endRandom(TIME time) {
 	succeedNum[randomNum] = randomTimes;
 	totalTime[randomNum]+= time;
 	randomNum++;
-	cout << "randomNum==" << randomNum << endl;
+//	cout << "randomNum==" << randomNum << endl;
 	state = false;//退出这次随机
 }
 void players::clean() {
@@ -221,14 +221,13 @@ void allPlayers::getData() {
 			Players.push_back(player);
 		}
 	}
-	
 	ifs.close();
 }
 
 void allPlayers::addPlayers(players player) {
 	for (int i = 0; i < this->Players.size(); i++) {
 		if (Players[i].getName() == player.getName()) {
-			cout << "该用户已出现" << endl;
+//			cout << "该用户已出现" << endl;
 			return;
 		}
 	}//先搜索看该用户之前是否有游玩过
@@ -239,8 +238,8 @@ void allPlayers::sort() {//总排行榜，根据各个用户的最多通关数和时间排序
 	if (this->num != Players.size()) {
 		this->num = Players.size();
 	}
-	cout << "排序开始" << endl;
-	cout << "num==" << num << endl;
+//	cout << "排序开始" << endl;
+//	cout << "num==" << num << endl;
 	for (int i = 0; i < num-1; i++) {
 		for (int j = 0; j < num - 1 - i; j++) {
 			if (Players[j].getMaxNum() < Players[j + 1].getMaxNum()) {
@@ -255,8 +254,8 @@ void allPlayers::sort() {//总排行榜，根据各个用户的最多通关数和时间排序
 					Players[j + 1] = tmp;
 				}
 			}
-			cout << "排序中" << i << endl;
-			cout << "j+1==" << j + 1 << endl;
+//			cout << "排序中" << i << endl;
+//			cout << "j+1==" << j + 1 << endl;
 		}
 	}
 	
@@ -301,10 +300,14 @@ ffflag:
 	putimage(0, 0, &rank);
 	EndBatchDraw();
 	int j = 0;
+	int x = 430;
 	for (int i = 5 * (page - 1); i < 5 * page; i++) {
 		char tempNum[20];
 		snprintf(tempNum, sizeof(tempNum), "%d", i + 1);
-		outtextxy(430, 360 + j * 60 - 10, tempNum);
+		if (i + 1 >= 10) {
+			x =425;
+		}
+		outtextxy(x, 360 + j * 60 - 10, tempNum);
 		j++;
 	}
 	j = 0;
@@ -336,7 +339,10 @@ ffflag:
 		if (Players[i].getName() == P.getName()) {
 			char tempNum[20];
 			snprintf(tempNum, sizeof(tempNum), "%d", i + 1);
-			outtextxy(430, 360 + 5 * 60, tempNum);
+			if (i + 1 < 10)
+				outtextxy(430, 360 + 5 * 60, tempNum);
+			else
+				outtextxy(425, 360 + 5 * 60, tempNum);
 			break;
 		}
 	}
@@ -368,7 +374,7 @@ ffflag:
 			}
 		}
 		else if (m.x >= 1100 && m.x <= 1160 && m.y >= 640 && m.y <= 700 && m.uMsg == WM_LBUTTONDOWN) {
-			if ((page) * 5 > Players.size()) {
+			if ((page) * 5 >= Players.size()) {
 				continue;
 			}
 			else {

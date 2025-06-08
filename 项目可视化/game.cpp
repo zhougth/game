@@ -95,13 +95,13 @@ void menu(players& Player,allPlayers &allplayers) {
 				putimage(845, 500, &rank);
 				EndBatchDraw();
 				MOUSEMSG m1 = GetMouseMsg();
-				if (checkIn(m1, 625, 400, 825, 480)) {
+				if (checkIn(m1, 625, 400, 825, 480)) {//关卡模式
 					SolidMode(Player);
 				}
-				if (checkIn(m1, 625, 500, 825, 580)) {
+				if (checkIn(m1, 625, 500, 825, 580)) {//挑战模式
 					Random(Player);
 				}
-				if (checkIn(m1, 845, 500, 925, 580)) {
+				if (checkIn(m1, 845, 500, 925, 580)) {//查看挑战模式排行榜
 					Player.sort();
 					Player.save();
 					allplayers.refresh(Player);
@@ -109,7 +109,7 @@ void menu(players& Player,allPlayers &allplayers) {
 					allplayers.save();
 					allplayers.showRank(Player);
 				}
-				if (checkIn(m1, 625, 600, 825, 680)) {
+				if (checkIn(m1, 625, 600, 825, 680)) {//返回
 					Player.sort();
 					Player.save();
 					allplayers.refresh(Player);
@@ -134,10 +134,10 @@ void menu(players& Player,allPlayers &allplayers) {
 			};
 		}
 		if (checkIn(m,625,600,825,680)) {//退出游戏
+			closegraph();
 			return;
 		}	
 	}
-	closegraph();
 }
 void drawReturn() {
 	IMAGE Return;
@@ -190,7 +190,7 @@ bool inRetreat(ExMessage m) {
 	}
 	else return false;
 }
-bool ifOpen(int** ans, int step, int i, int j) {
+bool ifOpen(int** ans, int step, int i, int j) {//判断该格子是否已经被玩家点击
 	for (int k = 0; k < step; k++) {
 		if (ans[k][0] == i && ans[k][1] == j) {
 			return true;
@@ -224,24 +224,24 @@ int lose(int start) {
 	IMAGE lose;
 	loadimage(&lose, _T("挑战失败.jpg"), 1500, 800);
 	putimage(0, 0, &lose);
-	IMAGE answer, restreat, returnMenu;
+	IMAGE answer, restart, returnMenu;
 	loadimage(&answer, _T("查看答案.png"), 300, 100);
-	loadimage(&restreat, _T("重新开始.png"), 300, 100);
+	loadimage(&restart, _T("重新开始.png"), 300, 100);
 	loadimage(&returnMenu, _T("返回菜单.png"), 300, 100);
-	putimage(600, 450, &answer);
-	putimage(600, 550, &restreat);
-	putimage(600, 650, &returnMenu);
+	putimage(600, 450+5, &answer);
+	putimage(600, 550+10, &restart);
+	putimage(600, 650+15, &returnMenu);
 	showTime(start);
 	while (1) {
 		MOUSEMSG m = GetMouseMsg();
 		if (m.uMsg == WM_LBUTTONDOWN) {
-			if (m.x >= 600 && m.x <= 900 && m.y >= 450 && m.y <= 550) {
+			if (m.x >= 600 && m.x <= 900 && m.y >= 450+5 && m.y <= 550+5) {
 				return 1;
 			}
-			if (m.x >= 600 && m.x <= 900 && m.y >= 550 && m.y <= 650) {
+			if (m.x >= 600 && m.x <= 900 && m.y >= 550+10 && m.y <= 650+10) {
 				return 2;
 			}
-			if (m.x >= 600 && m.x <= 900 && m.y >= 650 && m.y <= 750) {
+			if (m.x >= 600 && m.x <= 900 && m.y >= 650+15 && m.y <= 750+15) {
 				return 3;
 			}
 		}
