@@ -88,7 +88,7 @@ void game(int stepNum, int size, int level, players& Player) {
 	setlinecolor(BLACK);
 	settextcolor(BLACK);
 	IMAGE mPlay;
-	loadimage(&mPlay, _T("背景.jpg"), 1500, 800);
+	loadimage(&mPlay, _T("picture/背景.jpg"), 1500, 800);
 	putimage(0, 0, &mPlay);
 	solidTopic solidtopic;
 	//存放玩家点击的答案的数组
@@ -101,8 +101,8 @@ void game(int stepNum, int size, int level, players& Player) {
 	IMAGE ON;
 	switch (level) {
 	case 0: {
-		loadimage(&ON, _T("on.png"), 100, 100);
-		loadimage(&OFF, _T("off.png"), 100, 100);
+		loadimage(&ON, _T("picture/on.png"), 100, 100);
+		loadimage(&OFF, _T("picture/off.png"), 100, 100);
 		int*** total = solidtopic.getTopic(1);
 		for (int i = 0; i < 3; i++) {
 			for (int j = 0; j < 3; j++) {
@@ -130,6 +130,7 @@ void game(int stepNum, int size, int level, players& Player) {
 		int num = 1;
 		drawRetreat();
 		//撤回
+		drawReturn();
 		int start = timer1();
 		while (1) {
 			BeginBatchDraw();
@@ -140,13 +141,11 @@ void game(int stepNum, int size, int level, players& Player) {
 			for (int i = 0; i < stepNum; i++) {
 				step[i] = new int[2];
 			}
-			EndBatchDraw();
-			drawReturn();
+			EndBatchDraw();	
 			while (peekmessage(&msg, EM_MOUSE)) {
 				switch (msg.message) {
 				case WM_LBUTTONDOWN: {
 					if (int state = mouseMsg(start, &msg, num, ans, total[2], 3, 3, 50 + 180, 100, 180 + 350, 400)) {
-
 						switch (state) {
 						case 1: {
 							Player.winSolidMode(level);
@@ -209,8 +208,8 @@ void game(int stepNum, int size, int level, players& Player) {
 	}
 	case 1:
 	case 2: {
-		loadimage(&ON, _T("on.png"), 60, 60);
-		loadimage(&OFF, _T("off.png"), 60, 60);
+		loadimage(&ON, _T("picture/on.png"), 60, 60);
+		loadimage(&OFF, _T("picture/off.png"), 60, 60);
 		int*** total = solidtopic.getTopic(2);
 		if (level == 2)total = solidtopic.getTopic(3);
 		//绘制三个表格
@@ -313,8 +312,8 @@ void game(int stepNum, int size, int level, players& Player) {
 	}
 	case 3:
 	case 4: {
-		loadimage(&ON, _T("on.png"), 44, 44);
-		loadimage(&OFF, _T("off.png"), 44, 44);
+		loadimage(&ON, _T("picture/on.png"), 44, 44);
+		loadimage(&OFF, _T("picture/off.png"), 44, 44);
 		int*** total = solidtopic.getTopic(level + 1);
 		for (int i = 0; i < size; i++) {
 			for (int j = 0; j < size; j++) {
@@ -417,8 +416,8 @@ void game(int stepNum, int size, int level, players& Player) {
 		break;
 	}
 	case 5: {
-		loadimage(&ON, _T("on.png"), 44, 44);
-		loadimage(&OFF, _T("off.png"), 44, 44);
+		loadimage(&ON, _T("picture/on.png"), 44, 44);
+		loadimage(&OFF, _T("picture/off.png"), 44, 44);
 		int*** total = solidtopic.getTopic(level + 1);
 		for (int i = 0; i < size; i++) {
 			for (int j = 0; j < size; j++) {
@@ -524,7 +523,7 @@ int mouseMsg(int start,ExMessage* msg, int& n, int** ans, int** realB, int size,
 		return 0;
 	}
 	IMAGE ON;
-	loadimage(&ON, _T("on.png"), ((x2 - x1) / (size)), ((x2 - x1) / (size)));
+	loadimage(&ON, _T("picture/on.png"), ((x2 - x1) / (size)), ((x2 - x1) / (size)));
 	ans[n - 1][0] = i;
 	ans[n - 1][1] = j;
 	putimage(x1 + j * ((x2 - x1) / (size)), y1 + ((x2 - x1) / (size)) * i, &ON);
@@ -548,18 +547,20 @@ int mouseMsg(int start,ExMessage* msg, int& n, int** ans, int** realB, int size,
 }
 void SolidMode(players& Player) {//关卡模式 选择关卡界面
 	IMAGE mm;
-	loadimage(&mm, _T("关卡模式背景.jpg"), 1500, 800);
+	loadimage(&mm, _T("picture/关卡模式背景.jpg"), 1500, 800);
 	IMAGE one, two, three, four, five, six;
-	loadimage(&one, _T("1.png"), 200, 200);
-	loadimage(&two, _T("2.png"), 200, 200);
-	loadimage(&three, _T("3.png"), 200, 200);
-	loadimage(&four, _T("4.png"), 200, 200);
-	loadimage(&five, _T("5.png"), 200, 200);
-	loadimage(&six, _T("6.png"), 200, 200);
+	loadimage(&one, _T("picture/1.png"), 200, 200);
+	loadimage(&two, _T("picture/2.png"), 200, 200);
+	loadimage(&three, _T("picture/3.png"), 200, 200);
+	loadimage(&four, _T("picture/4.png"), 200, 200);
+	loadimage(&five, _T("picture/5.png"), 200, 200);
+	loadimage(&six, _T("picture/6.png"), 200, 200);
 	IMAGE bk;
 	IMAGE lock;
-	loadimage(&lock, _T("off.png"), 200, 200);
-	loadimage(&bk, _T("返回.png"), 225, 100);
+	loadimage(&lock, _T("picture/off.png"), 200, 200);
+	loadimage(&bk, _T("picture/返回.png"), 225, 100);
+	IMAGE bk2;
+	loadimage(&bk2, _T("picture/返回.png"), 225, 100);
 	
 	while (1) {
 		BeginBatchDraw();
@@ -593,27 +594,31 @@ void SolidMode(players& Player) {//关卡模式 选择关卡界面
 
 		putimage(1200, 625, &bk);//返回按钮
 		EndBatchDraw();
+
 		MOUSEMSG m = GetMouseMsg();
 		//获取鼠标信息，进入玩家可以游玩且点击的关卡
-		if (checkIn(m,325,250,525,450)) {
+		if (checkIn(m,325,250,525,450)&&m.uMsg==WM_LBUTTONDOWN) {
 			game(3, 3, 0,Player);
+			
 		}
-		else if (checkIn(m, 625, 250, 825, 450)&&Player.getSolidMode(0)) {
+		else if (checkIn(m, 625, 250, 825, 450)&&Player.getSolidMode(0) && m.uMsg == WM_LBUTTONDOWN) {
 			game(5, 5, 1, Player);
 		}
-		else if (checkIn(m, 925, 250, 1125, 450) && Player.getSolidMode(1)) {
+		else if (checkIn(m, 925, 250, 1125, 450) && Player.getSolidMode(1) && m.uMsg == WM_LBUTTONDOWN) {
 			game(5, 5, 2, Player);
 		}
-		else if (checkIn(m, 325, 550, 525, 750) && Player.getSolidMode(2)) {
+		else if (checkIn(m, 325, 550, 525, 750) && Player.getSolidMode(2) && m.uMsg == WM_LBUTTONDOWN) {
 			game(7, 10, 3, Player);
 		}
-		else if (checkIn(m, 625, 550, 825, 750) && Player.getSolidMode(3)) {
+		else if (checkIn(m, 625, 550, 825, 750) && Player.getSolidMode(3) && m.uMsg == WM_LBUTTONDOWN) {
 			game(7, 10, 4, Player);
 		}
-		else if (checkIn(m, 925, 550, 1125, 750) && Player.getSolidMode(4)) {
+		else if (checkIn(m, 925, 550, 1125, 750) && Player.getSolidMode(4) && m.uMsg == WM_LBUTTONDOWN) {
 			game(10, 10, 5, Player);
 		}
 		else if (checkIn(m,1200,625,1425,725)) {
+			putimage(1200, 625, &bk2);
+			if(m.uMsg==WM_LBUTTONDOWN)
 			return;
 		}
 	}

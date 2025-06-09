@@ -291,7 +291,7 @@ void allPlayers::showRank(players &P) {
 	P.initial(P.getName());
 	this->sort();
 	IMAGE rank;
-	loadimage(&rank, _T("ÅÅÐÐ°ñ.png"), 1500, 800);
+	loadimage(&rank, _T("picture/ÅÅÐÐ°ñ.png"), 1500, 800);
 	settextcolor(BLACK);
 	settextstyle(30, 0, "Î¢ÈíÑÅºÚ");
 	setbkmode(TRANSPARENT);
@@ -313,7 +313,7 @@ ffflag:
 	j = 0;
 	if (this->num >= 5*page) {
 		//500 360   x710  x870    ywidth60
-		
+		BeginBatchDraw();
 		for (int i = 5*(page-1); i < 5*page; i++) {
 			outtextxy(500, 360 + j * 60-10, Players[i].getName().c_str());
 			int tmp = Players[i].getMaxNum();
@@ -323,8 +323,10 @@ ffflag:
 			Players[i].getMaxTime().show(870, 360-10 + j * 60);
 			j++;
 		}
+		EndBatchDraw();
 	}
 	else {
+		BeginBatchDraw();
 		for (int i = 5 * (page - 1); i < this->num; i++) {
 			outtextxy(500, 360 + j * 60-10, Players[i].getName().c_str());
 			int tmp = Players[i].getMaxNum();
@@ -334,6 +336,7 @@ ffflag:
 			Players[i].getMaxTime().show(870, 360-10 + j * 60);
 			++j;
 		}
+		EndBatchDraw();
 	}
 	for (int i = 0; i < Players.size(); i++) {
 		if (Players[i].getName() == P.getName()) {
@@ -354,12 +357,12 @@ ffflag:
 	P.getMaxTime().show(870, 360 + 5 * 60);
 	//1030 640 60
 	IMAGE left, right;
-	loadimage(&left, _T("left.png"), 60, 60);
-	loadimage(&right, _T("right.png"), 60, 60);
+	loadimage(&left, _T("picture/left.png"), 60, 60);
+	loadimage(&right, _T("picture/right.png"), 60, 60);
 	putimage(1030, 640, &left);
 	putimage(1100,640,& right);
 	IMAGE back;
-	loadimage(&back, _T("·µ»Ø²Ëµ¥.png"), 200, 80);
+	loadimage(&back, _T("picture/·µ»Ø²Ëµ¥.png"), 200, 80);
 	putimage(1080, 710, &back);
 	
 	while (1) {
@@ -389,7 +392,7 @@ players PlayersMenu() {
 	players player;
 	initgraph(1500,800);
 	IMAGE bk;
-	loadimage(&bk, "ÄÔÁ¦º½¼£.jpg", 1500, 800);
+	loadimage(&bk, "picture/ÄÔÁ¦º½¼£.jpg", 1500, 800);
 	putimage(0, 0, &bk);
 	char username[9] = { 0 };
 	// µ÷ÓÃInputBoxº¯Êýµ¯³öÊäÈë¿ò

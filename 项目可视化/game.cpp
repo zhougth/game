@@ -18,7 +18,7 @@ int timer2(int startTime) {
 	snprintf(bufferm, sizeof(bufferm), "%d", min);
 	snprintf(buffers, sizeof(buffers), "%d", sec);
 	IMAGE time;
-	loadimage(&time, _T("用时.png"), 300, 100);
+	loadimage(&time, _T("picture/用时.png"), 300, 100);
 	putimage(80+150, 550+50, &time);
 	settextcolor(RGB(136,126,101));
 	if (min < 10) {
@@ -33,6 +33,7 @@ int timer2(int startTime) {
 	else {
 		outtextxy(250 + 20 + 20 + 150, 570 + 50 + 10, buffers);
 	}
+	settextcolor(BLACK);
 	return durTime;
 }
 bool check(int **a, int **b, int n) {
@@ -47,14 +48,14 @@ bool check(int **a, int **b, int n) {
 void retreat(int& n, int** ans, int** realB, int size, int stepNum, int x1, int y1, int x2, int y2) {
 	if (n >= 2) {
 		IMAGE off;
-		loadimage(&off, _T("off.png"), ((x2 - x1) / (size)), ((x2 - x1) / (size)));
+		loadimage(&off, _T("picture/off.png"), ((x2 - x1) / (size)), ((x2 - x1) / (size)));
 		putimage(x1 + ans[n - 2][1] * ((x2 - x1) / (size)), y1 + ((x2 - x1) / (size)) * ans[n - 2][0], &off);
 		n--;
 	}     
 	else return;
 }
 bool checkIn(MOUSEMSG m,int x1,int y1,int x2,int y2) {
-	if (m.x >= x1 && m.x <= x2 && m.y >= y1 && m.y <= y2 && m.uMsg == WM_LBUTTONDOWN) {
+	if (m.x >= x1 && m.x <= x2 && m.y >= y1 && m.y <= y2) {
 		return true;
 	}
 	return false;
@@ -63,85 +64,139 @@ void menu(players& Player,allPlayers &allplayers) {
 	allplayers.addPlayers(Player);
 	initgraph(1500, 800);
 	IMAGE mm;
-	loadimage(&mm, _T("脑力航迹.jpg"), 1500, 800);
+	loadimage(&mm, _T("picture/脑力航迹.jpg"), 1500, 800);
 	//加载背景
 	IMAGE Start, Rule,Re;
-	loadimage(&Start, _T("开始游戏.png"), 200, 80);
-	loadimage(&Rule, _T("游戏规则.png"), 200, 80);
-	loadimage(&Re, _T("退出游戏.png"), 200, 80);
+	loadimage(&Start, _T("picture/开始游戏.png"), 200, 80);
+	loadimage(&Rule, _T("picture/游戏规则.png"), 200, 80);
+	loadimage(&Re, _T("picture/退出游戏.png"), 200, 80);
+	IMAGE Start2, Rule2, Re2;
+	loadimage(&Start2, _T("picture/开始游戏2.png"), 200, 80);
+	loadimage(&Rule2, _T("picture/游戏规则2.png"), 200, 80);
+	loadimage(&Re2, _T("picture/退出游戏2.png"), 200, 80);
+
 	IMAGE Solid, Ra, Bk;
-	loadimage(&Solid, _T("关卡模式.png"), 200, 80);
-	loadimage(&Ra, _T("挑战模式.png"), 200, 80);
-	loadimage(&Bk, _T("返回.png"), 200, 80);
+	loadimage(&Solid, _T("picture/关卡模式.png"), 200, 80);
+	loadimage(&Ra, _T("picture/挑战模式.png"), 200, 80);
+	loadimage(&Bk, _T("picture/返回.png"), 200, 80);
+	IMAGE Solid2, Ra2, Bk2;
+	loadimage(&Solid2, _T("picture/关卡模式2.png"), 200, 80);
+	loadimage(&Ra2, _T("picture/挑战模式2.png"), 200, 80);
+	loadimage(&Bk2, _T("picture/返回2.png"), 200, 80);
+
 	IMAGE mPlay;
-	loadimage(&mPlay, _T("脑力航迹.jpg"), 1500, 800);
+	loadimage(&mPlay, _T("picture/脑力航迹.jpg"), 1500, 800);
 	IMAGE rank;
-	loadimage(&rank, _T("查看排名.png"), 80, 80);
-	while (1) {
+	loadimage(&rank, _T("picture/查看排名.png"), 80, 80);
+	IMAGE rank2;
+	loadimage(&rank2, _T("picture/查看排名2.png"), 80, 80);
+	FLAG1:
 		BeginBatchDraw();
 		putimage(0, 0, &mm);
 		putimage(625, 400, &Start);
 		putimage(625, 500, &Rule);
 		putimage(625, 600, &Re);
 		EndBatchDraw();
-		MOUSEMSG m = GetMouseMsg();	
-		if (checkIn(m,625,400,825,480)) {			
-			while(1){		
-				BeginBatchDraw();
-				putimage(0, 0, &mPlay);
-				putimage(625, 400, &Solid);
-				putimage(625, 500, &Ra);
-				putimage(625, 600, &Bk);
-				putimage(845, 500, &rank);
-				EndBatchDraw();
-				MOUSEMSG m1 = GetMouseMsg();
-				if (checkIn(m1, 625, 400, 825, 480)) {//关卡模式
-					SolidMode(Player);
-				}
-				if (checkIn(m1, 625, 500, 825, 580)) {//挑战模式
-					Random(Player);
-				}
-				if (checkIn(m1, 845, 500, 925, 580)) {//查看挑战模式排行榜
-					Player.sort();
-					Player.save();
-					allplayers.refresh(Player);
-					allplayers.sort();
-					allplayers.save();
-					allplayers.showRank(Player);
-				}
-				if (checkIn(m1, 625, 600, 825, 680)) {//返回
-					Player.sort();
-					Player.save();
-					allplayers.refresh(Player);
-					allplayers.sort();
-					allplayers.save();
-					break;
+		while (1) {
+			MOUSEMSG m = GetMouseMsg();
+			if (checkIn(m,625,400,825,480)) 	
+			 {
+				putimage(625, 400, &Start2);
+				if (m.uMsg == WM_LBUTTONDOWN) {
+					FLAG2:	
+						BeginBatchDraw();
+						putimage(0, 0, &mPlay);//绘制点击开始游戏之后的界面
+						putimage(625, 400, &Solid);
+						putimage(625, 500, &Ra);
+						putimage(625, 600, &Bk);
+						putimage(845, 500, &rank);
+						EndBatchDraw();
+						while (1) {
+						MOUSEMSG m1 = GetMouseMsg();
+						if (checkIn(m1, 625, 400, 825, 480)) {//关卡模式
+							putimage(625, 400, &Solid2);
+							if (m1.uMsg == WM_LBUTTONDOWN) {
+								SolidMode(Player);
+								goto FLAG2;
+							}
+						}
+						else putimage(625, 400, &Solid);
+						if (checkIn(m1, 625, 500, 825, 580)) {//挑战模式
+							putimage(625, 500, &Ra2);
+							if (m1.uMsg == WM_LBUTTONDOWN) {
+								Random(Player);
+								goto FLAG2;
+							}
+						}
+						else putimage(625, 500, &Ra);
+						if (checkIn(m1, 845, 500, 925, 580)) {//查看挑战模式排行榜
+							putimage(845, 500, &rank2);
+							if (m1.uMsg == WM_LBUTTONDOWN) {
+								Player.sort();
+								Player.save();
+								allplayers.refresh(Player);
+								allplayers.sort();
+								allplayers.save();
+								allplayers.showRank(Player);
+								goto FLAG2;
+							}
+						}
+						else putimage(845, 500, &rank);
+						if (checkIn(m1, 625, 600, 825, 680)) {//返回
+							putimage(625, 600, &Bk2);
+							if (m1.uMsg == WM_LBUTTONDOWN) {
+								Player.sort();
+								Player.save();
+								allplayers.refresh(Player);
+								allplayers.sort();
+								allplayers.save();
+								goto FLAG1;
+							}
+						}
+						else putimage(625, 600, &Bk);
+					}
 				}
 			}
-		}
-		if (checkIn(m,625,500,825,580)) {//规则
-			IMAGE rule;
-			loadimage(&rule, _T("规则.jpg"), 1500, 800);
-			putimage(0, 0, &rule);
-			IMAGE bk;
-			loadimage(&bk,_T("返回.png"),180,80);
-			putimage(1300, 700, &bk);
-			while (1) {
-				MOUSEMSG m = GetMouseMsg();
-				if (checkIn(m, 1300, 700, 1480, 780)) {
-					break;
+			else {
+				putimage(625, 400, &Start);
+			}
+			if (checkIn(m, 625, 500, 825, 580)) {//规则
+				putimage(625, 500, &Rule2);
+				if (m.uMsg == WM_LBUTTONDOWN) {
+					IMAGE rule;
+					loadimage(&rule, _T("picture/规则1.png"), 1500, 800);
+					putimage(0, 0, &rule);
+					IMAGE bk;
+					loadimage(&bk, _T("picture/返回.png"), 180, 80);
+					putimage(1300, 700, &bk);
+					while (1) {
+						MOUSEMSG m = GetMouseMsg();
+						if (checkIn(m, 1300, 700, 1480, 780)) {
+							if(m.uMsg==WM_LBUTTONDOWN)
+							goto FLAG1;
+						}
+					};
 				}
-			};
-		}
-		if (checkIn(m,625,600,825,680)) {//退出游戏
-			closegraph();
-			return;
+			}
+			else {
+				putimage(625, 500, &Rule);
+			}
+			if (checkIn(m, 625, 600, 825, 680)) {//退出游戏
+				putimage(625, 600, &Re2);
+				if (m.uMsg == WM_LBUTTONDOWN) {
+					closegraph();
+					return;
+				}
+			}
+			else {
+				putimage(625, 600, &Re);
+			}
 		}	
 	}
-}
+//}
 void drawReturn() {
 	IMAGE Return;
-	loadimage(&Return, _T("退出.png"), 300, 100);
+	loadimage(&Return, _T("picture/退出.png"), 300, 100);
 	putimage(40+400 + 150, 550 + 50, &Return);
 }
 bool inReturn(ExMessage m) {
@@ -158,7 +213,7 @@ bool inReturn(MOUSEMSG m) {
 }
 void drawNext() {
 	IMAGE Next;
-	loadimage(&Next, _T("继续.png"), 300, 100);
+	loadimage(&Next, _T("picture/继续.png"), 300, 100);
 	putimage(600, 500, &Next);
 }
 bool inNext(ExMessage m) {
@@ -175,7 +230,7 @@ bool inNext(MOUSEMSG m) {
 }
 void drawRetreat() {
 	IMAGE Retreat;
-	loadimage(&Retreat, _T("撤回.png"), 300, 100);
+	loadimage(&Retreat, _T("picture/撤回.png"), 300, 100);
 	putimage(800 + 150, 550 + 50, &Retreat);
 }
 bool inRetreat(MOUSEMSG m) {
@@ -200,11 +255,11 @@ bool ifOpen(int** ans, int step, int i, int j) {//判断该格子是否已经被玩家点击
 }
 int success(int start) {
 	IMAGE win;
-	loadimage(&win, _T("挑战成功.jpg"), 1500, 800);
+	loadimage(&win, _T("picture/挑战成功.jpg"), 1500, 800);
 	putimage(0, 0, &win);
 	IMAGE Continue, returnMenu;
-	loadimage(&Continue, _T("继续.png"), 300, 100);
-	loadimage(&returnMenu, _T("返回菜单.png"), 300, 100);
+	loadimage(&Continue, _T("picture/继续.png"), 300, 100);
+	loadimage(&returnMenu, _T("picture/返回菜单.png"), 300, 100);
 	putimage(600, 500, &Continue);
 	putimage(600, 650, &returnMenu);
 	showTime(start);
@@ -222,12 +277,12 @@ int success(int start) {
 }
 int lose(int start) {
 	IMAGE lose;
-	loadimage(&lose, _T("挑战失败.jpg"), 1500, 800);
+	loadimage(&lose, _T("picture/挑战失败.jpg"), 1500, 800);
 	putimage(0, 0, &lose);
 	IMAGE answer, restart, returnMenu;
-	loadimage(&answer, _T("查看答案.png"), 300, 100);
-	loadimage(&restart, _T("重新开始.png"), 300, 100);
-	loadimage(&returnMenu, _T("返回菜单.png"), 300, 100);
+	loadimage(&answer, _T("picture/查看答案.png"), 300, 100);
+	loadimage(&restart, _T("picture/重新开始.png"), 300, 100);
+	loadimage(&returnMenu, _T("picture/返回菜单.png"), 300, 100);
 	putimage(600, 450+5, &answer);
 	putimage(600, 550+10, &restart);
 	putimage(600, 650+15, &returnMenu);
@@ -258,7 +313,7 @@ void showTime(int start) {
 	snprintf(bufferm, sizeof(bufferm), "%d", min);
 	snprintf(buffers, sizeof(buffers), "%d", sec);
 	IMAGE time;
-	loadimage(&time, _T("用时.png"), 300, 100);
+	loadimage(&time, _T("picture/用时.png"), 300, 100);
 	putimage(600,350, &time);
 	settextcolor(RGB(136, 126, 101));
 	if (min < 10) {
@@ -273,17 +328,18 @@ void showTime(int start) {
 	else {
 		outtextxy(740 + 20 + 20+ 20, 380, buffers);
 	}
+	settextcolor(BLACK);
 }
 int showAns(int stepNum, int size, int*** total) {
 	IMAGE mPlay;
-	loadimage(&mPlay, _T("背景.jpg"), 1500, 800);
+	loadimage(&mPlay, _T("picture/背景.jpg"), 1500, 800);
 	putimage(0, 0, &mPlay);
 	IMAGE OFF;
 	IMAGE ON;
 	switch (size) {
 	case 3: {	
-		loadimage(&ON, _T("on.png"), 100, 100);
-		loadimage(&OFF, _T("off.png"), 100, 100);
+		loadimage(&ON, _T("picture/on.png"), 100, 100);
+		loadimage(&OFF, _T("picture/off.png"), 100, 100);
 		int a = 0, b = 0,c=0;
 		for (int i = 0; i < 3; i++) {
 			for (int j = 0; j < 3; j++) {
@@ -306,8 +362,8 @@ int showAns(int stepNum, int size, int*** total) {
 		break;
 	}
 	case 5: {
-		loadimage(&ON, _T("on.png"), 60, 60);
-		loadimage(&OFF, _T("off.png"), 60, 60);
+		loadimage(&ON, _T("picture/on.png"), 60, 60);
+		loadimage(&OFF, _T("picture/off.png"), 60, 60);
 		int a = 0;
 		for (int i = 0; i < size; i++) {
 			for (int j = 0; j < size; j++) {
@@ -331,8 +387,8 @@ int showAns(int stepNum, int size, int*** total) {
 	}
 	case 10: {
 		
-		loadimage(&ON, _T("on.png"), 44, 44);
-		loadimage(&OFF, _T("off.png"), 44, 44);
+		loadimage(&ON, _T("picture/on.png"), 44, 44);
+		loadimage(&OFF, _T("picture/off.png"), 44, 44);
 		for (int i = 0; i < size; i++) {
 			for (int j = 0; j < size; j++) {
 				putimage( 40 + j * 44, 90 + 44* i, &OFF);
@@ -357,7 +413,7 @@ int showAns(int stepNum, int size, int*** total) {
 	}
 	drawReturn();//退出
 	IMAGE reStrat;
-	loadimage(&reStrat, _T("重新开始.png"), 300, 100);
+	loadimage(&reStrat, _T("picture/重新开始.png"), 300, 100);
 	putimage(150+300 + 480 + 40, 600, &reStrat);
 	while (1) {
 		MOUSEMSG m = GetMouseMsg();

@@ -179,11 +179,11 @@ void Random(players& player) {//n指的是步数
 flag:
 	player.startRandom();
 	IMAGE mPlay;
-	loadimage(&mPlay, _T("背景.jpg"), 1500, 800);
+	loadimage(&mPlay, _T("picture/背景.jpg"), 1500, 800);
 	putimage(0, 0, &mPlay);
 	IMAGE ON, OFF;
-	loadimage(&ON, _T("on.png"), 44, 44);
-	loadimage(&OFF, _T("off.png"), 44, 44);
+	loadimage(&ON, _T("picture/on.png"), 44, 44);
+	loadimage(&OFF, _T("picture/off.png"), 44, 44);
 	for (int i = 0; i < 10; i++) {
 		for (int j = 0; j < 10; j++) {
 			putimage( 40 + j * 44, 90 + 44 * i, &OFF);
@@ -297,7 +297,7 @@ int randomMsg(int start,ExMessage* msg, int** ans, int** realB, int& n, int step
 	ans[n - 1][0] = i;
 	ans[n - 1][1] = j;
 	IMAGE ON;
-	loadimage(&ON, _T("on.png"), 44, 44);
+	loadimage(&ON, _T("picture/on.png"), 44, 44);
 	putimage( 40 + j * 44, 90 + 44 * i, &ON);
 	settextstyle(20, 0, "楷体");
 	char buffer[20];
@@ -384,7 +384,7 @@ void showRelativeB(int** relativeB, int size, int stepNum) {
 		}
 	}*/
 	IMAGE ON;
-	loadimage(&ON, _T("on.png"), 44, 44);
+	loadimage(&ON, _T("picture/on.png"), 44, 44);
 	for (int i = 0; i < tmp; i++) {
 		putimage(60 + 940 + uniqueBy[i] * 44, 90 + 44 * uniqueBx[i], &ON);
 		switch (uniqueBn[i]) {
