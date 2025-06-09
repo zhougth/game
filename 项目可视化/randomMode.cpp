@@ -176,7 +176,6 @@ void Random(players& player) {//n指的是步数
 	}
 	*/
 	//上面是获取题目以及答案
-flag:
 	player.startRandom();
 	IMAGE mPlay;
 	loadimage(&mPlay, _T("picture/背景.jpg"), 1500, 800);
@@ -251,13 +250,14 @@ flag:
 								return;
 							}
 							else if (tp == 2) {//重新开始
-								goto flag;
+								Random(player);
 								break;
 							}
 							break;
 						}
 						case 2: {
-							goto flag;//重新开始当前的随机关卡
+							Random(player);
+							//重新开始
 							break;
 						}
 						case 3: {//退出

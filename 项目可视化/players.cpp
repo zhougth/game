@@ -1,6 +1,5 @@
 #include"players.h"
 #include<graphics.h>
-#include<conio.h>
 void TIME::initial(int tmpTime) {
 	tmpTime /= 1000;//转化为秒
 	this->hours = tmpTime / 3600;
@@ -190,6 +189,7 @@ void players::endRandom(TIME time) {
 	succeedNum[randomNum] = randomTimes;
 	totalTime[randomNum]+= time;
 	randomNum++;
+	randomTimes = 0;//结束后将玩家连续通过的关卡数重新设置为0
 //	cout << "randomNum==" << randomNum << endl;
 	state = false;//退出这次随机
 }
